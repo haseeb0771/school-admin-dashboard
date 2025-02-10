@@ -25,7 +25,7 @@ function NewAdmission() {
     addressCity: "",
     addressState: "",
     addressZipCode: "",
-    studentId: "SVPSAS230001",
+    studentId: "1111",
     dateOfAdmission: "",
     classEnrolled: "",
     sectionAssigned: "",
@@ -57,7 +57,7 @@ function NewAdmission() {
       addressCity: "",
       addressState: "",
       addressZipCode: "",
-      studentId: "SVPSAS230001",
+      studentId: "1111",
       dateOfAdmission: "",
       classEnrolled: "",
       sectionAssigned: "",
@@ -142,6 +142,7 @@ function NewAdmission() {
               setNewStudent={setNewStudent}
             />
           </div>
+
           <button
             ref={submitButtonRef}
             type="submit"

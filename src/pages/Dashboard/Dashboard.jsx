@@ -42,16 +42,53 @@ const chartdata = [
   {
     class: "Class 4",
     "Number of boys": 14,
-    "Number of girls": 12,
+    "Number of girls": 10,
   },
   {
     class: "Class 5",
-    "Number of boys": 15,
-    "Number of girls": 9,
+    "Number of boys": 12,
+    "Number of girls": 23,
+  },
+  {
+    class: "Class 6",
+    "Number of boys": 23,
+    "Number of girls": 8,
+  },
+  {
+    class: "Class 7",
+    "Number of boys": 29,
+    "Number of girls": 13,
+  },
+  {
+    class: "Class 8",
+    "Number of boys": 7,
+    "Number of girls": 27,
+  },
+  {
+    class: "Class 9",
+    "Number of boys": 19,
+    "Number of girls": 7,
+  },
+  {
+    class: "Class 10",
+    "Number of boys": 26,
+    "Number of girls": 21,
   },
 ];
 
 const kpiData = [
+  {
+    title: "Teachers Staff",
+    metric: "20",
+  },
+  {
+    title: "Female Teachers",
+    metric: "9",
+  },
+  {
+    title: "Male Teachers",
+    metric: "11",
+  },
   {
     title: "Student Strength",
     metric: "114",

@@ -1,10 +1,10 @@
 [
   {
-    "studentId": "SVPSAS230001",
-    "studentFirstName": "Ayush",
-    "studentMiddleLastName": "Saha",
+    "studentId": "1112",
+    "studentFirstName": "Taha",
+    "studentMiddleLastName": "Ahmad",
     "studentDateOfBirth": "2001-10-05",
-    "studentReligion": "Hindiusm",
+    "studentReligion": "Muslim",
     "studentCaste": "General",
     "studentBloodGroup": "B+",
     "studentSex": "Male",
@@ -26,11 +26,11 @@
     "previousSchoolAddress": "Near Binapani Club, Tufanganj 736160"
   },
   {
-    "studentId": "SVPSSS230002",
+    "studentId": "1113",
     "studentFirstName": "Sanchari",
     "studentMiddleLastName": "Saha",
     "studentDateOfBirth": "2001-10-05",
-    "studentReligion": "Hindiusm",
+    "studentReligion": "Muslim",
     "studentCaste": "General",
     "studentBloodGroup": "AB+",
     "studentSex": "Female",
@@ -52,11 +52,11 @@
     "previousSchoolAddress": "Near Binapani Club, Tufanganj 736160"
   },
   {
-    "studentId": "SVPSPR230003",
+    "studentId": "1114",
     "studentFirstName": "Prithish",
     "studentMiddleLastName": "Roy",
     "studentDateOfBirth": "2001-10-05",
-    "studentReligion": "Hindiusm",
+    "studentReligion": "Muslim",
     "studentCaste": "General",
     "studentBloodGroup": "AB+",
     "studentSex": "Male",
@@ -78,11 +78,11 @@
     "previousSchoolAddress": "Near Binapani Club, Tufanganj 736160"
   },
   {
-    "studentId": "SVPSLD230004",
+    "studentId": "1115",
     "studentFirstName": "Lavena",
     "studentMiddleLastName": "Das",
     "studentDateOfBirth": "2001-10-05",
-    "studentReligion": "Hindiusm",
+    "studentReligion": "Muslim",
     "studentCaste": "General",
     "studentBloodGroup": "AB+",
     "studentSex": "Female",
@@ -104,11 +104,11 @@
     "previousSchoolAddress": "Near Binapani Club, Tufanganj 736160"
   },
   {
-    "studentId": "SVPSAD230005",
+    "studentId": "1121",
     "studentFirstName": "Ankon",
     "studentMiddleLastName": "Dey",
     "studentDateOfBirth": "2001-10-05",
-    "studentReligion": "Hindiusm",
+    "studentReligion": "Muslim",
     "studentCaste": "General",
     "studentBloodGroup": "AB+",
     "studentSex": "Male",
@@ -130,11 +130,11 @@
     "previousSchoolAddress": "Near Binapani Club, Tufanganj 736160"
   },
   {
-    "studentId": "SVPSSS230006",
+    "studentId": "1122",
     "studentFirstName": "Somnath",
     "studentMiddleLastName": "Sarkar",
     "studentDateOfBirth": "2001-10-05",
-    "studentReligion": "Hindiusm",
+    "studentReligion": "Muslim",
     "studentCaste": "General",
     "studentBloodGroup": "AB+",
     "studentSex": "Male",
@@ -156,11 +156,11 @@
     "previousSchoolAddress": "Near Binapani Club, Tufanganj 736160"
   },
   {
-    "studentId": "SVPSHS230007",
+    "studentId": "1123",
     "studentFirstName": "Hrit",
     "studentMiddleLastName": "Saha",
     "studentDateOfBirth": "2001-10-05",
-    "studentReligion": "Hindiusm",
+    "studentReligion": "Muslim",
     "studentCaste": "General",
     "studentBloodGroup": "AB+",
     "studentSex": "Male",
@@ -182,11 +182,11 @@
     "previousSchoolAddress": "Near Binapani Club, Tufanganj 736160"
   },
   {
-    "studentId": "SVPSDD230008",
+    "studentId": "1124",
     "studentFirstName": "Dipjyoti",
     "studentMiddleLastName": "Das",
     "studentDateOfBirth": "2001-10-05",
-    "studentReligion": "Hindiusm",
+    "studentReligion": "Muslim",
     "studentCaste": "General",
     "studentBloodGroup": "AB+",
     "studentSex": "Male",
@@ -208,11 +208,11 @@
     "previousSchoolAddress": "Near Binapani Club, Tufanganj 736160"
   },
   {
-    "studentId": "SVPSDD230009",
+    "studentId": "1125",
     "studentFirstName": "Debojyoti",
     "studentMiddleLastName": "Dhar",
     "studentDateOfBirth": "2001-10-05",
-    "studentReligion": "Hindiusm",
+    "studentReligion": "Muslim",
     "studentCaste": "General",
     "studentBloodGroup": "AB+",
     "studentSex": "Male",
@@ -234,11 +234,11 @@
     "previousSchoolAddress": "Near Binapani Club, Tufanganj 736160"
   },
   {
-    "studentId": "SVPSPC230010",
+    "studentId": "1126",
     "studentFirstName": "Priyal",
     "studentMiddleLastName": "Choraria",
     "studentDateOfBirth": "2001-10-05",
-    "studentReligion": "Hindiusm",
+    "studentReligion": "Muslim",
     "studentCaste": "General",
     "studentBloodGroup": "AB+",
     "studentSex": "Female",
@@ -260,11 +260,11 @@
     "previousSchoolAddress": "Near Binapani Club, Tufanganj 736160"
   },
   {
-    "studentId": "SVPSUB230011",
+    "studentId": "1127",
     "studentFirstName": "Urvashi",
     "studentMiddleLastName": "Bothra",
     "studentDateOfBirth": "2001-10-05",
-    "studentReligion": "Hindiusm",
+    "studentReligion": "Muslim",
     "studentCaste": "General",
     "studentBloodGroup": "AB+",
     "studentSex": "Female",
@@ -286,11 +286,11 @@
     "previousSchoolAddress": "Near Binapani Club, Tufanganj 736160"
   },
   {
-    "studentId": "SVPSDV230012",
+    "studentId": "1128",
     "studentFirstName": "Deepak",
     "studentMiddleLastName": "Verma",
     "studentDateOfBirth": "2001-10-05",
-    "studentReligion": "Hindiusm",
+    "studentReligion": "Muslim",
     "studentCaste": "General",
     "studentBloodGroup": "AB+",
     "studentSex": "Male",
@@ -312,11 +312,11 @@
     "previousSchoolAddress": "Near Binapani Club, Tufanganj 736160"
   },
   {
-    "studentId": "SVPSAB230013",
+    "studentId": "1129",
     "studentFirstName": "Abhishek",
     "studentMiddleLastName": "Banarjee",
     "studentDateOfBirth": "2001-10-05",
-    "studentReligion": "Hindiusm",
+    "studentReligion": "Muslim",
     "studentCaste": "General",
     "studentBloodGroup": "AB+",
     "studentSex": "Male",

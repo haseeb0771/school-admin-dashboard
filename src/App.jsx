@@ -8,6 +8,8 @@ import AllStudents from "./pages/AllStudents/AllStudents";
 import Attendance from "./pages/Attendance/Attendance";
 import SingleStudent from "./pages/AllStudents/SingleStudent";
 import StudentUpdate from "./pages/AllStudents/StudentUpdate/StudentUpdate";
+import LecturesPage from "./pages/Lectures/LecturesPage";
+import UploadLecture from "./pages/Lectures/UploadLecture";
 
 function App() {
   return (
@@ -29,6 +31,8 @@ function App() {
             element={<SingleStudent />}
           />
           <Route exact path="/attendance" element={<Attendance />} />
+          <Route exact path="/lectures" element={<LecturesPage />} />
+          <Route exact path="/uploadlecture" element={<UploadLecture />} />
           <Route exact path="/update" element={<StudentUpdate />} />
         </Routes>
       </div>

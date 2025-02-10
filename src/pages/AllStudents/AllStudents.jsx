@@ -16,10 +16,21 @@ import { useState } from "react";
 import { Link } from "react-router-dom";
 
 const AllStudents = () => {
+  const [selectedIds, setSelectedIds] = useState([]);
   const [selectedNames, setSelectedNames] = useState([]);
 
-  const isStudentSelected = (student) =>
-    selectedNames.includes(student.studentId) || selectedNames.length === 0;
+  const isStudentSelected = (student) => {
+    const isIdMatch = selectedIds.includes(student.studentId);
+    const isNameMatch = selectedNames.includes(
+      `${student.studentFirstName} ${student.studentMiddleLastName}`
+    );
+
+    return (
+      (selectedIds.length === 0 && selectedNames.length === 0) ||
+      isIdMatch ||
+      isNameMatch
+    );
+  };
 
   return (
     <div className="h-full w-full bg-gray-50 px-3 py-5 xl:px-20 xl:py-12">
@@ -33,25 +44,38 @@ const AllStudents = () => {
       </header>
       <div className="ie-as-content mt-5">
         <Card shadow={false}>
-          <MultiSelectBox
-            onValueChange={(value) => setSelectedNames(value)}
-            placeholder="Select by ID..."
-            maxWidth="max-w-xs"
-          >
-            {studentData.map((item) => (
-              <MultiSelectBoxItem
-                key={item.studentId}
-                value={item.studentId}
-                text={
-                  item.studentId +
-                  " : " +
-                  item.studentFirstName +
-                  " " +
-                  item.studentMiddleLastName
-                }
-              />
-            ))}
-          </MultiSelectBox>
+          <div className="mb-4 flex flex-wrap gap-4">
+            {/* Filter by ID */}
+            <MultiSelectBox
+              onValueChange={(value) => setSelectedIds(value)}
+              placeholder="Select by ID..."
+              maxWidth="max-w-lg"
+            >
+              {studentData.map((item) => (
+                <MultiSelectBoxItem
+                  key={item.studentId}
+                  value={item.studentId}
+                  text={`${item.studentId} : ${item.studentFirstName} ${item.studentMiddleLastName}`}
+                />
+              ))}
+            </MultiSelectBox>
+
+            {/* Filter by Name */}
+            <MultiSelectBox
+              onValueChange={(value) => setSelectedNames(value)}
+              placeholder="Select by Name..."
+              maxWidth="max-w-lg"
+            >
+              {studentData.map((item) => (
+                <MultiSelectBoxItem
+                  key={item.studentId + "-name"}
+                  value={`${item.studentFirstName} ${item.studentMiddleLastName}`}
+                  text={`${item.studentFirstName} ${item.studentMiddleLastName}`}
+                />
+              ))}
+            </MultiSelectBox>
+          </div>
+
           <Table marginTop="mt-6">
             <TableHead>
               <TableRow>

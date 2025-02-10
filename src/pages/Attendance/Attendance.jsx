@@ -6,9 +6,7 @@ function Attendance() {
       <header className="ie-na-header flex w-full justify-between">
         <h3 className="text-xl font-semibold text-gray-900">Attendance</h3>
       </header>
-      <div className="ie-na-content mt-5 flex w-full flex-col gap-10 2xl:flex-row">
-        This page will contain attendance records.
-      </div>
+      
     </div>
   );
 }
