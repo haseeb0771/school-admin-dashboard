@@ -77,7 +77,8 @@ function NewAdmission() {
   return (
     <div className="w-full bg-gray-50 px-3 py-5 xl:px-20 xl:py-12">
       <header className="ie-na-header flex w-full justify-between">
-        <h3 className="text-xl font-semibold text-gray-900">New Admission</h3>
+      <h1 className="text-3xl font-bold text-gray-900 xl:text-3xl">
+      New Admission</h1>
         <div className="flex gap-4">
           <button
             onClick={submitAlt}

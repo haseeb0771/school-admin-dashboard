@@ -4,7 +4,9 @@ function BulkAdmit() {
   return (
     <div className="h-full w-full bg-gray-50 px-3 py-5 xl:px-20 xl:py-12">
       <header className="ie-na-header flex w-full items-center justify-between">
-        <h3 className="text-xl font-semibold text-gray-900">Bulk Admit</h3>
+        <h1 className="text-3xl font-bold text-gray-900 xl:text-3xl">
+          Bulk Admit
+        </h1>
       </header>
       <div className="ie-na-content mt-5 flex w-full flex-col gap-4">
         <div>Upload a CSV file to admit students in bulk.</div>

@@ -8,7 +8,9 @@ import {
   VideoCameraIcon,
   ClipboardDocumentIcon,
   AcademicCapIcon,
+  CurrencyDollarIcon,
 } from "@heroicons/react/24/outline";
+import { Bus } from "lucide-react";
 
 import { NavLink } from "react-router-dom";
 
@@ -48,6 +50,16 @@ const sidebarLinks = [
     href: "/passedstudent",
     icon: AcademicCapIcon,
   },
+  {
+    name: "Transportation",
+    href: "/transportmanagement",
+    icon: Bus,
+  },
+  {
+    name: "Finance",
+    href: "/finance",
+    icon: CurrencyDollarIcon,
+  },
 ];
 
 function Sidebar() {
@@ -67,8 +79,8 @@ function Sidebar() {
                 {({ isActive }) => {
                   return (
                     <span
-                      className={`flex items-center gap-3 rounded-md px-3 py-2 transition-all ${
-                        isActive ? "bg-gray-100" : "group-hover:bg-gray-50"
+                      className={`flex items-center gap-3 rounded-md px-3 py-2 transition-all hover:scale-105 hover:shadow-lg ${
+                        isActive ? "bg-gray-200" : "group-hover:bg-gray-100"
                       }`}
                     >
                       <item.icon

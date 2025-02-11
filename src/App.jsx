@@ -10,6 +10,7 @@ import SingleStudent from "./pages/AllStudents/SingleStudent";
 import StudentUpdate from "./pages/AllStudents/StudentUpdate/StudentUpdate";
 import LecturesPage from "./pages/Lectures/LecturesPage";
 import UploadLecture from "./pages/Lectures/UploadLecture";
+import AllLectures from "./pages/Lectures/AllLectures";
 
 function App() {
   return (
@@ -20,20 +21,28 @@ function App() {
       <div className="flex-1 overflow-auto">
         <Routes>
           <Route exact path="/" element={<Dashboard />} />
+          {/* NEW ADMISSION */}
           <Route path="/newadmission">
             <Route exact index element={<NewAdmission />} />
             <Route exact path="bulkadmit" element={<BulkAdmit />} />
           </Route>
+
+          {/* ALL STUDENTS */}
           <Route exact path="/allstudents" element={<AllStudents />} />
           <Route
             exact
             path="/allstudents/:studentid"
             element={<SingleStudent />}
           />
+          <Route exact path="/update" element={<StudentUpdate />} />
+
+          {/* ATTENDANCE */}
           <Route exact path="/attendance" element={<Attendance />} />
+
+          {/* LECTURES */}
           <Route exact path="/lectures" element={<LecturesPage />} />
           <Route exact path="/uploadlecture" element={<UploadLecture />} />
-          <Route exact path="/update" element={<StudentUpdate />} />
+          <Route exact path="/alllectures" element={<AllLectures />} />
         </Routes>
       </div>
     </div>
