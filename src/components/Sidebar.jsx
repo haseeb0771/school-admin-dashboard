@@ -9,6 +9,7 @@ import {
   ClipboardDocumentIcon,
   AcademicCapIcon,
   CurrencyDollarIcon,
+  UserIcon,
 } from "@heroicons/react/24/outline";
 import { Bus } from "lucide-react";
 
@@ -52,8 +53,13 @@ const sidebarLinks = [
   },
   {
     name: "Transportation",
-    href: "/transportmanagement",
+    href: "/transport",
     icon: Bus,
+  },
+  {
+    name: "Employee Management",
+    href: "/employee",
+    icon: UserIcon,
   },
   {
     name: "Finance",

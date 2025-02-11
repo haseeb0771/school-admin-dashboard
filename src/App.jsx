@@ -11,6 +11,11 @@ import StudentUpdate from "./pages/AllStudents/StudentUpdate/StudentUpdate";
 import LecturesPage from "./pages/Lectures/LecturesPage";
 import UploadLecture from "./pages/Lectures/UploadLecture";
 import AllLectures from "./pages/Lectures/AllLectures";
+import Notes from "./pages/Notes/Notes";
+import UpTeacherNotes from "./pages/Notes/UpTeacherNotes";
+import UpTextbook from "./pages/Notes/UpTextbook";
+import UpPastpapers from "./pages/Notes/UpPastpapers";
+import Transport from "./pages/Transport/Transport";
 
 function App() {
   return (
@@ -43,6 +48,15 @@ function App() {
           <Route exact path="/lectures" element={<LecturesPage />} />
           <Route exact path="/uploadlecture" element={<UploadLecture />} />
           <Route exact path="/alllectures" element={<AllLectures />} />
+
+          {/* Notes */}
+          <Route exact path="/notes" element={<Notes />} />
+          <Route exact path="/teachernotes" element={<UpTeacherNotes />} />
+          <Route exact path="/textbooks" element={<UpTextbook />} />
+          <Route exact path="/pastpapers" element={<UpPastpapers />} />
+
+          {/* Transport */}
+          <Route exact path="/transport" element={<Transport />} />
         </Routes>
       </div>
     </div>
