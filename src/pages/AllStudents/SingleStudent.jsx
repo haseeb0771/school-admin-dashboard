@@ -1,148 +1,105 @@
-import studentData from "../../data/allStudents.json";
-import { PaperClipIcon } from "@heroicons/react/24/outline";
+import { useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
-const singleStudent = studentData[0];
+import { PaperClipIcon } from "@heroicons/react/24/outline";
+import User from "../../assets/user.png";
 
 function SingleStudent() {
-  const params = useParams();
-  console.log(params);
+  const { studentId } = useParams();
+  const [student, setStudent] = useState(null);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(null);
+
+  useEffect(() => {
+    const fetchStudent = async () => {
+      try {
+        const response = await fetch(
+          `http://localhost:5000/api/students/${studentId}`
+        );
+        if (!response.ok) {
+          throw new Error("Failed to fetch student data");
+        }
+        const data = await response.json();
+        setStudent(data);
+      } catch (err) {
+        setError(err.message);
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchStudent();
+  }, [studentId]);
+
+  if (loading) return <p className="text-center text-gray-700">Loading...</p>;
+  if (error) return <p className="text-center text-red-500">{error}</p>;
+  if (!student)
+    return <p className="text-center text-gray-700">No student found.</p>;
+
   return (
     <div className="h-full w-full bg-gray-50 px-3 py-5 xl:px-20 xl:py-12">
-      <header className="ie-as-header flex w-full justify-between">
+      <header className="flex w-full justify-between">
         <h3 className="text-xl font-semibold text-gray-900">
-          {singleStudent.studentId +
-            " - " +
-            singleStudent.studentFirstName +
-            " " +
-            singleStudent.studentMiddleLastName}
+          {student.studentId} - {student.studentFirstName}{" "}
+          {student.studentMiddleLastName || ""}
         </h3>
-        <div className="flex gap-4">
-          <button className="h-9 rounded border border-blue-700 bg-blue-700 px-8 text-base font-medium text-white transition-all hover:border-blue-800 hover:bg-blue-800">
-            Edit
-          </button>
-        </div>
+        <button className="h-9 rounded border border-blue-700 bg-blue-700 px-8 text-base font-medium text-white transition-all hover:border-blue-800 hover:bg-blue-800">
+          Edit
+        </button>
       </header>
-      <div className="ie-as-content mt-5">
+
+      <div className="mt-5">
+        {/* Individual Details */}
         <div className="mb-5 overflow-hidden rounded-md border border-gray-200">
           <div className="flex items-center justify-between bg-white px-4 py-4 sm:px-6">
             <h3 className="text-lg font-medium leading-6 text-gray-900">
               Individual Details
             </h3>
-            <div className="flex items-center">
-              <div className="h-24 w-24 overflow-hidden rounded-full border border-gray-300 bg-gray-200">
-                <img
-                  src={
-                    singleStudent.profileImage ||
-                    "https://via.placeholder.com/96"
-                  }
-                  alt="Profile"
-                  className="h-full w-full object-cover"
-                />
-              </div>
+            <div className="h-24 w-24 overflow-hidden rounded-full border border-gray-300 bg-gray-200">
+              <img
+                src={
+                  student.studentImage
+                    ? `http://localhost:5000${student.studentImage}`
+                    : User
+                }
+                alt="Profile"
+                className="h-full w-full object-cover"
+              />
             </div>
           </div>
+
           <div className="border-t border-gray-200">
-            <dl>
-              <div className="border-b border-gray-200 bg-white px-4 py-4 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-6">
+            {[
+              { label: "First name", value: student.studentFirstName },
+              {
+                label: "Middle and Last name",
+                value: student.studentMiddleLastName,
+              },
+              { label: "Date of birth", value: student.studentDateOfBirth },
+              { label: "Religion", value: student.studentReligion },
+              { label: "Caste", value: student.studentCaste },
+              { label: "Blood group", value: student.studentBloodGroup },
+              { label: "Father's full name", value: student.fatherFullName },
+              { label: "Mother's full name", value: student.motherFullName },
+              { label: "Street address", value: student.addressStreet },
+              { label: "City", value: student.addressCity },
+              { label: "State / Province", value: student.addressState },
+            ].map((item, index) => (
+              <div
+                key={index}
+                className="border-b border-gray-200 bg-white px-4 py-4 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-6"
+              >
                 <dt className="text-sm font-medium text-gray-500">
-                  First name
+                  {item.label}
                 </dt>
                 <dd className="mt-1 text-sm text-gray-900 sm:col-span-2 sm:mt-0">
-                  {singleStudent.studentFirstName}
+                  {item.value || "N/A"}
                 </dd>
               </div>
-              <div className="border-b border-gray-200 bg-white px-4 py-4 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-6">
-                <dt className="text-sm font-medium text-gray-500">
-                  Middle and Last name
-                </dt>
-                <dd className="mt-1 text-sm text-gray-900 sm:col-span-2 sm:mt-0">
-                  {singleStudent.studentMiddleLastName}
-                </dd>
-              </div>
-              <div className="border-b border-gray-200 bg-white px-4 py-4 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-6">
-                <dt className="text-sm font-medium text-gray-500">
-                  Date of birth
-                </dt>
-                <dd className="mt-1 text-sm text-gray-900 sm:col-span-2 sm:mt-0">
-                  {singleStudent.studentDateOfBirth}
-                </dd>
-              </div>
-              <div className="border-b border-gray-200 bg-white px-4 py-4 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-6">
-                <dt className="text-sm font-medium text-gray-500">Religion</dt>
-                <dd className="mt-1 text-sm text-gray-900 sm:col-span-2 sm:mt-0">
-                  {singleStudent.studentReligion}
-                </dd>
-              </div>
-              <div className="border-b border-gray-200 bg-white px-4 py-4 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-6">
-                <dt className="text-sm font-medium text-gray-500">Caste</dt>
-                <dd className="mt-1 text-sm text-gray-900 sm:col-span-2 sm:mt-0">
-                  {singleStudent.studentCaste}
-                </dd>
-              </div>
-              <div className="border-b border-gray-200 bg-white px-4 py-4 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-6">
-                <dt className="text-sm font-medium text-gray-500">
-                  Blood group
-                </dt>
-                <dd className="mt-1 text-sm text-gray-900 sm:col-span-2 sm:mt-0">
-                  {singleStudent.studentBloodGroup}
-                </dd>
-              </div>
-              <div className="border-b border-gray-200 bg-white px-4 py-4 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-6">
-                <dt className="text-sm font-medium text-gray-500">
-                  Student's email
-                </dt>
-                <dd className="mt-1 text-sm text-gray-900 sm:col-span-2 sm:mt-0">
-                  {singleStudent.studentEmail}
-                </dd>
-              </div>
-              <div className="border-b border-gray-200 bg-white px-4 py-4 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-6">
-                <dt className="text-sm font-medium text-gray-500">
-                  Father's full name
-                </dt>
-                <dd className="mt-1 text-sm text-gray-900 sm:col-span-2 sm:mt-0">
-                  {singleStudent.fatherFullName}
-                </dd>
-              </div>
-              <div className="border-b border-gray-200 bg-white px-4 py-4 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-6">
-                <dt className="text-sm font-medium text-gray-500">
-                  Mother's full name
-                </dt>
-                <dd className="mt-1 text-sm text-gray-900 sm:col-span-2 sm:mt-0">
-                  {singleStudent.motherFullName}
-                </dd>
-              </div>
-              <div className="border-b border-gray-200 bg-white px-4 py-4 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-6">
-                <dt className="text-sm font-medium text-gray-500">
-                  Street address
-                </dt>
-                <dd className="mt-1 text-sm text-gray-900 sm:col-span-2 sm:mt-0">
-                  {singleStudent.addressStreet}
-                </dd>
-              </div>
-              <div className="border-b border-gray-200 bg-white px-4 py-4 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-6">
-                <dt className="text-sm font-medium text-gray-500">City</dt>
-                <dd className="mt-1 text-sm text-gray-900 sm:col-span-2 sm:mt-0">
-                  {singleStudent.addressCity}
-                </dd>
-              </div>
-              <div className="border-b border-gray-200 bg-white px-4 py-4 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-6">
-                <dt className="text-sm font-medium text-gray-500">
-                  State / Province
-                </dt>
-                <dd className="mt-1 text-sm text-gray-900 sm:col-span-2 sm:mt-0">
-                  {singleStudent.addressState}
-                </dd>
-              </div>
-              <div className="bg-white px-4 py-4 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-6">
-                <dt className="text-sm font-medium text-gray-500">Zip code</dt>
-                <dd className="mt-1 text-sm text-gray-900 sm:col-span-2 sm:mt-0">
-                  {singleStudent.addressZipCode}
-                </dd>
-              </div>
-            </dl>
+            ))}
           </div>
         </div>
 
+        {/* Academic Details */}
         <div className="mb-5 overflow-hidden rounded-md border border-gray-200">
           <div className="bg-white px-4 py-4 sm:px-6">
             <h3 className="text-lg font-medium leading-6 text-gray-900">
@@ -150,31 +107,27 @@ function SingleStudent() {
             </h3>
           </div>
           <div className="border-t border-gray-200">
-            <dl>
-              <div className="border-b border-gray-200 bg-white px-4 py-4 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-6">
-                <dt className="text-sm font-medium text-gray-500">Class</dt>
-                <dd className="mt-1 text-sm text-gray-900 sm:col-span-2 sm:mt-0">
-                  {singleStudent.classEnrolled}
-                </dd>
-              </div>
-              <div className="border-b border-gray-200 bg-white px-4 py-4 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-6">
-                <dt className="text-sm font-medium text-gray-500">Section</dt>
-                <dd className="mt-1 text-sm text-gray-900 sm:col-span-2 sm:mt-0">
-                  {singleStudent.sectionAssigned}
-                </dd>
-              </div>
-              <div className="bg-white px-4 py-4 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-6">
+            {[
+              { label: "Class", value: student.classEnrolled },
+              { label: "Section", value: student.sectionAssigned },
+              { label: "Date of admission", value: student.dateOfAdmission },
+            ].map((item, index) => (
+              <div
+                key={index}
+                className="border-b border-gray-200 bg-white px-4 py-4 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-6"
+              >
                 <dt className="text-sm font-medium text-gray-500">
-                  Date of admission
+                  {item.label}
                 </dt>
                 <dd className="mt-1 text-sm text-gray-900 sm:col-span-2 sm:mt-0">
-                  {singleStudent.dateOfAdmission}
+                  {item.value || "N/A"}
                 </dd>
               </div>
-            </dl>
+            ))}
           </div>
         </div>
 
+        {/* Guardian Details */}
         <div className="mb-5 overflow-hidden rounded-md border border-gray-200">
           <div className="bg-white px-4 py-4 sm:px-6">
             <h3 className="text-lg font-medium leading-6 text-gray-900">
@@ -182,61 +135,28 @@ function SingleStudent() {
             </h3>
           </div>
           <div className="border-t border-gray-200">
-            <dl>
-              <div className="border-b border-gray-200 bg-white px-4 py-4 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-6">
-                <dt className="text-sm font-medium text-gray-500">Full name</dt>
-                <dd className="mt-1 text-sm text-gray-900 sm:col-span-2 sm:mt-0">
-                  {singleStudent.guardianFullName}
-                </dd>
-              </div>
-              <div className="border-b border-gray-200 bg-white px-4 py-4 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-6">
-                <dt className="text-sm font-medium text-gray-500">Email</dt>
-                <dd className="mt-1 text-sm text-gray-900 sm:col-span-2 sm:mt-0">
-                  {singleStudent.guardianEmail}
-                </dd>
-              </div>
-              <div className="border-b border-gray-200 bg-white px-4 py-4 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-6">
-                <dt className="text-sm font-medium text-gray-500">Phone</dt>
-                <dd className="mt-1 text-sm text-gray-900 sm:col-span-2 sm:mt-0">
-                  {singleStudent.guardianPhone}
-                </dd>
-              </div>
-              <div className="bg-white px-4 py-4 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-6">
-                <dt className="text-sm font-medium text-gray-500">WhatsApp</dt>
-                <dd className="mt-1 text-sm text-gray-900 sm:col-span-2 sm:mt-0">
-                  {singleStudent.guardianWhatsApp}
-                </dd>
-              </div>
-            </dl>
-          </div>
-        </div>
-
-        <div className="mb-5 overflow-hidden rounded-md border border-gray-200">
-          <div className="bg-white px-4 py-4 sm:px-6">
-            <h3 className="text-lg font-medium leading-6 text-gray-900">
-              Previous School Details
-            </h3>
-          </div>
-          <div className="border-t border-gray-200">
-            <dl>
-              <div className="border-b border-gray-200 bg-white px-4 py-4 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-6">
+            {[
+              { label: "Full name", value: student.guardianFullName },
+              { label: "Email", value: student.guardianEmail },
+              { label: "Phone", value: student.guardianPhone },
+              { label: "WhatsApp", value: student.guardianWhatsApp },
+            ].map((item, index) => (
+              <div
+                key={index}
+                className="border-b border-gray-200 bg-white px-4 py-4 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-6"
+              >
                 <dt className="text-sm font-medium text-gray-500">
-                  School name
+                  {item.label}
                 </dt>
                 <dd className="mt-1 text-sm text-gray-900 sm:col-span-2 sm:mt-0">
-                  {singleStudent.previousSchoolName}
+                  {item.value || "N/A"}
                 </dd>
               </div>
-              <div className="bg-white px-4 py-4 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-6">
-                <dt className="text-sm font-medium text-gray-500">Address</dt>
-                <dd className="mt-1 text-sm text-gray-900 sm:col-span-2 sm:mt-0">
-                  {singleStudent.previousSchoolAddress}
-                </dd>
-              </div>
-            </dl>
+            ))}
           </div>
         </div>
 
+        {/* Attachments */}
         <div className="mb-5 overflow-hidden rounded-md border border-gray-200">
           <div className="bg-white px-4 py-4 sm:px-6">
             <h3 className="text-lg font-medium leading-6 text-gray-900">
@@ -244,39 +164,41 @@ function SingleStudent() {
             </h3>
           </div>
           <div className="border-t border-gray-200">
-            <dl>
-              <div className=" bg-white px-4 py-4 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-6">
-                <dt className="text-sm font-medium text-gray-500">
-                  Attachments
-                </dt>
-                <dd className="mt-1 text-sm text-gray-900 sm:col-span-2 sm:mt-0">
-                  <ul
-                    role="list"
-                    className="divide-y divide-gray-200 rounded-md border border-gray-200"
-                  >
-                    <li className="flex items-center justify-between py-3 pl-3 pr-4 text-sm">
-                      <div className="flex w-0 flex-1 items-center">
-                        <PaperClipIcon
-                          className="h-5 w-5 flex-shrink-0 text-gray-400"
-                          aria-hidden="true"
-                        />
-                        <span className="ml-2 w-0 flex-1 truncate">
-                          resume_back_end_developer.pdf
-                        </span>
-                      </div>
-                      <div className="ml-4 flex-shrink-0">
-                        <a
-                          href="#"
-                          className="font-medium text-indigo-600 hover:text-indigo-500"
-                        >
-                          Download
-                        </a>
-                      </div>
-                    </li>
+            <div className="bg-white px-4 py-4 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-6">
+              <dt className="text-sm font-medium text-gray-500">Attachments</dt>
+              <dd className="mt-1 text-sm text-gray-900 sm:col-span-2 sm:mt-0">
+                {student.attachments?.length > 0 ? (
+                  <ul className="divide-y divide-gray-200 rounded-md border border-gray-200">
+                    {student.attachments.map((doc, index) => (
+                      <li
+                        key={index}
+                        className="flex items-center justify-between py-3 pl-3 pr-4 text-sm"
+                      >
+                        <div className="flex w-0 flex-1 items-center">
+                          <PaperClipIcon
+                            className="h-5 w-5 flex-shrink-0 text-gray-400"
+                            aria-hidden="true"
+                          />
+                          <span className="ml-2 w-0 flex-1 truncate">
+                            {doc.name}
+                          </span>
+                        </div>
+                        <div className="ml-4 flex-shrink-0">
+                          <a
+                            href={doc.url}
+                            className="font-medium text-indigo-600 hover:text-indigo-500"
+                          >
+                            Download
+                          </a>
+                        </div>
+                      </li>
+                    ))}
                   </ul>
-                </dd>
-              </div>
-            </dl>
+                ) : (
+                  "No attachments"
+                )}
+              </dd>
+            </div>
           </div>
         </div>
       </div>

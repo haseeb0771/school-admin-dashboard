@@ -96,23 +96,6 @@ function IndividualDetailsForm({ newStudent, setNewStudent }) {
             />
           </div>
 
-          <div className="col-span-6 sm:col-span-2">
-            <label
-              htmlFor="studentEmail"
-              className="block text-sm font-medium text-gray-600"
-            >
-              Student email
-            </label>
-            <input
-              type="text"
-              name="studentEmail"
-              id="studentEmail"
-              value={newStudent.studentEmail}
-              onChange={inputChangeHandler}
-              className="mt-2 block w-full rounded border-gray-300 text-gray-900 transition ease-in focus:border-gray-900 focus:outline-none focus:ring-0 sm:text-sm"
-            />
-          </div>
-
           <div className="col-span-6 sm:col-span-3 lg:col-span-2">
             <label
               htmlFor="studentSex"
@@ -120,14 +103,18 @@ function IndividualDetailsForm({ newStudent, setNewStudent }) {
             >
               Sex
             </label>
-            <input
-              type="text"
+            <select
               name="studentSex"
               id="studentSex"
               value={newStudent.studentSex}
               onChange={inputChangeHandler}
-              className="mt-2 block w-full rounded border-gray-300 text-gray-900 transition ease-in focus:border-gray-900 focus:outline-none focus:ring-0 sm:text-sm"
-            />
+              className="mt-2 block w-full rounded border-gray-300 bg-white text-gray-900 transition ease-in focus:border-gray-900 focus:outline-none focus:ring-0 sm:text-sm"
+            >
+              <option value="">Select</option>
+              <option value="Male">Male</option>
+              <option value="Female">Female</option>
+              <option value="Other">Other</option>
+            </select>
           </div>
 
           <div className="col-span-6 sm:col-span-3 lg:col-span-2">
@@ -228,23 +215,6 @@ function IndividualDetailsForm({ newStudent, setNewStudent }) {
               name="addressState"
               id="addressState"
               value={newStudent.addressState}
-              onChange={inputChangeHandler}
-              className="mt-2 block w-full rounded border-gray-300 text-gray-900 transition ease-in focus:border-gray-900 focus:outline-none focus:ring-0 sm:text-sm"
-            />
-          </div>
-
-          <div className="col-span-6 sm:col-span-3 lg:col-span-2">
-            <label
-              htmlFor="addressZipCode"
-              className="block text-sm font-medium text-gray-600"
-            >
-              ZIP / Postal code
-            </label>
-            <input
-              type="text"
-              name="addressZipCode"
-              id="addressZipCode"
-              value={newStudent.addressZipCode}
               onChange={inputChangeHandler}
               className="mt-2 block w-full rounded border-gray-300 text-gray-900 transition ease-in focus:border-gray-900 focus:outline-none focus:ring-0 sm:text-sm"
             />

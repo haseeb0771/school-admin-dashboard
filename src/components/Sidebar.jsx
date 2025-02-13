@@ -12,18 +12,19 @@ import {
   UserIcon,
 } from "@heroicons/react/24/outline";
 import { Bus } from "lucide-react";
+import { FiLogOut } from "react-icons/fi"; // Using an icon for logout (optional)
 
 import { NavLink } from "react-router-dom";
 
 const sidebarLinks = [
   {
     name: "Dashboard",
-    href: "/",
+    href: "/dashboard",
     icon: HomeIcon,
   },
   {
     name: "New Admission",
-    href: "/newadmission",
+    href: "/new-admission",
     icon: UserPlusIcon,
   },
   {
@@ -68,7 +69,7 @@ const sidebarLinks = [
   },
 ];
 
-function Sidebar() {
+function Sidebar({ handleLogout }) {
   return (
     <div className="sticky top-0 flex h-screen w-full flex-col justify-between border-r border-gray-200 bg-white px-1 py-5 xl:py-12 xl:px-2">
       <div className="ie-logo px-3 py-0 text-center xl:text-left">
@@ -120,9 +121,7 @@ function Sidebar() {
             <span className="text-base font-semibold text-gray-700">Admin</span>
             <div className="group flex cursor-pointer items-center gap-1 rounded-full bg-gray-100 px-2 py-1 transition-all hover:bg-gray-50">
               <ArrowLeftOnRectangleIcon className="h-4 stroke-gray-700 stroke-[1.5] group-hover:stroke-red-700" />
-              <span className="text-xs font-medium text-gray-700 group-hover:text-red-700">
-                Logout
-              </span>
+              <button onClick={handleLogout}>Logout</button>
             </div>
           </div>
           <span className="mt-1 block text-sm font-medium text-gray-700">

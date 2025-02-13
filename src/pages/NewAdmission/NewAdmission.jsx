@@ -1,5 +1,6 @@
 import React, { useRef, useState } from "react";
 import { Link } from "react-router-dom";
+import axios from "axios";
 import AcademicDetailsForm from "./sc_forms/AcademicDetailsForm";
 import GuardianDetailsForm from "./sc_forms/GuardianDetailsForm";
 import IndividualDetailsForm from "./sc_forms/IndividualDetailsForm";
@@ -16,7 +17,6 @@ function NewAdmission() {
     studentDateOfBirth: "",
     studentReligion: "",
     studentCaste: "",
-    studentEmail: "",
     studentSex: "",
     studentBloodGroup: "",
     fatherFullName: "",
@@ -24,8 +24,7 @@ function NewAdmission() {
     addressStreet: "",
     addressCity: "",
     addressState: "",
-    addressZipCode: "",
-    studentId: "1111",
+    studentId: "",
     dateOfAdmission: "",
     classEnrolled: "",
     sectionAssigned: "",
@@ -35,57 +34,85 @@ function NewAdmission() {
     guardianWhatsApp: "",
     previousSchoolName: "",
     previousSchoolAddress: "",
+    studentImage: null, // Store the selected image
   });
 
   const submitButtonRef = useRef();
 
-  const submitFormHandler = (event) => {
-    event.preventDefault();
-    alert("Form Submitted");
-    setNewStudent({
-      studentFirstName: "",
-      studentMiddleLastName: "",
-      studentDateOfBirth: "",
-      studentReligion: "",
-      studentCaste: "",
-      studentEmail: "",
-      studentSex: "",
-      studentBloodGroup: "",
-      fatherFullName: "",
-      motherFullName: "",
-      addressStreet: "",
-      addressCity: "",
-      addressState: "",
-      addressZipCode: "",
-      studentId: "1111",
-      dateOfAdmission: "",
-      classEnrolled: "",
-      sectionAssigned: "",
-      guardianFullName: "",
-      guardianEmail: "",
-      guardianPhone: "",
-      guardianWhatsApp: "",
-      previousSchoolName: "",
-      previousSchoolAddress: "",
-    });
+  const handleFileChange = (e) => {
+    setNewStudent({ ...newStudent, studentImage: e.target.files[0] });
   };
 
-  const submitAlt = () => {
-    submitButtonRef.current.click();
+  const submitFormHandler = async (event) => {
+    event.preventDefault();
+
+    const formData = new FormData();
+    Object.keys(newStudent).forEach((key) => {
+      formData.append(key, newStudent[key]);
+    });
+
+    try {
+      const response = await axios.post(
+        "http://localhost:5000/api/students/add",
+        formData,
+        {
+          headers: {
+            "Content-Type": "multipart/form-data",
+            Authorization: `Bearer ${localStorage.getItem("token")}`,
+          },
+        }
+      );
+
+      if (response.status === 201) {
+        alert("Student admitted successfully");
+        setNewStudent({
+          studentFirstName: "",
+          studentMiddleLastName: "",
+          studentDateOfBirth: "",
+          studentReligion: "",
+          studentCaste: "",
+          studentSex: "",
+          studentBloodGroup: "",
+          fatherFullName: "",
+          motherFullName: "",
+          addressStreet: "",
+          addressCity: "",
+          addressState: "",
+          studentId: "",
+          dateOfAdmission: "",
+          classEnrolled: "",
+          sectionAssigned: "",
+          guardianFullName: "",
+          guardianEmail: "",
+          guardianPhone: "",
+          guardianWhatsApp: "",
+          previousSchoolName: "",
+          previousSchoolAddress: "",
+          studentImage: null,
+        });
+      } else {
+        alert("Failed to admit student");
+      }
+    } catch (error) {
+      console.error("Error:", error);
+      alert("An error occurred while admitting the student");
+    }
   };
 
   return (
     <div className="w-full bg-gray-50 px-3 py-5 xl:px-20 xl:py-12">
       <header className="ie-na-header flex w-full justify-between">
-      <h1 className="text-3xl font-bold text-gray-900 xl:text-3xl">
-      New Admission</h1>
+        <h1 className="text-3xl font-bold text-gray-900 xl:text-3xl">
+          New Admission
+        </h1>
         <div className="flex gap-4">
           <button
-            onClick={submitAlt}
+            onClick={submitFormHandler}
             className="h-9 rounded border border-blue-700 bg-blue-700 px-8 text-base font-medium text-white transition-all hover:border-blue-800 hover:bg-blue-800"
           >
             Admit
           </button>
+
           <Link
             to="/newadmission/bulkadmit"
             className="hidden h-9 rounded border border-gray-300 bg-white px-8 text-base font-medium text-gray-700 transition-all hover:border-gray-800 hover:bg-gray-800 hover:text-white sm:flex sm:items-center sm:justify-center"
@@ -98,6 +125,7 @@ function NewAdmission() {
         <form
           onSubmit={submitFormHandler}
           className="flex w-full flex-col items-end gap-10 2xl:max-w-5xl"
+          encType="multipart/form-data"
         >
           <div className="IndividualDetails w-full rounded-md border border-gray-200 bg-white">
             <div className="border-b border-gray-200 py-4 px-6">
@@ -106,6 +134,17 @@ function NewAdmission() {
             <IndividualDetailsForm
               newStudent={newStudent}
               setNewStudent={setNewStudent}
+            />
+          </div>
+
+          {/* Image Upload Input */}
+          <div className="w-full rounded-md border border-gray-200 bg-white p-4">
+            <label className="text-lg font-medium">Student Image</label>
+            <input
+              type="file"
+              accept="image/*"
+              onChange={handleFileChange}
+              className="mt-2 block w-full rounded border p-2"
             />
           </div>
 
@@ -152,94 +191,6 @@ function NewAdmission() {
             Admit
           </button>
         </form>
-
-        <div className="ie-nc-summary h-fit flex-1 rounded-md border border-gray-200 bg-white py-4 px-6">
-          <span className="summaryTitle text-lg font-medium">Summary</span>
-          <div className="summaryInfo mt-3 rounded-md bg-gray-50 p-5">
-            <span className="text block w-fit rounded-full bg-gray-900 px-3 py-1 text-xs text-white">
-              {newStudent.studentId}
-            </span>
-            <span className="mt-2 block whitespace-normal text-3xl font-semibold text-gray-900">
-              {newStudent.studentFirstName != "" ? (
-                newStudent.studentFirstName +
-                " " +
-                newStudent.studentMiddleLastName
-              ) : (
-                <UpdateSpan />
-              )}
-            </span>
-            <div className="mt-2 text-sm font-medium text-gray-700">
-              <span className="font-semibold">Class Enrolled: </span>
-              <span>
-                {newStudent.classEnrolled != "" ? (
-                  newStudent.classEnrolled
-                ) : (
-                  <UpdateSpan />
-                )}
-              </span>
-            </div>
-            <div className="mt-2 text-sm font-medium text-gray-700">
-              <span className="font-semibold">Section Assigned: </span>
-              <span>
-                {newStudent.sectionAssigned != "" ? (
-                  newStudent.sectionAssigned
-                ) : (
-                  <UpdateSpan />
-                )}
-              </span>
-            </div>
-            <div className="mt-2 text-sm font-medium text-gray-700">
-              <span className="font-semibold">Blood Group: </span>
-              <span>
-                {newStudent.studentBloodGroup != "" ? (
-                  newStudent.studentBloodGroup
-                ) : (
-                  <UpdateSpan />
-                )}
-              </span>
-            </div>
-            <div className="mt-2 text-sm font-medium text-gray-700">
-              <span className="font-semibold">Date Of Birth: </span>
-              <span>
-                {newStudent.studentDateOfBirth != "" ? (
-                  newStudent.studentDateOfBirth
-                ) : (
-                  <UpdateSpan />
-                )}
-              </span>
-            </div>
-            <div className="mt-2 text-sm font-medium text-gray-700">
-              <span className="font-semibold">Address: </span>
-              <span>
-                {newStudent.addressStreet != "" ? (
-                  newStudent.addressStreet
-                ) : (
-                  <UpdateSpan />
-                )}
-              </span>
-            </div>
-            <div className="mt-2 text-sm font-medium text-gray-700">
-              <span className="font-semibold">Guardian's Name: </span>
-              <span>
-                {newStudent.guardianFullName != "" ? (
-                  newStudent.guardianFullName
-                ) : (
-                  <UpdateSpan />
-                )}
-              </span>
-            </div>
-            <div className="mt-2 text-sm font-medium text-gray-700">
-              <span className="font-semibold">Phone: </span>
-              <span>
-                {newStudent.guardianPhone != "" ? (
-                  newStudent.guardianPhone
-                ) : (
-                  <UpdateSpan />
-                )}
-              </span>
-            </div>
-          </div>
-        </div>
       </div>
     </div>
   );
