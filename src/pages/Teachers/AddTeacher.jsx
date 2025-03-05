@@ -110,10 +110,10 @@ function AddTeacher() {
 
       <div className="ie-na-content mt-5 flex w-full flex-col gap-10 2xl:flex-row">
         <form
-         onSubmit={submitFormHandler}
-         className="flex w-full flex-col items-end gap-10 2xl:max-w-5xl"
-         encType="multipart/form-data"
-         >
+          onSubmit={submitFormHandler}
+          className="flex w-full flex-col items-end gap-10 2xl:max-w-5xl"
+          encType="multipart/form-data"
+        >
           {/* ✅ Individual Details Section */}
           <div className="w-full rounded-md border border-gray-200 bg-white">
             <div className="border-b border-gray-200 py-4 px-6">

@@ -1,30 +1,194 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import admin from "../../assets/admin.png";
 import officeboy from "../../assets/officeboy.png";
 import sweeper from "../../assets/sweeper.png";
 import gaurd from "../../assets/gaurd.png";
+import AdminStaffForm from "../../components/AdminStaffForm";
+import OfficeBoyForm from "../../components/OfficeBoyForm";
+import GaurdForm from "../../components/GaurdForm";
+import JanitorForm from "../../components/JanitorForm";
+import AdminStaffList from "../../components/AdminStaffList";
+import OfficeBoyList from "../../components/OfficeBoyList";
+import GaurdList from "../../components/GaurdList";
+import JanitorList from "../../components/JanitorList";
 
 export default function Employee() {
   const [showAdminForm, setShowAdminForm] = useState(false);
+  const [showAdminList, setShowAdminList] = useState(false);
+
   const [showOfficeBoyForm, setShowOfficeBoyForm] = useState(false);
+  const [showOfficeBoyList, setShowOfficeBoyList] = useState(false);
+
   const [showGaurdForm, setShowGaurdForm] = useState(false);
-  const [showSweeperForm, setShowSweeperForm] = useState(false);
+  const [showGaurdList, setShowGaurdList] = useState(false);
 
-  const handleAddAdminClick = () => {
-    setShowAdminForm(!showAdminForm); // Toggle form visibility
+  const [showJanitorForm, setShowJanitorForm] = useState(false);
+  const [showJanitorList, setShowJanitorList] = useState(false);
+
+  const [guardCount, setGuardCount] = useState(0);
+  const [adminStaffCount, setAdminStaffCount] = useState(0);
+  const [officeBoyCount, setOfficeBoyCount] = useState(0);
+  const [janitorCount, setJanitorCount] = useState(0);
+
+  // Toggle Admin Form
+  const handleAddAdminFormClick = () => {
+    setShowAdminForm((prev) => !prev);
+    setShowAdminList(false);
+    setShowOfficeBoyForm(false);
+    setShowOfficeBoyList(false);
+    setShowGaurdForm(false);
+    setShowGaurdList(false);
+    setShowJanitorForm(false);
+    setShowJanitorList(false);
   };
 
-  const handleAddOfficeBoyClick = () => {
-    setShowOfficeBoyForm(!showOfficeBoyForm); // Toggle form visibility
+  // Toggle Admin List
+  const handleAdminListClick = () => {
+    setShowAdminList((prev) => !prev);
+    setShowAdminForm(false);
+    setShowOfficeBoyForm(false);
+    setShowOfficeBoyList(false);
+    setShowGaurdForm(false);
+    setShowGaurdList(false);
+    setShowJanitorForm(false);
+    setShowJanitorList(false);
   };
 
-  const handleAddGaurdClick = () => {
-    setShowGaurdForm(!showGaurdForm); // Toggle form visibility
+  // Toggle Office Boy Form
+  const handleAddOfficeBoyFormClick = () => {
+    setShowOfficeBoyForm((prev) => !prev);
+    setShowAdminForm(false);
+    setShowAdminList(false);
+    setShowOfficeBoyList(false);
+    setShowGaurdForm(false);
+    setShowGaurdList(false);
+    setShowJanitorForm(false);
+    setShowJanitorList(false);
   };
 
-  const handleAddSweeperClick = () => {
-    setShowSweeperForm(!showSweeperForm); // Toggle form visibility
+  // Toggle Office Boy List
+  const handleOfficeBoyListClick = () => {
+    setShowOfficeBoyList((prev) => !prev);
+    setShowAdminForm(false);
+    setShowAdminList(false);
+    setShowOfficeBoyForm(false);
+    setShowGaurdForm(false);
+    setShowGaurdList(false);
+    setShowJanitorForm(false);
+    setShowJanitorList(false);
   };
+
+  // Toggle Guard Form
+  const handleAddGaurdFormClick = () => {
+    setShowGaurdForm((prev) => !prev);
+    setShowAdminForm(false);
+    setShowAdminList(false);
+    setShowOfficeBoyForm(false);
+    setShowOfficeBoyList(false);
+    setShowGaurdList(false);
+    setShowJanitorForm(false);
+    setShowJanitorList(false);
+  };
+
+  // Toggle Guard List
+  const handleGaurdListClick = () => {
+    setShowGaurdList((prev) => !prev);
+    setShowAdminForm(false);
+    setShowAdminList(false);
+    setShowOfficeBoyForm(false);
+    setShowOfficeBoyList(false);
+    setShowGaurdForm(false);
+    setShowJanitorForm(false);
+    setShowJanitorList(false);
+  };
+
+  // Toggle Janitor Form
+  const handleAddJanitorFormClick = () => {
+    setShowJanitorForm((prev) => !prev);
+    setShowAdminForm(false);
+    setShowAdminList(false);
+    setShowOfficeBoyForm(false);
+    setShowOfficeBoyList(false);
+    setShowGaurdForm(false);
+    setShowGaurdList(false);
+    setShowJanitorList(false);
+  };
+
+  // Toggle Janitor List
+  const handleJanitorListClick = () => {
+    setShowJanitorList((prev) => !prev);
+    setShowAdminForm(false);
+    setShowAdminList(false);
+    setShowOfficeBoyForm(false);
+    setShowOfficeBoyList(false);
+    setShowGaurdForm(false);
+    setShowGaurdList(false);
+    setShowJanitorForm(false);
+  };
+
+  // Fetch counts
+  useEffect(() => {
+    const fetchGuardCount = async () => {
+      try {
+        const response = await fetch("http://localhost:5000/api/guards/count");
+        const data = await response.json();
+        setGuardCount(data.count);
+      } catch (error) {
+        console.error("Error fetching guard count:", error);
+      }
+    };
+
+    fetchGuardCount();
+  }, []);
+
+  useEffect(() => {
+    const fetchAdminStaffCount = async () => {
+      try {
+        const response = await fetch(
+          "http://localhost:5000/api/admin-staff/count"
+        );
+        const data = await response.json();
+        setAdminStaffCount(data.count);
+      } catch (error) {
+        console.error("Error fetching admin staff count:", error);
+      }
+    };
+
+    fetchAdminStaffCount();
+  }, []);
+
+  useEffect(() => {
+    const fetchOfficeBoyCount = async () => {
+      try {
+        const response = await fetch(
+          "http://localhost:5000/api/officeBoy/count"
+        );
+        const data = await response.json();
+        setOfficeBoyCount(data.count);
+      } catch (error) {
+        console.error("Error fetching office boy count:", error);
+      }
+    };
+
+    fetchOfficeBoyCount();
+  }, []);
+
+  useEffect(() => {
+    const fetchJanitorCount = async () => {
+      try {
+        const response = await fetch(
+          "http://localhost:5000/api/janitors/count"
+        );
+        const data = await response.json();
+        setJanitorCount(data.count);
+      } catch (error) {
+        console.error("Error fetching janitor count:", error);
+      }
+    };
+
+    fetchJanitorCount();
+  }, []);
+
   return (
     <div className="h-full w-full bg-gray-50 px-3 py-5 xl:px-20 xl:py-12">
       <header className="flex w-full justify-between">
@@ -32,7 +196,6 @@ export default function Employee() {
           Employee Management
         </h1>
       </header>
-
       {/* Employee Count */}
       <div className="mt-6 flex justify-between gap-4">
         <div className="flex w-1/3 flex-col items-center rounded-lg border border-gray-200 bg-white p-4 shadow-lg transition-shadow hover:shadow-xl">
@@ -40,518 +203,228 @@ export default function Employee() {
           <h2 className="mt-3 text-center text-2xl font-semibold text-gray-700">
             Admin Staff
           </h2>
-          <p className="text-3xl font-bold text-blue-600 ">5</p>
+          <p className="text-3xl font-bold text-blue-600">{adminStaffCount}</p>
         </div>
+
+        <div className="h-auto w-px bg-gray-400"></div>
 
         <div className="flex w-1/3 flex-col items-center rounded-lg border border-gray-200 bg-white p-4 shadow-lg transition-shadow hover:shadow-xl">
           <img className="mt-3 h-12 w-12" src={officeboy} alt="" />
           <h2 className="mt-3 text-center text-2xl font-semibold text-gray-700">
             Office Boys
           </h2>
-          <p className="text-3xl font-bold text-blue-600 ">7</p>
+          <p className="text-3xl font-bold text-blue-600">{officeBoyCount}</p>
         </div>
+
+        <div className="h-auto w-px bg-gray-400"></div>
 
         <div className="flex w-1/3 flex-col items-center rounded-lg border border-gray-200 bg-white p-4 shadow-lg transition-shadow hover:shadow-xl">
           <img className="mt-3 h-12 w-12" src={gaurd} alt="" />
           <h2 className="mt-3 text-center text-2xl font-semibold text-gray-700">
             Guards
           </h2>
-          <p className="text-3xl font-bold text-blue-600">13</p>
+          <p className="text-3xl font-bold text-blue-600">{guardCount}</p>
         </div>
+
+        <div className="h-auto w-px bg-gray-400"></div>
 
         <div className="flex w-1/3 flex-col items-center rounded-lg border border-gray-200 bg-white p-4 shadow-lg transition-shadow hover:shadow-xl">
           <img className="mt-3 h-12 w-12" src={sweeper} alt="" />
           <h2 className="mt-3 text-center text-2xl font-semibold text-gray-700">
-            Sweepers
+            Janitors
           </h2>
-          <p className="text-3xl font-bold text-blue-600">3</p>
+          <p className="text-3xl font-bold text-blue-600">{janitorCount}</p>
         </div>
       </div>
 
       {/* Add Button */}
-      <div className="mt-6 flex justify-between gap-4">
+      <div className="mt-2 flex justify-between gap-4">
         <button
-          onClick={handleAddAdminClick}
-          className=" flex w-1/3 flex-col items-center rounded-lg border border-gray-200 bg-white p-4  shadow-lg transition-shadow hover:shadow-xl"
+          onClick={handleAddAdminFormClick}
+          className={`hover flex w-1/3 flex-col items-center rounded-lg border ${
+            showAdminForm ? "border-blue-500 text-blue-500" : "border-gray-200"
+          } bg-white p-4 shadow-lg transition-shadow hover:scale-105 hover:shadow-xl`}
         >
-          <h2 className="text-1xl mt-3 text-center font-semibold text-gray-700">
-            Add Admin
+          <h2
+            className={`text-center text-sm font-semibold text-gray-700 ${
+              showAdminForm ? "text-blue-500" : "text-gray-700"
+            }`}
+          >
+            Add New{" "}
+            <span className="text-2xl font-bold">
+              {showAdminForm ? "↑" : "↓"}
+            </span>
+          </h2>
+        </button>
+        <button
+          onClick={handleAdminListClick}
+          className={`hover flex w-1/3 flex-col items-center rounded-lg border ${
+            showAdminList ? "border-blue-500" : "border-gray-200"
+          } bg-white p-4 shadow-lg transition-shadow hover:scale-105 hover:shadow-xl`}
+        >
+          <h2
+            className={`text-center text-sm font-semibold text-gray-700 ${
+              showAdminList ? "text-blue-500" : "text-gray-700"
+            }`}
+          >
+            View All{" "}
+            <span className="text-2xl font-bold">
+              {showAdminList ? "↑" : "↓"}
+            </span>
           </h2>
         </button>
 
+        <div className="h-auto w-px bg-gray-400"></div>
+
         <button
-          onClick={handleAddOfficeBoyClick}
-          className="flex w-1/3 flex-col items-center rounded-lg border border-gray-200 bg-white p-4 shadow-lg transition-shadow hover:shadow-xl"
+          onClick={handleAddOfficeBoyFormClick}
+          className={`hover flex w-1/3 flex-col items-center rounded-lg border ${
+            showOfficeBoyForm ? "border-blue-500" : "border-gray-200"
+          } bg-white p-4 shadow-lg transition-shadow hover:scale-105 hover:shadow-xl`}
         >
-          <h2 className="text-1xl mt-3 text-center font-semibold text-gray-700">
-            Add Office Boys
+          <h2
+            className={`text-center text-sm font-semibold text-gray-700 ${
+              showOfficeBoyForm ? "text-blue-500" : "text-gray-700"
+            }`}
+          >
+            Add New{" "}
+            <span className="text-2xl font-bold">
+              {showOfficeBoyForm ? "↑" : "↓"}
+            </span>
+          </h2>
+        </button>
+        <button
+          onClick={handleOfficeBoyListClick}
+          className={`hover flex w-1/3 flex-col items-center rounded-lg border ${
+            showOfficeBoyList ? "border-blue-500" : "border-gray-200"
+          } bg-white p-4 shadow-lg transition-shadow hover:scale-105 hover:shadow-xl`}
+        >
+          <h2
+            className={`text-center text-sm font-semibold text-gray-700 ${
+              showOfficeBoyList ? "text-blue-500" : "text-gray-700"
+            }`}
+          >
+            View All{" "}
+            <span className="text-2xl font-bold">
+              {showOfficeBoyList ? "↑" : "↓"}
+            </span>
           </h2>
         </button>
 
+        <div className="h-auto w-px bg-gray-400"></div>
+
         <button
-          onClick={handleAddGaurdClick}
-          className="flex w-1/3 flex-col items-center rounded-lg border border-gray-200 bg-white p-4 shadow-lg transition-shadow hover:shadow-xl"
+          onClick={handleAddGaurdFormClick}
+          className={`hover rounded-s-lg flex w-1/3 flex-col items-center border ${
+            showGaurdForm ? "border-blue-500" : "border-gray-200"
+          } bg-white p-4 shadow-lg transition-shadow hover:scale-105 hover:shadow-xl`}
         >
-          <h2 className="text-1xl mt-3 text-center font-semibold text-gray-700">
-            Add Gaurds
+          <h2
+            className={`text-center text-sm font-semibold text-gray-700 ${
+              showGaurdForm ? "text-blue-500" : "text-gray-700"
+            }`}
+          >
+            Add New{" "}
+            <span className="text-2xl font-bold">
+              {showGaurdForm ? "↑" : "↓"}
+            </span>
+          </h2>
+        </button>
+        <button
+          onClick={handleGaurdListClick}
+          className={`hover flex w-1/3 flex-col items-center rounded-lg border ${
+            showGaurdList ? "border-blue-500" : "border-gray-200"
+          } bg-white p-4 shadow-lg transition-shadow hover:scale-105 hover:shadow-xl`}
+        >
+          <h2
+            className={`text-center text-sm font-semibold text-gray-700 ${
+              showGaurdList ? "text-blue-500" : "text-gray-700"
+            }`}
+          >
+            View All{" "}
+            <span className="text-2xl font-bold">
+              {showGaurdList ? "↑" : "↓"}
+            </span>
           </h2>
         </button>
 
+        <div className="h-auto w-px bg-gray-400"></div>
+
         <button
-          onClick={handleAddSweeperClick}
-          className="flex w-1/3 flex-col items-center rounded-lg border border-gray-200 bg-white p-4 shadow-lg transition-shadow hover:shadow-xl"
+          onClick={handleAddJanitorFormClick}
+          className={`hover rounded-e-lg flex w-1/3 flex-col items-center border ${
+            showJanitorForm ? "border-blue-500" : "border-gray-200"
+          } bg-white p-4 shadow-lg transition-shadow hover:scale-105 hover:shadow-xl`}
         >
-          <h2 className="text-1xl mt-3 text-center font-semibold text-gray-700">
-            Add Sweepers
+          <h2
+            className={`text-center text-sm font-semibold text-gray-700 ${
+              showJanitorForm ? "text-blue-500" : "text-gray-700"
+            }`}
+          >
+            Add New{" "}
+            <span className="text-2xl font-bold">
+              {showJanitorForm ? "↑" : "↓"}
+            </span>
+          </h2>
+        </button>
+        <button
+          onClick={handleJanitorListClick}
+          className={`hover flex w-1/3 flex-col items-center rounded-lg border ${
+            showJanitorList ? "border-blue-500" : "border-gray-200"
+          } bg-white p-4 shadow-lg transition-shadow hover:scale-105 hover:shadow-xl`}
+        >
+          <h2
+            className={`text-center text-sm font-semibold text-gray-700 ${
+              showJanitorList ? "text-blue-500" : "text-gray-700"
+            }`}
+          >
+            View All{" "}
+            <span className="text-2xl font-bold">
+              {showJanitorList ? "↑" : "↓"}
+            </span>
           </h2>
         </button>
       </div>
 
+      {/* Forms */}
       {showAdminForm && (
-        <div className="mt-6 rounded-lg border border-gray-300 bg-white p-6 shadow-lg">
-          <h3 className="mb-4 text-xl font-semibold text-gray-800">
-            Add Admin
-          </h3>
-          <form className="space-y-4">
-            <div className="flex gap-4">
-              <div className="w-1/3">
-                <label htmlFor="busName" className="block text-gray-700">
-                  First-Name :
-                </label>
-                <input
-                  type="text"
-                  className="mt-2 w-full rounded-md border border-gray-300 p-2"
-                  placeholder="Enter bus name"
-                  required
-                />
-              </div>
-              <div className="w-1/3">
-                <label htmlFor="busNumber" className="block text-gray-700">
-                  Last-Name :
-                </label>
-                <input
-                  type="text"
-                  className="mt-2 w-full rounded-md border border-gray-300 p-2"
-                  placeholder="Enter bus number"
-                  required
-                />
-              </div>
-              <div className="w-1/3">
-                <label htmlFor="busNumber" className="block text-gray-700">
-                  Phone :
-                </label>
-                <input
-                  type="text"
-                  className="mt-2 w-full rounded-md border border-gray-300 p-2"
-                  placeholder="Enter bus number"
-                  required
-                />
-              </div>
-            </div>
-
-            <div className="flex gap-4">
-              <div className="w-1/3">
-                <label htmlFor="busName" className="block text-gray-700">
-                  WhatsApp :
-                </label>
-                <input
-                  type="text"
-                  className="mt-2 w-full rounded-md border border-gray-300 p-2"
-                  placeholder="Enter bus name"
-                  required
-                />
-              </div>
-              <div className="w-1/3">
-                <label htmlFor="busNumber" className="block text-gray-700">
-                  Qualificaion :
-                </label>
-                <input
-                  type="text"
-                  className="mt-2 w-full rounded-md border border-gray-300 p-2"
-                  placeholder="Enter bus number"
-                  required
-                />
-              </div>
-              <div className="w-1/3">
-                <label htmlFor="busNumber" className="block text-gray-700">
-                  Rank :
-                </label>
-                <input
-                  type="text"
-                  className="mt-2 w-full rounded-md border border-gray-300 p-2"
-                  placeholder="Enter bus number"
-                  required
-                />
-              </div>
-            </div>
-
-            <div className="flex gap-4">
-              <div className="w-screen">
-                <label htmlFor="busName" className="block text-gray-700">
-                  Address :
-                </label>
-                <input
-                  type="text"
-                  className="mt-2 w-full rounded-md border border-gray-300 p-2"
-                  placeholder="Enter bus name"
-                  required
-                />
-              </div>
-            </div>
-
-            <div className="flex gap-4">
-              <div className="w-1/3">
-                <label htmlFor="busName" className="block text-gray-700">
-                  Person-Image :
-                </label>
-                <input
-                  type="file"
-                  className="mt-2 w-full rounded-md border border-gray-300 p-2"
-                  placeholder="Enter bus name"
-                  required
-                />
-              </div>
-              <div className="w-1/3">
-                <label htmlFor="busNumber" className="block text-gray-700">
-                  Degree-Image :
-                </label>
-                <input
-                  type="file"
-                  className="mt-2 w-full rounded-md border border-gray-300 p-2"
-                  placeholder="Enter bus number"
-                />
-              </div>
-              <div className="w-1/3">
-                <label htmlFor="busNumber" className="block text-gray-700">
-                  I'd Card :
-                </label>
-                <input
-                  type="file"
-                  className="mt-2 w-full  rounded-md border border-gray-300 p-2"
-                  placeholder="Enter bus number"
-                  required
-                />
-              </div>
-            </div>
-
-            <button
-              type="submit"
-              className="mt-4 h-10 w-full rounded-lg bg-blue-500 text-white hover:bg-blue-400"
-            ></button>
-          </form>
-        </div>
+        <AdminStaffForm
+          onFormSubmit={() => {
+            setShowAdminForm(false);
+            fetchAdminStaffCount();
+          }}
+        />
       )}
-
-      {/* Add Staff Form */}
       {showOfficeBoyForm && (
-        <div className="mt-6 rounded-lg border border-gray-300 bg-white p-6 shadow-lg">
-          <h3 className="mb-4 text-xl font-semibold text-gray-800">
-            Add Office Boy
-          </h3>
-
-          <form className="space-y-4">
-            {/* Staff Name & Role */}
-            <div className="flex gap-4">
-              <div className="w-1/3">
-                <label htmlFor="busName" className="block text-gray-700">
-                  First-Name :
-                </label>
-                <input
-                  type="text"
-                  className="mt-2 w-full rounded-md border border-gray-300 p-2"
-                  placeholder="Enter bus name"
-                  required
-                />
-              </div>
-              <div className="w-1/3">
-                <label htmlFor="busNumber" className="block text-gray-700">
-                  Last-Name :
-                </label>
-                <input
-                  type="text"
-                  className="mt-2 w-full rounded-md border border-gray-300 p-2"
-                  placeholder="Enter bus number"
-                  required
-                />
-              </div>
-              <div className="w-1/3">
-                <label htmlFor="busNumber" className="block text-gray-700">
-                  Phone :
-                </label>
-                <input
-                  type="text"
-                  className="mt-2 w-full rounded-md border border-gray-300 p-2"
-                  placeholder="Enter bus number"
-                  required
-                />
-              </div>
-            </div>
-
-            <div className="flex gap-4">
-              <div className="w-1/3">
-                <label htmlFor="busName" className="block text-gray-700">
-                  WhatsApp :
-                </label>
-                <input
-                  type="text"
-                  className="mt-2 w-full rounded-md border border-gray-300 p-2"
-                  placeholder="Enter bus name"
-                  required
-                />
-              </div>
-              <div className="w-1/2">
-                <label htmlFor="busNumber" className="block text-gray-700">
-                  Address :
-                </label>
-                <input
-                  type="text"
-                  className="mt-2 w-full rounded-md border border-gray-300 p-2"
-                  placeholder="Enter bus number"
-                  required
-                />
-              </div>
-            </div>
-
-            <div className="flex gap-4">
-              <div className="w-1/3">
-                <label htmlFor="busName" className="block text-gray-700">
-                  Person-Image :
-                </label>
-                <input
-                  type="file"
-                  className="mt-2 w-full rounded-md border border-gray-300 p-2"
-                  placeholder="Enter bus name"
-                  required
-                />
-              </div>
-              <div className="w-1/3">
-                <label htmlFor="busNumber" className="block text-gray-700">
-                  I'd Card :
-                </label>
-                <input
-                  type="file"
-                  className="mt-2 w-full  rounded-md border border-gray-300 p-2"
-                  placeholder="Enter bus number"
-                  required
-                />
-              </div>
-            </div>
-
-            <button
-              type="submit"
-              className="mt-9 h-10 w-full rounded-lg bg-green-500 text-white hover:bg-green-400"
-            >
-              Save Staff
-            </button>
-          </form>
-        </div>
+        <OfficeBoyForm
+          onFormSubmit={() => {
+            setShowOfficeBoyForm(false);
+            fetchOfficeBoyCount();
+          }}
+        />
       )}
-
-      {/* Add Passenger Form */}
       {showGaurdForm && (
-        <div className="mt-6 rounded-lg border border-gray-300 bg-white p-6 shadow-lg">
-          <h3 className="mb-4 text-xl font-semibold text-gray-800">
-            Add Gaurd
-          </h3>
-
-          <form className="space-y-4">
-            <div className="flex gap-4">
-              <div className="w-1/3">
-                <label htmlFor="busName" className="block text-gray-700">
-                  First-Name :
-                </label>
-                <input
-                  type="text"
-                  className="mt-2 w-full rounded-md border border-gray-300 p-2"
-                  placeholder="Enter bus name"
-                  required
-                />
-              </div>
-              <div className="w-1/3">
-                <label htmlFor="busNumber" className="block text-gray-700">
-                  Last-Name :
-                </label>
-                <input
-                  type="text"
-                  className="mt-2 w-full rounded-md border border-gray-300 p-2"
-                  placeholder="Enter bus number"
-                  required
-                />
-              </div>
-              <div className="w-1/3">
-                <label htmlFor="busNumber" className="block text-gray-700">
-                  Phone :
-                </label>
-                <input
-                  type="text"
-                  className="mt-2 w-full rounded-md border border-gray-300 p-2"
-                  placeholder="Enter bus number"
-                  required
-                />
-              </div>
-            </div>
-
-            <div className="flex gap-4">
-              <div className="w-1/3">
-                <label htmlFor="busName" className="block text-gray-700">
-                  WhatsApp :
-                </label>
-                <input
-                  type="text"
-                  className="mt-2 w-full rounded-md border border-gray-300 p-2"
-                  placeholder="Enter bus name"
-                  required
-                />
-              </div>
-              <div className="w-1/2">
-                <label htmlFor="busNumber" className="block text-gray-700">
-                  Address :
-                </label>
-                <input
-                  type="text"
-                  className="mt-2 w-full rounded-md border border-gray-300 p-2"
-                  placeholder="Enter bus number"
-                  required
-                />
-              </div>
-            </div>
-
-            <div className="flex gap-4">
-              <div className="w-1/2">
-                <label htmlFor="busName" className="block text-gray-700">
-                  Person-Image :
-                </label>
-                <input
-                  type="file"
-                  className="mt-2 w-full rounded-md border border-gray-300 p-2"
-                  placeholder="Enter bus name"
-                  required
-                />
-              </div>
-
-              <div className="w-1/2">
-                <label htmlFor="busNumber" className="block text-gray-700">
-                  I'd Card :
-                </label>
-                <input
-                  type="file"
-                  className="mt-2 w-full  rounded-md border border-gray-300 p-2"
-                  placeholder="Enter bus number"
-                  required
-                />
-              </div>
-            </div>
-
-            <button
-              type="submit"
-              className="mt-4 h-10 w-full rounded-lg bg-purple-500 text-white hover:bg-purple-400"
-            >
-              Save Passenger
-            </button>
-          </form>
-        </div>
+        <GaurdForm
+          onFormSubmit={() => {
+            setShowGaurdForm(false);
+            fetchGuardCount();
+          }}
+        />
+      )}
+      {showJanitorForm && (
+        <JanitorForm
+          onFormSubmit={() => {
+            setShowJanitorForm(false);
+            fetchJanitorCount();
+          }}
+        />
       )}
 
-      {showSweeperForm && (
-        <div className="mt-6 rounded-lg border border-gray-300 bg-white p-6 shadow-lg">
-          <h3 className="mb-4 text-xl font-semibold text-gray-800">
-            Add Sweeper
-          </h3>
-
-          <form className="space-y-4">
-            <div className="flex gap-4">
-              <div className="w-1/3">
-                <label htmlFor="busName" className="block text-gray-700">
-                  First-Name :
-                </label>
-                <input
-                  type="text"
-                  className="mt-2 w-full rounded-md border border-gray-300 p-2"
-                  placeholder="Enter bus name"
-                  required
-                />
-              </div>
-              <div className="w-1/3">
-                <label htmlFor="busNumber" className="block text-gray-700">
-                  Last-Name :
-                </label>
-                <input
-                  type="text"
-                  className="mt-2 w-full rounded-md border border-gray-300 p-2"
-                  placeholder="Enter bus number"
-                  required
-                />
-              </div>
-              <div className="w-1/3">
-                <label htmlFor="busNumber" className="block text-gray-700">
-                  Phone :
-                </label>
-                <input
-                  type="text"
-                  className="mt-2 w-full rounded-md border border-gray-300 p-2"
-                  placeholder="Enter bus number"
-                  required
-                />
-              </div>
-            </div>
-
-            <div className="flex gap-4">
-              <div className="w-1/3">
-                <label htmlFor="busName" className="block text-gray-700">
-                  WhatsApp :
-                </label>
-                <input
-                  type="text"
-                  className="mt-2 w-full rounded-md border border-gray-300 p-2"
-                  placeholder="Enter bus name"
-                  required
-                />
-              </div>
-              <div className="w-1/2">
-                <label htmlFor="busNumber" className="block text-gray-700">
-                  Address :
-                </label>
-                <input
-                  type="text"
-                  className="mt-2 w-full rounded-md border border-gray-300 p-2"
-                  placeholder="Enter bus number"
-                  required
-                />
-              </div>
-            </div>
-            <div className="flex gap-4">
-              <div className="w-1/2">
-                <label htmlFor="busName" className="block text-gray-700">
-                  Person-Image :
-                </label>
-                <input
-                  type="file"
-                  className="mt-2 w-full rounded-md border border-gray-300 p-2"
-                  placeholder="Enter bus name"
-                  required
-                />
-              </div>
-              <div className="w-1/2">
-                <label htmlFor="busNumber" className="block text-gray-700">
-                  I'd Card :
-                </label>
-                <input
-                  type="file"
-                  className="mt-2 w-full  rounded-md border border-gray-300 p-2"
-                  placeholder="Enter bus number"
-                  required
-                />
-              </div>
-            </div>
-            <button
-              type="submit"
-              className="mt-4 h-10 w-full rounded-lg bg-purple-500 text-white hover:bg-purple-400"
-            >
-              Save Passenger
-            </button>
-          </form>
-        </div>
-      )}
+      {/* Lists */}
+      {showAdminList && <AdminStaffList />}
+      {showOfficeBoyList && <OfficeBoyList />}
+      {showGaurdList && <GaurdList />}
+      {showJanitorList && <JanitorList />}
     </div>
   );
 }

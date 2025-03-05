@@ -8,7 +8,6 @@ import BulkAdmit from "./pages/NewAdmission/BulkAdmit/BulkAdmit";
 import AllStudents from "./pages/AllStudents/AllStudents";
 import Attendance from "./pages/Attendance/Attendance";
 import SingleStudent from "./pages/AllStudents/SingleStudent";
-import StudentUpdate from "./pages/AllStudents/StudentUpdate/StudentUpdate";
 import LecturesPage from "./pages/Lectures/LecturesPage";
 import UploadLecture from "./pages/Lectures/UploadLecture";
 import AllLectures from "./pages/Lectures/AllLectures";
@@ -23,6 +22,11 @@ import AddTeacher from "./pages/Teachers/AddTeacher";
 import SingleTeacher from "./pages/Teachers/SingleTeacher";
 import ViewLecture from "./pages/Lectures/ViewLecture";
 import Employee from "./pages/EmployeeManagement/Employee";
+import Finance from "./pages/Finance/Finance";
+import PassedOut from "./pages/PassedOutStudent/PassedOut";
+import EditStudent from "./pages/AllStudents/EditStudent";
+import DragDrop from "./pages/DragDrop/DragDrop";
+import UpdateTeacher from "./pages/Teachers/UpdateTeacher";
 
 function App() {
   const location = useLocation();
@@ -74,7 +78,11 @@ function App() {
               {/* ALL STUDENTS */}
               <Route exact path="/allstudents" element={<AllStudents />} />
               <Route path="/students/:studentId" element={<SingleStudent />} />
-              <Route exact path="/update" element={<StudentUpdate />} />
+              <Route
+                exact
+                path="/students/edit/:studentId"
+                element={<EditStudent />}
+              />
 
               {/* ATTENDANCE */}
               <Route exact path="/attendance" element={<Attendance />} />
@@ -84,7 +92,7 @@ function App() {
               <Route exact path="/uploadlecture" element={<UploadLecture />} />
               <Route exact path="/alllectures" element={<AllLectures />} />
               <Route
-                path="/view-lecture/:lectureId"
+                path="/watch-lecture/:lectureId"
                 element={<ViewLecture />}
               />
 
@@ -102,12 +110,25 @@ function App() {
               <Route exact path="/teachers/add" element={<AddTeacher />} />
               <Route
                 exact
+                path="/teachers/edit/:id"
+                element={<UpdateTeacher />}
+              />
+              <Route
+                exact
                 path="/teachers/:teacherId"
                 element={<SingleTeacher />}
               />
 
               {/* Employee Management */}
               <Route exact path="/employee" element={<Employee />} />
+
+              {/* Finance Management */}
+              <Route exact path="/finance" element={<Finance />} />
+
+              {/* Passed Out Students */}
+              <Route exact path="/passedstudent" element={<PassedOut />} />
+
+              <Route exact path="/dragdrop" element={<DragDrop />} />
             </>
           )}
         </Routes>

@@ -157,7 +157,10 @@ function AllLectures() {
                 </p>
                 {/* Edit and Delete buttons */}
                 <div className="mt-4 flex space-x-2">
-                  <Link className="hover flex-1 rounded-md bg-blue-600 px-2 py-1 text-center text-sm text-white hover:scale-105 hover:bg-blue-800">
+                  <Link
+                    to={`/watch-lecture/${lecture._id}`} // Pass the lecture ID as a URL parameter
+                    className="hover flex-1 rounded-md bg-blue-600 px-2 py-1 text-center text-sm text-white hover:scale-105 hover:bg-blue-800"
+                  >
                     Watch
                   </Link>
                   <button className="hover flex-1 rounded-md bg-yellow-600 px-2 py-1 text-sm text-white hover:scale-105 hover:bg-yellow-800">

@@ -4,7 +4,7 @@ import { PaperClipIcon } from "@heroicons/react/24/outline";
 import User from "../../assets/user.png";
 
 function SingleTeacher() {
-  const { teacherId } = useParams(); // Change studentId to teacherId
+  const { teacherId } = useParams();
   const [teacher, setTeacher] = useState(null);
   const [className, setClassName] = useState("");
   const [loading, setLoading] = useState(true);
@@ -63,6 +63,42 @@ function SingleTeacher() {
     fetchTeacher();
   }, [teacherId]);
 
+  // Function to update teacher status
+  const updateTeacherStatus = async (status) => {
+    try {
+      const token = localStorage.getItem("token");
+      const response = await fetch(
+        `http://localhost:5000/api/teachers/${teacherId}/status`,
+        {
+          method: "PUT",
+          headers: {
+            Authorization: `Bearer ${token}`,
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({ teacherStatus: status }),
+        }
+      );
+
+      if (!response.ok) {
+        throw new Error("Failed to update teacher status");
+      }
+
+      const updatedTeacher = await response.json();
+      setTeacher(updatedTeacher.teacher); // Update the local state with the new teacher data
+      alert(`Teacher status updated to ${status}`);
+    } catch (err) {
+      console.error("Error updating teacher status:", err);
+      alert("Failed to update teacher status");
+    }
+  };
+
+  // Handle Activate/Deactivate
+  const handleStatusChange = async () => {
+    const newStatus =
+      teacher.teacherStatus === "Active" ? "Non-Active" : "Active";
+    await updateTeacherStatus(newStatus);
+  };
+
   if (loading) return <p className="text-center text-gray-700">Loading...</p>;
   if (error) return <p className="text-center text-red-500">{error}</p>;
   if (!teacher)
@@ -78,6 +114,25 @@ function SingleTeacher() {
           Edit
         </button>
       </header>
+
+      {/* Action Buttons */}
+      <div className="mt-5 flex gap-4">
+        <button
+          onClick={handleStatusChange}
+          className={`h-9 rounded px-6 text-base font-medium transition-all ${
+            teacher.teacherStatus === "Active"
+              ? "bg-red-600 text-white hover:bg-red-700"
+              : "bg-green-600 text-white hover:bg-green-700"
+          }`}
+        >
+          {teacher.teacherStatus === "Active" ? "Deactivate" : "Activate"}
+        </button>
+      </div>
+      <div className="mt-5 text-xl">
+        <h1>
+          Teacher's Current Status : <strong> {teacher.teacherStatus}</strong>
+        </h1>
+      </div>
 
       <div className="mt-5">
         {/* Individual Details */}
@@ -138,7 +193,7 @@ function SingleTeacher() {
         <div className="mb-5 overflow-hidden rounded-md border border-gray-200">
           <div className="bg-white px-4 py-4 sm:px-6">
             <h3 className="text-lg font-medium leading-6 text-gray-900">
-              Academic Details
+              Educational Details
             </h3>
           </div>
           <div className="border-t border-gray-200">

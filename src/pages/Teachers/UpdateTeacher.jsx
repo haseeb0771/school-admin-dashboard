@@ -1,8 +1,10 @@
-import React, { useState, useRef, useEffect } from "react";
-import { useParams } from "react-router-dom";
+import React, { useState, useEffect } from "react";
+import { useParams, useNavigate } from "react-router-dom";
+import axios from "axios";
 
 function UpdateTeacher() {
-  const { id } = useParams();
+  const { id } = useParams(); // Get the teacher ID from the URL
+  const navigate = useNavigate(); // For navigation after updating
   const [teacher, setTeacher] = useState({
     firstName: "",
     lastName: "",
@@ -22,70 +24,96 @@ function UpdateTeacher() {
     teacherDegreeImage: null,
     teacherIdCardImage: null,
   });
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(null);
 
-  const submitButtonRef = useRef();
-
+  // Fetch teacher data by ID
   useEffect(() => {
     const fetchTeacher = async () => {
       try {
-        const response = await fetch(
-          `http://localhost:5000/api/teachers/${id}`
-        );
-        if (response.ok) {
-          const data = await response.json();
-          setTeacher(data);
-        } else {
-          console.log("Failed to fetch teacher data");
+        const token = localStorage.getItem("token");
+        if (!token) {
+          setError("Authentication token is missing.");
+          return;
         }
-      } catch (error) {
-        console.log("Error fetching teacher data:", error);
+
+        const response = await axios.get(
+          `http://localhost:5000/api/teachers/${id}`,
+          {
+            headers: { Authorization: `Bearer ${token}` },
+          }
+        );
+
+        if (response.data) {
+          setTeacher(response.data); // Set the fetched data to the form state
+        }
+      } catch (err) {
+        setError(err.message);
+      } finally {
+        setLoading(false);
       }
     };
+
     fetchTeacher();
   }, [id]);
 
-  const handleImageChange = (event, field) => {
-    const file = event.target.files[0];
-    setTeacher((prev) => ({
-      ...prev,
-      [field]: file,
+  // Handle input changes for text, date, and select fields
+  const handleChange = (e) => {
+    const { name, value } = e.target;
+    setTeacher((prevData) => ({
+      ...prevData,
+      [name]: value,
     }));
   };
 
-  const submitFormHandler = async (event) => {
-    event.preventDefault();
+  // Handle file input changes
+  const handleFileChange = (e, field) => {
+    setTeacher((prevData) => ({
+      ...prevData,
+      [field]: e.target.files[0], // Store the selected file
+    }));
+  };
 
-    const formData = new FormData();
-    for (const key in teacher) {
-      formData.append(key, teacher[key]);
-    }
+  // Handle form submission
+  const handleSubmit = async (e) => {
+    e.preventDefault();
 
     try {
-      const response = await fetch(`http://localhost:5000/api/teachers/${id}`, {
-        method: "PUT",
-        headers: {
-          Authorization: `Bearer ${localStorage.getItem("token")}`,
-        },
-        body: formData,
-      });
-
-      if (response.ok) {
-        alert("Teacher updated successfully");
-      } else {
-        alert("Failed to update teacher");
+      const token = localStorage.getItem("token");
+      if (!token) {
+        setError("Authentication token is missing.");
+        return;
       }
-    } catch (error) {
-      console.log("Error:", error);
-      alert("An error occurred while updating the teacher");
+
+      // Create FormData for file upload
+      const formDataToSend = new FormData();
+      for (const key in teacher) {
+        formDataToSend.append(key, teacher[key]);
+      }
+
+      const response = await axios.put(
+        `http://localhost:5000/api/teachers/${id}`,
+        formDataToSend,
+        {
+          headers: {
+            Authorization: `Bearer ${token}`,
+            "Content-Type": "multipart/form-data",
+          },
+        }
+      );
+
+      if (response.data) {
+        alert("Teacher updated successfully!");
+        navigate(`/teachers/${id}`); // Redirect to the teacher's profile page
+      }
+    } catch (err) {
+      console.error("Error updating teacher:", err);
+      setError("Failed to update teacher. Please try again.");
     }
   };
 
-  const inputChangeHandler = (event) => {
-    setTeacher((prev) => ({
-      ...prev,
-      [event.target.name]: event.target.value,
-    }));
-  };
+  if (loading) return <p className="text-center text-gray-700">Loading...</p>;
+  if (error) return <p className="text-center text-red-500">{error}</p>;
 
   return (
     <div className="h-full w-full bg-gray-50 px-3 py-5 xl:px-20 xl:py-12">
@@ -94,131 +122,254 @@ function UpdateTeacher() {
           Update Teacher
         </h1>
       </header>
-      <form
-        onSubmit={submitFormHandler}
-        className="mt-5 flex w-full flex-col gap-6"
-      >
-        <input
-          type="text"
-          name="firstName"
-          value={teacher.firstName}
-          onChange={inputChangeHandler}
-          placeholder="First Name"
-        />
-        <input
-          type="text"
-          name="lastName"
-          value={teacher.lastName}
-          onChange={inputChangeHandler}
-          placeholder="Last Name"
-        />
-        <input
-          type="date"
-          name="dateOfBirth"
-          value={teacher.dateOfBirth}
-          onChange={inputChangeHandler}
-        />
-        <input
-          type="text"
-          name="religion"
-          value={teacher.religion}
-          onChange={inputChangeHandler}
-          placeholder="Religion"
-        />
-        <select
-          name="gender"
-          value={teacher.gender}
-          onChange={inputChangeHandler}
-        >
-          <option value="">Select</option>
-          <option value="Male">Male</option>
-          <option value="Female">Female</option>
-        </select>
-        <input
-          type="text"
-          name="phoneNumber"
-          value={teacher.phoneNumber}
-          onChange={inputChangeHandler}
-          placeholder="Phone Number"
-        />
-        <input
-          type="text"
-          name="whatsappNumber"
-          value={teacher.whatsappNumber}
-          onChange={inputChangeHandler}
-          placeholder="WhatsApp Number"
-        />
-        <input
-          type="text"
-          name="bloodGroup"
-          value={teacher.bloodGroup}
-          onChange={inputChangeHandler}
-          placeholder="Blood Group"
-        />
-        <input
-          type="text"
-          name="city"
-          value={teacher.city}
-          onChange={inputChangeHandler}
-          placeholder="City"
-        />
-        <input
-          type="text"
-          name="streetAddress"
-          value={teacher.streetAddress}
-          onChange={inputChangeHandler}
-          placeholder="Street Address"
-        />
-        <input
-          type="text"
-          name="subjectSpecialization"
-          value={teacher.subjectSpecialization}
-          onChange={inputChangeHandler}
-          placeholder="Subject Specialization"
-        />
-        <input
-          type="text"
-          name="education"
-          value={teacher.education}
-          onChange={inputChangeHandler}
-          placeholder="Education"
-        />
-        <input
-          type="date"
-          name="joiningDate"
-          value={teacher.joiningDate}
-          onChange={inputChangeHandler}
-        />
-        <input
-          type="text"
-          name="salary"
-          value={teacher.salary}
-          onChange={inputChangeHandler}
-          placeholder="Salary"
-        />
-        <input
-          type="file"
-          accept="image/*"
-          onChange={(e) => handleImageChange(e, "teacherImage")}
-        />
-        <input
-          type="file"
-          accept="image/*"
-          onChange={(e) => handleImageChange(e, "teacherDegreeImage")}
-        />
-        <input
-          type="file"
-          accept="image/*"
-          onChange={(e) => handleImageChange(e, "teacherIdCardImage")}
-        />
-        <button
-          ref={submitButtonRef}
-          type="submit"
-          className="rounded bg-blue-700 px-5 py-2 text-white"
-        >
-          Update Teacher
-        </button>
-      </form>
+
+      <div className="mt-5">
+        <form onSubmit={handleSubmit} className="space-y-6">
+          {/* Personal Details */}
+          <div className="rounded-lg bg-white p-6 shadow-md">
+            <h2 className="mb-4 text-xl font-semibold">Personal Details</h2>
+            <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
+              <div>
+                <label className="block text-sm font-medium text-gray-700">
+                  First Name
+                </label>
+                <input
+                  type="text"
+                  name="firstName"
+                  value={teacher.firstName}
+                  onChange={handleChange}
+                  className="mt-1 block w-full rounded-md border-gray-300 shadow-sm"
+                  required
+                />
+              </div>
+              <div>
+                <label className="block text-sm font-medium text-gray-700">
+                  Last Name
+                </label>
+                <input
+                  type="text"
+                  name="lastName"
+                  value={teacher.lastName}
+                  onChange={handleChange}
+                  className="mt-1 block w-full rounded-md border-gray-300 shadow-sm"
+                  required
+                />
+              </div>
+              <div>
+                <label className="block text-sm font-medium text-gray-700">
+                  Date of Birth
+                </label>
+                <input
+                  type="date"
+                  name="dateOfBirth"
+                  value={teacher.dateOfBirth}
+                  onChange={handleChange}
+                  className="mt-1 block w-full rounded-md border-gray-300 shadow-sm"
+                />
+              </div>
+              <div>
+                <label className="block text-sm font-medium text-gray-700">
+                  Religion
+                </label>
+                <input
+                  type="text"
+                  name="religion"
+                  value={teacher.religion}
+                  onChange={handleChange}
+                  className="mt-1 block w-full rounded-md border-gray-300 shadow-sm"
+                />
+              </div>
+              <div>
+                <label className="block text-sm font-medium text-gray-700">
+                  Gender
+                </label>
+                <select
+                  name="gender"
+                  value={teacher.gender}
+                  onChange={handleChange}
+                  className="mt-1 block w-full rounded-md border-gray-300 shadow-sm"
+                >
+                  <option value="">Select</option>
+                  <option value="Male">Male</option>
+                  <option value="Female">Female</option>
+                </select>
+              </div>
+              <div>
+                <label className="block text-sm font-medium text-gray-700">
+                  Blood Group
+                </label>
+                <input
+                  type="text"
+                  name="bloodGroup"
+                  value={teacher.bloodGroup}
+                  onChange={handleChange}
+                  className="mt-1 block w-full rounded-md border-gray-300 shadow-sm"
+                />
+              </div>
+            </div>
+          </div>
+
+          {/* Contact Details */}
+          <div className="rounded-lg bg-white p-6 shadow-md">
+            <h2 className="mb-4 text-xl font-semibold">Contact Details</h2>
+            <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
+              <div>
+                <label className="block text-sm font-medium text-gray-700">
+                  Phone Number
+                </label>
+                <input
+                  type="text"
+                  name="phoneNumber"
+                  value={teacher.phoneNumber}
+                  onChange={handleChange}
+                  className="mt-1 block w-full rounded-md border-gray-300 shadow-sm"
+                />
+              </div>
+              <div>
+                <label className="block text-sm font-medium text-gray-700">
+                  WhatsApp Number
+                </label>
+                <input
+                  type="text"
+                  name="whatsappNumber"
+                  value={teacher.whatsappNumber}
+                  onChange={handleChange}
+                  className="mt-1 block w-full rounded-md border-gray-300 shadow-sm"
+                />
+              </div>
+              <div>
+                <label className="block text-sm font-medium text-gray-700">
+                  City
+                </label>
+                <input
+                  type="text"
+                  name="city"
+                  value={teacher.city}
+                  onChange={handleChange}
+                  className="mt-1 block w-full rounded-md border-gray-300 shadow-sm"
+                />
+              </div>
+              <div>
+                <label className="block text-sm font-medium text-gray-700">
+                  Street Address
+                </label>
+                <input
+                  type="text"
+                  name="streetAddress"
+                  value={teacher.streetAddress}
+                  onChange={handleChange}
+                  className="mt-1 block w-full rounded-md border-gray-300 shadow-sm"
+                />
+              </div>
+            </div>
+          </div>
+
+          {/* Professional Details */}
+          <div className="rounded-lg bg-white p-6 shadow-md">
+            <h2 className="mb-4 text-xl font-semibold">Professional Details</h2>
+            <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
+              <div>
+                <label className="block text-sm font-medium text-gray-700">
+                  Subject Specialization
+                </label>
+                <input
+                  type="text"
+                  name="subjectSpecialization"
+                  value={teacher.subjectSpecialization}
+                  onChange={handleChange}
+                  className="mt-1 block w-full rounded-md border-gray-300 shadow-sm"
+                />
+              </div>
+              <div>
+                <label className="block text-sm font-medium text-gray-700">
+                  Education
+                </label>
+                <input
+                  type="text"
+                  name="education"
+                  value={teacher.education}
+                  onChange={handleChange}
+                  className="mt-1 block w-full rounded-md border-gray-300 shadow-sm"
+                />
+              </div>
+              <div>
+                <label className="block text-sm font-medium text-gray-700">
+                  Joining Date
+                </label>
+                <input
+                  type="date"
+                  name="joiningDate"
+                  value={teacher.joiningDate}
+                  onChange={handleChange}
+                  className="mt-1 block w-full rounded-md border-gray-300 shadow-sm"
+                />
+              </div>
+              <div>
+                <label className="block text-sm font-medium text-gray-700">
+                  Salary
+                </label>
+                <input
+                  type="text"
+                  name="salary"
+                  value={teacher.salary}
+                  onChange={handleChange}
+                  className="mt-1 block w-full rounded-md border-gray-300 shadow-sm"
+                />
+              </div>
+            </div>
+          </div>
+
+          {/* Image Uploads */}
+          <div className="rounded-lg bg-white p-6 shadow-md">
+            <h2 className="mb-4 text-xl font-semibold">Upload Images</h2>
+            <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
+              <div>
+                <label className="block text-sm font-medium text-gray-700">
+                  Teacher Image
+                </label>
+                <input
+                  type="file"
+                  accept="image/*"
+                  onChange={(e) => handleFileChange(e, "teacherImage")}
+                  className="mt-1 block w-full rounded-md border-gray-300 shadow-sm"
+                />
+              </div>
+              <div>
+                <label className="block text-sm font-medium text-gray-700">
+                  Teacher Degree Image
+                </label>
+                <input
+                  type="file"
+                  accept="image/*"
+                  onChange={(e) => handleFileChange(e, "teacherDegreeImage")}
+                  className="mt-1 block w-full rounded-md border-gray-300 shadow-sm"
+                />
+              </div>
+              <div>
+                <label className="block text-sm font-medium text-gray-700">
+                  Teacher ID Card Image
+                </label>
+                <input
+                  type="file"
+                  accept="image/*"
+                  onChange={(e) => handleFileChange(e, "teacherIdCardImage")}
+                  className="mt-1 block w-full rounded-md border-gray-300 shadow-sm"
+                />
+              </div>
+            </div>
+          </div>
+
+          {/* Submit Button */}
+          <div className="flex justify-end">
+            <button
+              type="submit"
+              className="rounded-md bg-blue-600 px-6 py-2 text-white hover:bg-blue-700"
+            >
+              Update Teacher
+            </button>
+          </div>
+        </form>
+      </div>
     </div>
   );
 }

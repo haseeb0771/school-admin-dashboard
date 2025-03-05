@@ -1,5 +1,17 @@
 import { useEffect, useState } from "react";
-import { Card, Title, BarChart, Block } from "@tremor/react";
+import { Card, Title } from "@tremor/react";
+import {
+  BarChart,
+  Bar,
+  XAxis,
+  YAxis,
+  Tooltip,
+  Legend,
+  ResponsiveContainer,
+  LineChart,
+  Line,
+  CartesianGrid,
+} from "recharts";
 import Female from "../../assets/female.png";
 import MaleFemale from "../../assets/male-female.png";
 import Male from "../../assets/male.png";
@@ -12,13 +24,16 @@ function Dashboard() {
   });
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
+  const [campusData, setCampusData] = useState([]);
+  const [boardProgressData, setBoardProgressData] = useState([]);
+  const [classData, setClassData] = useState([]);
+
   useEffect(() => {
     const fetchStudentData = async () => {
       try {
         const token = localStorage.getItem("token");
         const headers = { Authorization: `Bearer ${token}` };
 
-        // If the token is missing, set an error
         if (!token) {
           setError("No authentication token found.");
           setLoading(false);
@@ -31,7 +46,7 @@ function Dashboard() {
             method: "GET",
             headers: {
               "Content-Type": "application/json",
-              Authorization: `Bearer ${token}`, // Add token to the Authorization header
+              Authorization: `Bearer ${token}`,
             },
           }
         );
@@ -39,7 +54,7 @@ function Dashboard() {
         if (!response.ok) throw new Error("Failed to fetch data");
 
         const data = await response.json();
-        console.log("Fetched data:", data); // ✅ Debugging log
+        console.log("Fetched data:", data);
 
         setStudentData({
           totalStudents: data.totalStudents || 0,
@@ -57,21 +72,69 @@ function Dashboard() {
     fetchStudentData();
   }, []);
 
-  const chartdata = [
-    { class: "Nursery", "Number of boys": 21, "Number of girls": 18 },
-    { class: "LKG", "Number of boys": 14, "Number of girls": 11 },
-    { class: "UKG", "Number of boys": 9, "Number of girls": 15 },
-    { class: "Class 1", "Number of boys": 19, "Number of girls": 24 },
-    { class: "Class 2", "Number of boys": 26, "Number of girls": 8 },
-    { class: "Class 3", "Number of boys": 10, "Number of girls": 12 },
-    { class: "Class 4", "Number of boys": 14, "Number of girls": 10 },
-    { class: "Class 5", "Number of boys": 12, "Number of girls": 23 },
-    { class: "Class 6", "Number of boys": 23, "Number of girls": 8 },
-    { class: "Class 7", "Number of boys": 29, "Number of girls": 13 },
-    { class: "Class 8", "Number of boys": 7, "Number of girls": 27 },
-    { class: "Class 9", "Number of boys": 19, "Number of girls": 7 },
-    { class: "Class 10", "Number of boys": 26, "Number of girls": 21 },
-  ];
+  // Simulate dynamic data updates for Campus-wise Student Distribution
+  useEffect(() => {
+    const initialCampusData = [
+      { Campus: "Campus A", Students: 500 },
+      { Campus: "Campus B", Students: 300 },
+      { Campus: "Campus C", Students: 200 },
+      { Campus: "Campus D", Students: 400 },
+    ];
+    setCampusData(initialCampusData);
+
+    const interval = setInterval(() => {
+      const updatedCampusData = initialCampusData.map((campus) => ({
+        ...campus,
+        Students: campus.Students + Math.floor(Math.random() * 10 - 5), // Random change
+      }));
+      setCampusData(updatedCampusData);
+    }, 5000); // Update every 5 seconds
+
+    return () => clearInterval(interval);
+  }, []);
+
+  // Simulate dynamic data updates for Board Result-wise School Progress
+  useEffect(() => {
+    const initialBoardProgressData = [
+      { Year: 2019, "Percentage Above 90%": 70 },
+      { Year: 2020, "Percentage Above 90%": 75 },
+      { Year: 2021, "Percentage Above 90%": 80 },
+      { Year: 2022, "Percentage Above 90%": 85 },
+      { Year: 2023, "Percentage Above 90%": 90 },
+    ];
+    setBoardProgressData(initialBoardProgressData);
+
+    const interval = setInterval(() => {
+      const updatedBoardProgressData = initialBoardProgressData.map((year) => ({
+        ...year,
+        "Percentage Above 90%":
+          year["Percentage Above 90%"] + Math.floor(Math.random() * 5 - 2), // Random change
+      }));
+      setBoardProgressData(updatedBoardProgressData);
+    }, 5000); // Update every 5 seconds
+
+    return () => clearInterval(interval);
+  }, []);
+
+  // Dummy data for Class-wise Student Distribution
+  useEffect(() => {
+    const initialClassData = [
+      { class: "Nursery", "Number of boys": 21, "Number of girls": 18 },
+      { class: "LKG", "Number of boys": 14, "Number of girls": 11 },
+      { class: "UKG", "Number of boys": 9, "Number of girls": 15 },
+      { class: "Class 1", "Number of boys": 19, "Number of girls": 24 },
+      { class: "Class 2", "Number of boys": 26, "Number of girls": 8 },
+      { class: "Class 3", "Number of boys": 10, "Number of girls": 12 },
+      { class: "Class 4", "Number of boys": 14, "Number of girls": 10 },
+      { class: "Class 5", "Number of boys": 12, "Number of girls": 23 },
+      { class: "Class 6", "Number of boys": 23, "Number of girls": 8 },
+      { class: "Class 7", "Number of boys": 29, "Number of girls": 13 },
+      { class: "Class 8", "Number of boys": 7, "Number of girls": 27 },
+      { class: "Class 9", "Number of boys": 19, "Number of girls": 7 },
+      { class: "Class 10", "Number of boys": 26, "Number of girls": 21 },
+    ];
+    setClassData(initialClassData);
+  }, []);
 
   return (
     <div className="h-full w-full bg-gray-50 px-3 py-5 xl:px-20 xl:py-12">
@@ -127,24 +190,106 @@ function Dashboard() {
             </div>
           </div>
 
-          {/* Class-wise Student Distribution Chart */}
-          <Block marginTop="mt-6">
+          {/* Campus-wise Student Distribution and Board Result-wise School Progress Charts */}
+          <div className="mt-6 mb-10 grid grid-cols-1 gap-6 md:grid-cols-2">
+            {/* Campus-wise Student Distribution */}
             <Card
               shadow={false}
               className="transition-transform duration-300 hover:scale-105 hover:shadow-lg"
             >
-              <Title>Class-wise Student Distribution</Title>
-              <BarChart
-                data={chartdata}
-                dataKey="class"
-                categories={["Number of boys", "Number of girls"]}
-                colors={["blue", "fuchsia"]}
-                marginTop="mt-6"
-                stack={true}
-                yAxisWidth="w-6"
-              />
+              <Title>Campus-wise Student Distribution</Title>
+              <ResponsiveContainer width="100%" height={300}>
+                <BarChart data={campusData}>
+                  <CartesianGrid strokeDasharray="3 3" />
+                  <XAxis dataKey="Campus" />
+                  <YAxis />
+                  <Tooltip
+                    contentStyle={{
+                      backgroundColor: "#ffffff",
+                      border: "1px solid #e5e7eb",
+                      borderRadius: "8px",
+                      boxShadow: "0 4px 6px rgba(0, 0, 0, 0.1)",
+                    }}
+                  />
+                  <Legend />
+                  <Bar
+                    dataKey="Students"
+                    fill="#3b82f6"
+                    animationDuration={1000}
+                    radius={[4, 4, 0, 0]}
+                  />
+                </BarChart>
+              </ResponsiveContainer>
             </Card>
-          </Block>
+
+            {/* Board Result-wise School Progress */}
+            <Card
+              shadow={false}
+              className="transition-transform duration-300 hover:scale-105 hover:shadow-lg"
+            >
+              <Title>Board Result-wise School Progress</Title>
+              <ResponsiveContainer width="100%" height={300}>
+                <LineChart data={boardProgressData}>
+                  <CartesianGrid strokeDasharray="3 3" />
+                  <XAxis dataKey="Year" />
+                  <YAxis />
+                  <Tooltip
+                    contentStyle={{
+                      backgroundColor: "#ffffff",
+                      border: "1px solid #e5e7eb",
+                      borderRadius: "8px",
+                      boxShadow: "0 4px 6px rgba(0, 0, 0, 0.1)",
+                    }}
+                  />
+                  <Legend />
+                  <Line
+                    type="monotone"
+                    dataKey="Percentage Above 90%"
+                    stroke="#10b981"
+                    strokeWidth={2}
+                    animationDuration={1000}
+                    dot={{ r: 6 }}
+                  />
+                </LineChart>
+              </ResponsiveContainer>
+            </Card>
+          </div>
+
+          {/* Class-wise Student Distribution Chart */}
+          <Card
+            shadow={false}
+            className="mt-10 transition-transform duration-300 hover:scale-105 hover:shadow-lg"
+          >
+            <Title>Class-wise Student Distribution</Title>
+            <ResponsiveContainer width="100%" height={400}>
+              <BarChart data={classData}>
+                <CartesianGrid strokeDasharray="3 3" />
+                <XAxis dataKey="class" />
+                <YAxis />
+                <Tooltip
+                  contentStyle={{
+                    backgroundColor: "#ffffff",
+                    border: "1px solid #e5e7eb",
+                    borderRadius: "8px",
+                    boxShadow: "0 4px 6px rgba(0, 0, 0, 0.1)",
+                  }}
+                />
+                <Legend />
+                <Bar
+                  dataKey="Number of boys"
+                  fill="#3b82f6"
+                  animationDuration={1000}
+                  radius={[4, 4, 0, 0]}
+                />
+                <Bar
+                  dataKey="Number of girls"
+                  fill="#ec4899"
+                  animationDuration={1000}
+                  radius={[4, 4, 0, 0]}
+                />
+              </BarChart>
+            </ResponsiveContainer>
+          </Card>
         </>
       )}
     </div>

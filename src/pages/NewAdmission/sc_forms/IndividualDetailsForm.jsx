@@ -218,6 +218,23 @@ function IndividualDetailsForm({ newStudent, setNewStudent }) {
               className="mt-2 block w-full rounded border-gray-300 text-gray-900 transition ease-in focus:border-gray-900 focus:outline-none focus:ring-0 sm:text-sm"
             />
           </div>
+          <div className="col-span-6 sm:col-span-3 lg:col-span-2">
+            <label
+              htmlFor="studentFee"
+              className="block text-sm font-medium text-gray-600"
+            >
+              Student Fee
+            </label>
+            <input
+              required
+              type="text"
+              name="studentFee"
+              id="studentFee"
+              value={newStudent.studentFee}
+              onChange={inputChangeHandler}
+              className="mt-2 block w-full rounded border-gray-300 text-gray-900 transition ease-in focus:border-gray-900 focus:outline-none focus:ring-0 sm:text-sm"
+            />
+          </div>
         </div>
       </div>
     </div>

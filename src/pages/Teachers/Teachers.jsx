@@ -147,7 +147,7 @@ function Teachers() {
             <MultiSelectBox
               onValueChange={(value) => setSelectedIds(value)}
               placeholder="Select by ID..."
-              maxWidth="max-w-lg"
+              maxWidth="max-w-sm"
             >
               {teachers.map((item) => (
                 <MultiSelectBoxItem
@@ -161,7 +161,7 @@ function Teachers() {
             <MultiSelectBox
               onValueChange={(value) => setSelectedNames(value)}
               placeholder="Select by Name..."
-              maxWidth="max-w-lg"
+              maxWidth="max-w-sm"
             >
               {teachers.map((item) => (
                 <MultiSelectBoxItem
@@ -188,6 +188,7 @@ function Teachers() {
                 <TableHeaderCell>Subject</TableHeaderCell>
                 <TableHeaderCell>Joining Date</TableHeaderCell>
                 <TableHeaderCell>Phone</TableHeaderCell>
+                <TableHeaderCell>Status</TableHeaderCell>
                 <TableHeaderCell>Actions</TableHeaderCell>
               </TableRow>
             </TableHead>
@@ -203,25 +204,20 @@ function Teachers() {
                     {new Date(teacher.joiningDate).toLocaleDateString()}
                   </TableCell>
                   <TableCell>{teacher.phoneNumber}</TableCell>
+                  <TableCell>{teacher.teacherStatus}</TableCell>
                   <TableCell>
                     <Link
                       to={`/teachers/${teacher._id}`}
-                      className="rounded-full bg-green-200 py-[3px] px-3 text-xs text-green-900 hover:bg-green-100"
+                      className=" rounded-md bg-gray-900 py-[3px] px-3 text-xs text-gray-50 transition-all hover:bg-gray-700"
                     >
                       View
                     </Link>
                     <Link
                       to={`/teachers/edit/${teacher._id}`}
-                      className="ml-3 rounded-full bg-orange-200 py-[3px] px-3 text-xs text-orange-900 hover:bg-orange-100"
+                      className="ml-3 rounded-md bg-gray-900 py-[3px] px-3 text-xs text-gray-50 transition-all hover:bg-gray-700"
                     >
                       Edit
                     </Link>
-                    <button
-                      onClick={() => handleDelete(teacher._id)}
-                      className="ml-3 rounded-full bg-red-200 py-[3px] px-3 text-xs text-red-900 hover:bg-red-100"
-                    >
-                      Delete
-                    </button>
                   </TableCell>
                 </TableRow>
               ))}

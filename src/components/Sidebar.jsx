@@ -72,7 +72,7 @@ function Sidebar({ handleLogout }) {
               <NavLink to={item.href} key={item.name} className="group">
                 {({ isActive }) => (
                   <span
-                    className={`flex items-center gap-3 rounded-md px-3 py-2 transition-all hover:scale-105 hover:shadow-lg ${
+                    className={`flex items-center gap-3 rounded-md  border-gray-50 px-3 py-2 shadow-sm transition-all hover:scale-110 hover:shadow-lg ${
                       isActive ? "bg-gray-200" : "group-hover:bg-gray-100"
                     }`}
                   >

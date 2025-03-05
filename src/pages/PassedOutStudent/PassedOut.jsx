@@ -13,57 +13,67 @@ import {
 } from "@tremor/react";
 import { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
-import axios from "axios";
 import { DateTime } from "luxon";
 
-const AllStudents = () => {
+function PassedOut() {
   const [students, setStudents] = useState([]);
+  const [filteredStudents, setFilteredStudents] = useState([]);
   const [selectedIds, setSelectedIds] = useState([]);
   const [selectedNames, setSelectedNames] = useState([]);
   const [loading, setLoading] = useState(true);
-  const [error, setError] = useState("");
+  const [error, setError] = useState(null);
 
+  // Fetch all students from the backend API
   useEffect(() => {
+    const fetchStudents = async () => {
+      try {
+        const token = localStorage.getItem("token");
+        if (!token) {
+          setError("Authentication token is missing.");
+          return;
+        }
+
+        const headers = {
+          Authorization: `Bearer ${token}`,
+        };
+
+        const response = await fetch("http://localhost:5000/api/students", {
+          method: "GET",
+          headers: headers,
+        });
+
+        if (!response.ok) {
+          throw new Error("Failed to fetch students");
+        }
+
+        const data = await response.json();
+
+        // Filter students with status "PassedOut"
+        const passedOutStudents = data.filter(
+          (student) => student.studentStatus === "PassedOut"
+        );
+
+        setStudents(data); // Store all students (optional, if needed)
+        setFilteredStudents(passedOutStudents); // Store filtered students
+      } catch (err) {
+        setError(err.message);
+      } finally {
+        setLoading(false);
+      }
+    };
+
     fetchStudents();
   }, []);
 
-  const fetchStudents = async () => {
-    try {
-      const token = localStorage.getItem("token");
-      const response = await axios.get("http://localhost:5000/api/students", {
-        headers: { Authorization: `Bearer ${token}` },
-      });
-      // Sort students by 'createdAt' in descending order
-      const sortedStudents = response.data.sort(
-        (a, b) => new Date(b.createdAt) - new Date(a.createdAt)
-      );
-
-      setStudents(response.data);
-    } catch (err) {
-      console.error("Error fetching students:", err);
-      setError("Failed to fetch students");
-    } finally {
-      setLoading(false);
-    }
-  };
-
-  const handleDelete = async (id) => {
+  const handleDelete = (id) => {
     const confirmDelete = window.confirm(
       "Are you sure you want to delete this student?"
     );
     if (!confirmDelete) return;
 
-    try {
-      const token = localStorage.getItem("token");
-      await axios.delete(`http://localhost:5000/api/students/${id}`, {
-        headers: { Authorization: `Bearer ${token}` },
-      });
-
-      setStudents(students.filter((student) => student._id !== id));
-    } catch (err) {
-      console.error("Error deleting student:", err);
-      alert("Failed to delete student");
-    }
+    setFilteredStudents((prevStudents) =>
+      prevStudents.filter((student) => student._id !== id)
+    );
   };
 
   const isStudentSelected = (student) => {
@@ -79,22 +89,24 @@ const AllStudents = () => {
     );
   };
 
+  if (loading) return <p className="text-center text-gray-700">Loading...</p>;
+  if (error) return <p className="text-center text-red-500">{error}</p>;
+
   return (
     <div className="h-full w-full bg-gray-50 px-3 py-5 xl:px-20 xl:py-12">
       <header className="flex w-full justify-between">
         <h1 className="text-3xl font-bold text-gray-900 xl:text-3xl">
-          All Students
+          Passed Out Students
         </h1>
       </header>
 
       <div className="mt-5">
         <Card shadow={false}>
-          {loading && <p>Loading students...</p>}
-          {error && <p className="text-red-500">{error}</p>}
+          {filteredStudents.length === 0 && (
+            <p>No passed out students found.</p>
+          )}
 
-          {!loading && students.length === 0 && <p>No students found.</p>}
-
-          {!loading && students.length > 0 && (
+          {filteredStudents.length > 0 && (
             <>
               {/* Filters */}
               <div className="mb-4 flex flex-wrap gap-4">
@@ -103,7 +115,7 @@ const AllStudents = () => {
                   placeholder="Select by ID..."
                   maxWidth="max-w-lg"
                 >
-                  {students.map((item) => (
+                  {filteredStudents.map((item) => (
                     <MultiSelectBoxItem
                       key={item._id}
                       value={item._id}
@@ -117,7 +129,7 @@ const AllStudents = () => {
                   placeholder="Select by Name..."
                   maxWidth="max-w-lg"
                 >
-                  {students.map((item) => (
+                  {filteredStudents.map((item) => (
                     <MultiSelectBoxItem
                       key={item._id + "-name"}
                       value={`${item.studentFirstName} ${item.studentMiddleLastName}`}
@@ -143,7 +155,7 @@ const AllStudents = () => {
                 </TableHead>
 
                 <TableBody>
-                  {students
+                  {filteredStudents
                     .filter((item) => isStudentSelected(item))
                     .map((item) => (
                       <TableRow key={item._id}>
@@ -168,20 +180,19 @@ const AllStudents = () => {
                         <TableCell>{item.guardianFullName}</TableCell>
                         <TableCell>{item.guardianPhone}</TableCell>
                         <TableCell>{item.studentStatus}</TableCell>
-
                         <TableCell>
                           <Link
                             to={`/students/${item._id}`}
-                            className="mx-3 rounded-md  bg-gray-900 py-[3px] px-3 text-xs text-gray-50 transition-all hover:bg-gray-700"
+                            className="rounded-md bg-gray-900 py-[3px] px-3 text-xs text-gray-50 transition-all hover:bg-gray-700"
                           >
                             View
                           </Link>
-                          <Link
+                          {/* <Link
                             to={`/students/edit/${item._id}`}
-                            className="rounded-md bg-gray-900 py-[3px] px-3 text-xs text-gray-50 transition-all hover:bg-gray-700"
+                            className="ml-3 rounded-full bg-orange-200 py-[3px] px-3 text-xs text-orange-900 transition-all hover:bg-orange-100"
                           >
                             Edit
-                          </Link>
+                          </Link> */}
                           {/* <button
                             onClick={() => handleDelete(item._id)}
                             className="ml-3 rounded-full bg-red-200 py-[3px] px-3 text-xs text-red-900 transition-all hover:bg-red-100"
@@ -199,6 +210,6 @@ const AllStudents = () => {
       </div>
     </div>
   );
-};
+}
 
-export default AllStudents;
+export default PassedOut;
