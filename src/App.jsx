@@ -18,6 +18,11 @@ import UpTextbook from "./pages/Notes/UpTextbook";
 import UpPastpapers from "./pages/Notes/UpPastpapers";
 import Transport from "./pages/Transport/Transport";
 import AdminLogin from "./pages/AdminLogin/AdminLogin";
+import Teachers from "./pages/Teachers/Teachers";
+import AddTeacher from "./pages/Teachers/AddTeacher";
+import SingleTeacher from "./pages/Teachers/SingleTeacher";
+import ViewLecture from "./pages/Lectures/ViewLecture";
+import Employee from "./pages/EmployeeManagement/Employee";
 
 function App() {
   const location = useLocation();
@@ -78,6 +83,10 @@ function App() {
               <Route exact path="/lectures" element={<LecturesPage />} />
               <Route exact path="/uploadlecture" element={<UploadLecture />} />
               <Route exact path="/alllectures" element={<AllLectures />} />
+              <Route
+                path="/view-lecture/:lectureId"
+                element={<ViewLecture />}
+              />
 
               {/* NOTES */}
               <Route exact path="/notes" element={<Notes />} />
@@ -87,6 +96,18 @@ function App() {
 
               {/* TRANSPORT */}
               <Route exact path="/transport" element={<Transport />} />
+
+              {/* Teacher */}
+              <Route exact path="/teachers" element={<Teachers />} />
+              <Route exact path="/teachers/add" element={<AddTeacher />} />
+              <Route
+                exact
+                path="/teachers/:teacherId"
+                element={<SingleTeacher />}
+              />
+
+              {/* Employee Management */}
+              <Route exact path="/employee" element={<Employee />} />
             </>
           )}
         </Routes>

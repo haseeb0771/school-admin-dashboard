@@ -14,6 +14,7 @@ import {
 import { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 import axios from "axios";
+import { DateTime } from "luxon";
 
 const AllStudents = () => {
   const [students, setStudents] = useState([]);
@@ -23,26 +24,47 @@ const AllStudents = () => {
   const [error, setError] = useState("");
 
   useEffect(() => {
-    const fetchStudents = async () => {
-      try {
-        const token = localStorage.getItem("token"); // Get token from localStorage
-        const response = await axios.get("http://localhost:5000/api/students", {
-          headers: {
-            Authorization: `Bearer ${token}`,
-          },
-        });
-
-        setStudents(response.data); // Set students from API response
-      } catch (err) {
-        console.error("Error fetching students:", err);
-        setError("Failed to fetch students");
-      } finally {
-        setLoading(false);
-      }
-    };
-
     fetchStudents();
   }, []);
+
+  const fetchStudents = async () => {
+    try {
+      const token = localStorage.getItem("token");
+      const response = await axios.get("http://localhost:5000/api/students", {
+        headers: { Authorization: `Bearer ${token}` },
+      });
+      // Sort students by 'createdAt' in descending order
+      const sortedStudents = response.data.sort(
+        (a, b) => new Date(b.createdAt) - new Date(a.createdAt)
+      );
+
+      setStudents(response.data);
+    } catch (err) {
+      console.error("Error fetching students:", err);
+      setError("Failed to fetch students");
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const handleDelete = async (id) => {
+    const confirmDelete = window.confirm(
+      "Are you sure you want to delete this student?"
+    );
+    if (!confirmDelete) return;
+
+    try {
+      const token = localStorage.getItem("token");
+      await axios.delete(`http://localhost:5000/api/students/${id}`, {
+        headers: { Authorization: `Bearer ${token}` },
+      });
+
+      setStudents(students.filter((student) => student._id !== id));
+    } catch (err) {
+      console.error("Error deleting student:", err);
+      alert("Failed to delete student");
+    }
+  };
 
   const isStudentSelected = (student) => {
     const isIdMatch = selectedIds.includes(student._id);
@@ -63,11 +85,6 @@ const AllStudents = () => {
         <h1 className="text-3xl font-bold text-gray-900 xl:text-3xl">
           All Students
         </h1>
-        <div className="flex gap-4">
-          <button className="hidden h-9 rounded border border-gray-300 bg-white px-8 text-base font-medium text-gray-700 transition-all hover:border-gray-800 hover:bg-gray-800 hover:text-white sm:block">
-            Export
-          </button>
-        </div>
       </header>
 
       <div className="mt-5">
@@ -130,7 +147,7 @@ const AllStudents = () => {
                     .map((item) => (
                       <TableRow key={item._id}>
                         <TableCell>
-                          <Badge text={item._id} size="xs" color="sky" />
+                          <Badge text={item.studentId} size="xs" color="sky" />
                         </TableCell>
                         <TableCell>
                           {item.studentFirstName +
@@ -138,9 +155,15 @@ const AllStudents = () => {
                             item.studentMiddleLastName}
                         </TableCell>
                         <TableCell>
-                          {item.classEnrolled + " / " + item.sectionAssigned}
+                          {item.classEnrolled.className +
+                            " / " +
+                            item.sectionAssigned}
                         </TableCell>
-                        <TableCell>{item.dateOfAdmission}</TableCell>
+                        <TableCell>
+                          {DateTime.fromISO(item.createdAt).toFormat(
+                            "dd/MM/yyyy"
+                          )}
+                        </TableCell>
                         <TableCell>{item.guardianFullName}</TableCell>
                         <TableCell>{item.guardianPhone}</TableCell>
                         <TableCell>
@@ -156,6 +179,12 @@ const AllStudents = () => {
                           >
                             Edit
                           </Link>
+                          <button
+                            onClick={() => handleDelete(item._id)}
+                            className="ml-3 rounded-full bg-red-200 py-[3px] px-3 text-xs text-red-900 transition-all hover:bg-red-100"
+                          >
+                            Delete
+                          </button>
                         </TableCell>
                       </TableRow>
                     ))}

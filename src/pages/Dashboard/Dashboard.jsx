@@ -12,13 +12,30 @@ function Dashboard() {
   });
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
-
   useEffect(() => {
     const fetchStudentData = async () => {
       try {
+        const token = localStorage.getItem("token");
+        const headers = { Authorization: `Bearer ${token}` };
+
+        // If the token is missing, set an error
+        if (!token) {
+          setError("No authentication token found.");
+          setLoading(false);
+          return;
+        }
+
         const response = await fetch(
-          "http://localhost:5000/api/students/count"
+          "http://localhost:5000/api/students/count",
+          {
+            method: "GET",
+            headers: {
+              "Content-Type": "application/json",
+              Authorization: `Bearer ${token}`, // Add token to the Authorization header
+            },
+          }
         );
+
         if (!response.ok) throw new Error("Failed to fetch data");
 
         const data = await response.json();

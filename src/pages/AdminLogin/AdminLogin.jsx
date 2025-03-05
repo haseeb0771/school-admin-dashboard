@@ -27,32 +27,38 @@ const AdminLogin = () => {
     <div className="flex h-screen items-center justify-center bg-gray-100">
       <form
         onSubmit={handleSubmit}
-        className="w-96 rounded-lg bg-white p-8 shadow-lg"
+        className="h-3/4 w-1/3 rounded-lg bg-white p-8 shadow-lg"
       >
-        <h2 className="mb-4 text-2xl font-bold">Admin Login</h2>
+        <div className="mt-20 text-center">
+          <h2 className="mb-4 mt-5 text-2xl font-bold">
+            Login To Your Account
+          </h2>
+        </div>
         {error && <p className="mb-4 text-red-500">{error}</p>}
-        <input
-          type="email"
-          placeholder="Email"
-          value={email}
-          onChange={(e) => setEmail(e.target.value)}
-          className="mb-4 w-full rounded border p-2"
-          required
-        />
-        <input
-          type="password"
-          placeholder="Password"
-          value={password}
-          onChange={(e) => setPassword(e.target.value)}
-          className="mb-4 w-full rounded border p-2"
-          required
-        />
-        <button
-          type="submit"
-          className="w-full rounded bg-blue-500 p-2 text-white hover:bg-blue-600"
-        >
-          Login
-        </button>
+        <div className="flex flex-col items-center justify-center gap-4">
+          <input
+            type="username"
+            placeholder="Email"
+            value={email}
+            onChange={(e) => setEmail(e.target.value)}
+            className="mb-4 mt-14 w-96 rounded border p-2"
+            required
+          />
+          <input
+            type="password"
+            placeholder="Password"
+            value={password}
+            onChange={(e) => setPassword(e.target.value)}
+            className="mb-4 w-96 rounded border p-2"
+            required
+          />
+          <button
+            type="submit"
+            className="w-60 rounded bg-blue-500 p-2 text-white hover:bg-blue-600"
+          >
+            Login
+          </button>
+        </div>
       </form>
     </div>
   );

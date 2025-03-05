@@ -1,5 +1,5 @@
 import React, { useRef, useState } from "react";
-import { Link } from "react-router-dom";
+import { json, Link } from "react-router-dom";
 import axios from "axios";
 import AcademicDetailsForm from "./sc_forms/AcademicDetailsForm";
 import GuardianDetailsForm from "./sc_forms/GuardianDetailsForm";
@@ -34,36 +34,37 @@ function NewAdmission() {
     guardianWhatsApp: "",
     previousSchoolName: "",
     previousSchoolAddress: "",
-    studentImage: null, // Store the selected image
+    studentImage: null, // Added for storing uploaded image
   });
 
   const submitButtonRef = useRef();
 
-  const handleFileChange = (e) => {
-    setNewStudent({ ...newStudent, studentImage: e.target.files[0] });
+  const handleImageChange = (event) => {
+    const file = event.target.files[0];
+    setNewStudent((prev) => ({
+      ...prev,
+      studentImage: file,
+    }));
   };
 
   const submitFormHandler = async (event) => {
     event.preventDefault();
 
     const formData = new FormData();
-    Object.keys(newStudent).forEach((key) => {
+    for (const key in newStudent) {
       formData.append(key, newStudent[key]);
-    });
+    }
 
     try {
-      const response = await axios.post(
-        "http://localhost:5000/api/students/add",
-        formData,
-        {
-          headers: {
-            "Content-Type": "multipart/form-data",
-            Authorization: `Bearer ${localStorage.getItem("token")}`,
-          },
-        }
-      );
+      const response = await fetch("http://localhost:5000/api/students/add", {
+        method: "POST",
+        headers: {
+          Authorization: `Bearer ${localStorage.getItem("token")}`,
+        },
+        body: formData,
+      });
 
-      if (response.status === 201) {
+      if (response.ok) {
         alert("Student admitted successfully");
         setNewStudent({
           studentFirstName: "",
@@ -94,7 +95,7 @@ function NewAdmission() {
         alert("Failed to admit student");
       }
     } catch (error) {
-      console.error("Error:", error);
+      console.log("Error:", error);
       alert("An error occurred while admitting the student");
     }
   };
@@ -106,13 +107,6 @@ function NewAdmission() {
           New Admission
         </h1>
         <div className="flex gap-4">
-          <button
-            onClick={submitFormHandler}
-            className="h-9 rounded border border-blue-700 bg-blue-700 px-8 text-base font-medium text-white transition-all hover:border-blue-800 hover:bg-blue-800"
-          >
-            Admit
-          </button>
-
           <Link
             to="/newadmission/bulkadmit"
             className="hidden h-9 rounded border border-gray-300 bg-white px-8 text-base font-medium text-gray-700 transition-all hover:border-gray-800 hover:bg-gray-800 hover:text-white sm:flex sm:items-center sm:justify-center"
@@ -121,6 +115,7 @@ function NewAdmission() {
           </Link>
         </div>
       </header>
+
       <div className="ie-na-content mt-5 flex w-full flex-col gap-10 2xl:flex-row">
         <form
           onSubmit={submitFormHandler}
@@ -134,17 +129,6 @@ function NewAdmission() {
             <IndividualDetailsForm
               newStudent={newStudent}
               setNewStudent={setNewStudent}
-            />
-          </div>
-
-          {/* Image Upload Input */}
-          <div className="w-full rounded-md border border-gray-200 bg-white p-4">
-            <label className="text-lg font-medium">Student Image</label>
-            <input
-              type="file"
-              accept="image/*"
-              onChange={handleFileChange}
-              className="mt-2 block w-full rounded border p-2"
             />
           </div>
 
@@ -183,6 +167,19 @@ function NewAdmission() {
             />
           </div>
 
+          {/* Image Upload */}
+          <div className="w-full rounded-md border border-gray-200 bg-white p-6">
+            <label className="block text-sm font-medium text-gray-600">
+              Upload Student Image
+            </label>
+            <input
+              type="file"
+              accept="image/*"
+              onChange={handleImageChange}
+              className="mt-2 block w-full rounded border-gray-300 text-gray-900"
+            />
+          </div>
+
           <button
             ref={submitButtonRef}
             type="submit"
@@ -191,6 +188,94 @@ function NewAdmission() {
             Admit
           </button>
         </form>
+
+        <div className="ie-nc-summary h-fit flex-1 rounded-md border border-gray-200 bg-white py-4 px-6">
+          <span className="summaryTitle text-lg font-medium">Summary</span>
+          <div className="summaryInfo mt-3 rounded-md bg-gray-50 p-5">
+            <span className="text block w-fit rounded-full bg-gray-900 px-3 py-1 text-xs text-white">
+              {newStudent.studentId}
+            </span>
+            <span className="mt-2 block whitespace-normal text-3xl font-semibold text-gray-900">
+              {newStudent.studentFirstName != "" ? (
+                newStudent.studentFirstName +
+                " " +
+                newStudent.studentMiddleLastName
+              ) : (
+                <UpdateSpan />
+              )}
+            </span>
+            <div className="mt-2 text-sm font-medium text-gray-700">
+              <span className="font-semibold">Class Enrolled: </span>
+              <span>
+                {newStudent.classEnrolled != "" ? (
+                  newStudent.classEnrolled
+                ) : (
+                  <UpdateSpan />
+                )}
+              </span>
+            </div>
+            <div className="mt-2 text-sm font-medium text-gray-700">
+              <span className="font-semibold">Section Assigned: </span>
+              <span>
+                {newStudent.sectionAssigned != "" ? (
+                  newStudent.sectionAssigned
+                ) : (
+                  <UpdateSpan />
+                )}
+              </span>
+            </div>
+            <div className="mt-2 text-sm font-medium text-gray-700">
+              <span className="font-semibold">Blood Group: </span>
+              <span>
+                {newStudent.studentBloodGroup != "" ? (
+                  newStudent.studentBloodGroup
+                ) : (
+                  <UpdateSpan />
+                )}
+              </span>
+            </div>
+            <div className="mt-2 text-sm font-medium text-gray-700">
+              <span className="font-semibold">Date Of Birth: </span>
+              <span>
+                {newStudent.studentDateOfBirth != "" ? (
+                  newStudent.studentDateOfBirth
+                ) : (
+                  <UpdateSpan />
+                )}
+              </span>
+            </div>
+            <div className="mt-2 text-sm font-medium text-gray-700">
+              <span className="font-semibold">Address: </span>
+              <span>
+                {newStudent.addressStreet != "" ? (
+                  newStudent.addressStreet
+                ) : (
+                  <UpdateSpan />
+                )}
+              </span>
+            </div>
+            <div className="mt-2 text-sm font-medium text-gray-700">
+              <span className="font-semibold">Guardian's Name: </span>
+              <span>
+                {newStudent.guardianFullName != "" ? (
+                  newStudent.guardianFullName
+                ) : (
+                  <UpdateSpan />
+                )}
+              </span>
+            </div>
+            <div className="mt-2 text-sm font-medium text-gray-700">
+              <span className="font-semibold">Phone: </span>
+              <span>
+                {newStudent.guardianPhone != "" ? (
+                  newStudent.guardianPhone
+                ) : (
+                  <UpdateSpan />
+                )}
+              </span>
+            </div>
+            </div>
+        </div>
       </div>
     </div>
   );

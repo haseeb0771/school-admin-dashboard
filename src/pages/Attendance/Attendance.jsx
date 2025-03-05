@@ -59,6 +59,7 @@ function Attendance() {
 
       {/* CTA Sections */}
       <div className="mt-6 flex justify-between gap-4">
+        {/* Total Students */}
         <div className="flex w-1/3 flex-col items-center rounded-lg bg-white p-4 shadow-md transition-shadow hover:shadow-lg">
           <Users className="mb-2 h-8 w-8 text-blue-500" />
           <h2 className="text-center text-lg font-semibold text-gray-700">
@@ -66,6 +67,8 @@ function Attendance() {
           </h2>
           <p className="text-2xl font-bold text-blue-500">60</p>
         </div>
+
+        {/* Present Students */}
         <div className="flex w-1/3 flex-col items-center rounded-lg bg-white p-4 shadow-md transition-shadow hover:shadow-lg">
           <UserCheck className="mb-2 h-8 w-8 text-green-500" />
           <h2 className="text-center text-lg font-semibold text-gray-700">
@@ -73,6 +76,8 @@ function Attendance() {
           </h2>
           <p className="text-2xl font-bold text-green-500">50</p>
         </div>
+
+        {/* Absent Students */}
         <div className="flex w-1/3 flex-col items-center rounded-lg bg-white p-4 shadow-md transition-shadow hover:shadow-lg">
           <UserX className="mb-2 h-8 w-8 text-red-500" />
           <h2 className="text-center text-lg font-semibold text-gray-700">
@@ -82,6 +87,7 @@ function Attendance() {
         </div>
       </div>
 
+      {/* Absent Students List */}
       <div className="mt-8 flex flex-col gap-4">
         <div
           className={`relative w-full rounded-lg border border-gray-200 bg-white p-4 shadow-md transition-all duration-300 hover:scale-105 hover:shadow-lg ${
@@ -117,7 +123,10 @@ function Attendance() {
                 <div>{student.class}</div>
                 <div className="flex items-center justify-between">
                   <span>{student.fine}</span>
-                  <button className="ml-4 rounded bg-red-500 py-1 px-3 text-white hover:bg-red-600">
+                  <button
+                    className="ml-4 rounded bg-red-500 py-1 px-3 text-white hover:bg-red-600"
+                    onClick={(e) => e.stopPropagation()} // Prevent bubbling
+                  >
                     Stuck Off
                   </button>
                 </div>
@@ -126,6 +135,7 @@ function Attendance() {
           ))}
         </div>
 
+        {/* Search and Edit Students */}
         <div className="w-full rounded-lg border border-gray-200 bg-white p-4 shadow-md transition-all duration-300">
           <h2 className="mb-4 text-lg font-semibold text-gray-700">
             Find and Edit Student Attendance

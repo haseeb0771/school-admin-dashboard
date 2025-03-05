@@ -3,16 +3,15 @@ import { useParams } from "react-router-dom";
 import { PaperClipIcon } from "@heroicons/react/24/outline";
 import User from "../../assets/user.png";
 
-function SingleStudent() {
-  const { studentId } = useParams();
-  const [student, setStudent] = useState(null);
+function SingleTeacher() {
+  const { teacherId } = useParams(); // Change studentId to teacherId
+  const [teacher, setTeacher] = useState(null);
   const [className, setClassName] = useState("");
-  const [sectionName, setSectionName] = useState("");
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
 
   useEffect(() => {
-    const fetchStudent = async () => {
+    const fetchTeacher = async () => {
       try {
         const token = localStorage.getItem("token"); // Get the token from localStorage
         if (!token) {
@@ -24,43 +23,34 @@ function SingleStudent() {
           Authorization: `Bearer ${token}`, // Include token in the header
         };
 
+        // Fetch teacher data
         const response = await fetch(
-          `http://localhost:5000/api/students/${studentId}`,
+          `http://localhost:5000/api/teachers/${teacherId}`,
           {
             method: "GET",
             headers: headers, // Add headers to the request
           }
         );
         if (!response.ok) {
-          throw new Error("Failed to fetch student data");
+          throw new Error("Failed to fetch teacher data");
         }
-        const studentData = await response.json();
-        setStudent(studentData);
+        const teacherData = await response.json();
+        setTeacher(teacherData);
 
-        // Fetch all classes
-        const classRes = await fetch(`http://localhost:5000/api/classes/all`, {
-          headers: headers, // Add headers to the request
-        });
-        if (classRes.ok) {
-          const classData = await classRes.json();
-          // Find class name by ID
-          const foundClass = classData.find(
-            (cls) => cls._id === studentData.classEnrolled
-          );
-          if (foundClass) setClassName(foundClass.className);
-        }
-
-        // Fetch section name
-        if (studentData.sectionAssigned) {
-          const sectionRes = await fetch(
-            `http://localhost:5000/api/sections/${studentData.sectionAssigned}`,
+        // Fetch class name if needed
+        if (teacherData.classAssigned) {
+          const classRes = await fetch(
+            `http://localhost:5000/api/classes/all`,
             {
               headers: headers, // Add headers to the request
             }
           );
-          if (sectionRes.ok) {
-            const sectionData = await sectionRes.json();
-            setSectionName(sectionData.sectionName || "N/A");
+          if (classRes.ok) {
+            const classData = await classRes.json();
+            const foundClass = classData.find(
+              (cls) => cls._id === teacherData.classAssigned
+            );
+            if (foundClass) setClassName(foundClass.className);
           }
         }
       } catch (err) {
@@ -70,20 +60,19 @@ function SingleStudent() {
       }
     };
 
-    fetchStudent();
-  }, [studentId]);
+    fetchTeacher();
+  }, [teacherId]);
 
   if (loading) return <p className="text-center text-gray-700">Loading...</p>;
   if (error) return <p className="text-center text-red-500">{error}</p>;
-  if (!student)
-    return <p className="text-center text-gray-700">No student found.</p>;
+  if (!teacher)
+    return <p className="text-center text-gray-700">No teacher found.</p>;
 
   return (
     <div className="h-full w-full bg-gray-50 px-3 py-5 xl:px-20 xl:py-12">
       <header className="flex w-full justify-between">
         <h3 className="text-xl font-semibold text-gray-900">
-          {student.studentId} - {student.studentFirstName}{" "}
-          {student.studentMiddleLastName || ""}
+          {teacher.teacherId} - {teacher.firstName}
         </h3>
         <button className="h-9 rounded border border-blue-700 bg-blue-700 px-8 text-base font-medium text-white transition-all hover:border-blue-800 hover:bg-blue-800">
           Edit
@@ -100,8 +89,8 @@ function SingleStudent() {
             <div className="h-24 w-24 overflow-hidden rounded-full border border-gray-300 bg-gray-200">
               <img
                 src={
-                  student.studentImage
-                    ? `http://localhost:5000${student.studentImage}`
+                  teacher.teacherImage
+                    ? `http://localhost:5000${teacher.teacherImage}`
                     : User
                 }
                 alt="Profile"
@@ -111,20 +100,24 @@ function SingleStudent() {
           </div>
           <div className="border-t border-gray-200">
             {[
-              { label: "First name", value: student.studentFirstName },
+              { label: "First name", value: teacher.firstName },
+              { label: "Last name", value: teacher.lastName },
+              { label: "Gender", value: teacher.gender },
               {
-                label: "Middle and Last name",
-                value: student.studentMiddleLastName,
+                label: "Date of Birth",
+                value: new Date(teacher.dateOfBirth)
+                  .toLocaleDateString("en-GB", {
+                    day: "2-digit",
+                    month: "numeric",
+                    year: "numeric",
+                  })
+                  .replace(/\//g, "-"),
               },
-              { label: "Date of birth", value: student.studentDateOfBirth },
-              { label: "Religion", value: student.studentReligion },
-              { label: "Caste", value: student.studentCaste },
-              { label: "Blood group", value: student.studentBloodGroup },
-              { label: "Father's full name", value: student.fatherFullName },
-              { label: "Mother's full name", value: student.motherFullName },
-              { label: "Street address", value: student.addressStreet },
-              { label: "City", value: student.addressCity },
-              { label: "State / Province", value: student.addressState },
+              { label: "Religion", value: teacher.religion },
+              { label: "Blood group", value: teacher.bloodGroup },
+              { label: "Phone Number", value: teacher.phoneNumber },
+              { label: "Street address", value: teacher.streetAddress },
+              { label: "City", value: teacher.city },
             ].map((item, index) => (
               <div
                 key={index}
@@ -150,9 +143,17 @@ function SingleStudent() {
           </div>
           <div className="border-t border-gray-200">
             {[
-              { label: "Class", value: className },
-              { label: "Section", value: student.sectionAssigned },
-              { label: "Date of admission", value: student.createdAt },
+              {
+                label: "Subject Specialization",
+                value: teacher.subjectSpecialization,
+              },
+              {
+                label: "Date of Joining",
+                value: new Date(teacher.joiningDate).toLocaleDateString(
+                  "en-GB",
+                  { day: "2-digit", month: "numeric", year: "numeric" }
+                ),
+              },
             ].map((item, index) => (
               <div
                 key={index}
@@ -173,4 +174,4 @@ function SingleStudent() {
   );
 }
 
-export default SingleStudent;
+export default SingleTeacher;

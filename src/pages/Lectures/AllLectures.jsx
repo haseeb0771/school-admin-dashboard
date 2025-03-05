@@ -1,4 +1,5 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
+import axios from "axios";
 import thumbnail from "../../assets/thumbnail.jpg";
 import { Link } from "react-router-dom";
 
@@ -9,45 +10,73 @@ function AllLectures() {
     teacherName: "",
   });
 
-  const lectures = [
-    {
-      id: 1,
-      title: "Introduction to Algebra",
-      topicNumber: "101",
-      subject: "Mathematics",
-      class: "10th Grade",
-      teacherName: "Mr. Smith",
-      description: "Basics of algebra including variables and equations.",
-      uploadDate: "2025-02-01",
-    },
-    {
-      id: 2,
-      title: "World War II Overview",
-      topicNumber: "202",
-      subject: "History",
-      class: "9th Grade",
-      teacherName: "Mrs. Johnson",
-      description:
-        "A comprehensive overview of the causes and effects of WWII.",
-      uploadDate: "2025-02-03",
-    },
-    // Add more lecture objects as needed
-  ];
+  const [lectures, setLectures] = useState([]); // State to store fetched lectures
 
+  // Fetch all lectures from the backend API
+  useEffect(() => {
+    const fetchLectures = async () => {
+      try {
+        const token = localStorage.getItem("token"); // Get token from localStorage
+        const headers = { Authorization: `Bearer ${token}` };
+
+        const response = await axios.get(
+          "http://localhost:5000/api/lectures/", // Replace with your API endpoint
+          { headers }
+        );
+        const sortedLectures = response.data.sort(
+          (a, b) => new Date(b.createdAt) - new Date(a.createdAt)
+        );
+        setLectures(response.data); // Set fetched lectures to state
+      } catch (error) {
+        console.error("Error fetching lectures:", error);
+      }
+    };
+
+    fetchLectures();
+  }, []);
+
+  // Handle filter input changes
   const handleFilterChange = (e) => {
     const { name, value } = e.target;
     setFilters((prev) => ({ ...prev, [name]: value }));
   };
 
-  const filteredLectures = lectures.filter((lecture) => {
-    return (
-      lecture.title.toLowerCase().includes(filters.title.toLowerCase()) &&
-      lecture.topicNumber.includes(filters.topicNumber) &&
-      lecture.teacherName
-        .toLowerCase()
-        .includes(filters.teacherName.toLowerCase())
+  // Filter lectures based on filter inputs
+  const filteredLectures = lectures;
+
+  const handleDeleteLecture = async (lectureId) => {
+    const isConfirmed = window.confirm(
+      "Are you sure you want to delete this lecture?"
     );
-  });
+    if (!isConfirmed) return; // Stop if the user cancels
+
+    try {
+      const token = localStorage.getItem("token"); // Get token from localStorage
+      const headers = { Authorization: `Bearer ${token}` };
+
+      console.log("Deleting Lecture ID:", lectureId); // Debugging log
+
+      // Call the delete API
+      await axios.delete(`http://localhost:5000/api/lectures/${lectureId}`, {
+        headers,
+      });
+
+      console.log("Lecture deleted successfully!");
+
+      // Remove the deleted lecture from the state
+      setLectures((prevLectures) =>
+        prevLectures.filter((lecture) => lecture._id !== lectureId)
+      );
+    } catch (error) {
+      console.error(
+        "Error deleting lecture:",
+        error.response?.data || error.message
+      );
+    }
+  };
+  // Debugging: Log lectures and filtered lectures
+  console.log("Lectures:", lectures);
+  console.log("Filtered Lectures:", filteredLectures);
 
   return (
     <div className="h-full w-full bg-gray-50 px-3 py-5 xl:px-20 xl:py-12">
@@ -57,6 +86,7 @@ function AllLectures() {
         </h1>
       </header>
 
+      {/* Filter inputs */}
       <div className="mt-6 grid grid-cols-1 gap-4 md:grid-cols-3">
         <input
           type="text"
@@ -84,55 +114,66 @@ function AllLectures() {
         />
       </div>
 
-      <div className="mt-8 grid grid-cols-1 gap-6 md:grid-cols-2 lg:grid-cols-3">
-        {filteredLectures.map((lecture) => (
-          <div
-            key={lecture.id}
-            className="group relative rounded-lg border bg-white shadow-md transition-transform duration-300 hover:z-20 hover:scale-110 hover:shadow-2xl"
-          >
-            <img
-              src={thumbnail}
-              alt={lecture.title}
-              className="h-48 w-full rounded-t-lg object-cover"
-            />
-            <div className="p-4">
-              <h2 className="text-xl font-bold text-gray-900">
-                {lecture.title}
-              </h2>
-              <p className="text-gray-600">Topic: {lecture.topicNumber}</p>
-              <p className="text-gray-600">Teacher: {lecture.teacherName}</p>
-            </div>
-            <div className="absolute inset-0 hidden flex-col justify-center rounded-lg border border-gray-300 bg-white p-6 shadow-lg group-hover:flex group-hover:translate-y-[-20%] group-hover:scale-105">
-              <p className="mb-2 font-medium text-gray-900">
-                Subject: {lecture.subject}
-              </p>
-              <p className="mb-2 font-medium text-gray-900">
-                Class: {lecture.class}
-              </p>
-              <p className="mb-2 text-gray-700">{lecture.description}</p>
-              <p className="mb-4 text-gray-500">
-                Uploaded on: {lecture.uploadDate}
-              </p>
-              <div className="flex space-x-4">
-                <Link
-                  to="/watch"
-                  className="rounded-lg bg-blue-600 px-4 py-2 text-white hover:bg-blue-700"
-                >
-                  Watch
-                </Link>
-                <Link
-                  to="/edit"
-                  className="rounded-lg bg-yellow-500 px-4 py-2 text-white hover:bg-yellow-600"
-                >
-                  Edit
-                </Link>
-                <Link className="rounded-lg bg-red-600 px-4 py-2 text-white hover:bg-red-700">
-                  Delete
-                </Link>
+      {/* Display filtered lectures */}
+      <div className="from-white-500 to-white-500 mt-12 rounded-2xl border border-gray-300 bg-gradient-to-r py-8 px-6 text-black shadow-xl">
+        <h2 className="mb-4 text-2xl font-bold">All Lectures</h2>
+        <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-4">
+          {filteredLectures.length === 0 ? (
+            <div className="text-center text-gray-600">No lectures found.</div>
+          ) : (
+            filteredLectures.map((lecture) => (
+              <div
+                key={lecture._id}
+                className="bg-white-600 transform rounded-lg border border-gray-300 p-4 shadow-sm transition-transform duration-300 hover:scale-105 hover:shadow-lg"
+              >
+                {/* Render default thumbnail if thumbnailUrl is not provided */}
+                <img
+                  src={
+                    lecture.thumbnailUrl
+                      ? `http://localhost:5000${lecture.thumbnailUrl}`
+                      : thumbnail
+                  }
+                  alt={`Thumbnail for ${lecture.title || "N/A"}`}
+                  className="border-grey mb-3 h-40 w-full rounded-md border object-cover"
+                />
+                <h3 className="text-lg font-semibold">
+                  {lecture.title || "N/A"}
+                </h3>
+                <p className="text-sm">
+                  Class: {lecture.classEnrolled?.className || "N/A"}
+                </p>
+                <p className="text-sm">Subject: {lecture.subject || "N/A"}</p>
+                {lecture.teacher && (
+                  <p className="text-sm">
+                    Teacher: {lecture.teacher.firstName || "N/A"}{" "}
+                    {lecture.teacher.lastName || ""}
+                  </p>
+                )}
+                <p className="text-sm">
+                  Uploaded on:{" "}
+                  {lecture.createdAt
+                    ? new Date(lecture.createdAt).toLocaleDateString()
+                    : "N/A"}
+                </p>
+                {/* Edit and Delete buttons */}
+                <div className="mt-4 flex space-x-2">
+                  <Link className="hover flex-1 rounded-md bg-blue-600 px-2 py-1 text-center text-sm text-white hover:scale-105 hover:bg-blue-800">
+                    Watch
+                  </Link>
+                  <button className="hover flex-1 rounded-md bg-yellow-600 px-2 py-1 text-sm text-white hover:scale-105 hover:bg-yellow-800">
+                    Edit
+                  </button>
+                  <button
+                    onClick={() => handleDeleteLecture(lecture._id)}
+                    className="hover flex-1 rounded-md bg-red-600 px-2 py-1 text-sm text-white hover:scale-105 hover:bg-red-800"
+                  >
+                    Delete
+                  </button>
+                </div>
               </div>
-            </div>
-          </div>
-        ))}
+            ))
+          )}
+        </div>
       </div>
     </div>
   );
