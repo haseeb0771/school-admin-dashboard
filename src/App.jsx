@@ -1,32 +1,31 @@
 import { Route, Routes, useLocation, Navigate } from "react-router-dom";
 import { useEffect } from "react";
 import "@tremor/react/dist/esm/tremor.css";
-import Sidebar from "./components/Sidebar";
-import Dashboard from "./pages/Dashboard/Dashboard";
+import Sidebar from "./components/commonComponents/Sidebar";
+import Dashboard from "./pages/AdminPages/Dashboard/Dashboard";
 import NewAdmission from "./pages/NewAdmission/NewAdmission";
 import BulkAdmit from "./pages/NewAdmission/BulkAdmit/BulkAdmit";
-import AllStudents from "./pages/AllStudents/AllStudents";
-import Attendance from "./pages/Attendance/Attendance";
-import SingleStudent from "./pages/AllStudents/SingleStudent";
-import LecturesPage from "./pages/Lectures/LecturesPage";
-import UploadLecture from "./pages/Lectures/UploadLecture";
-import AllLectures from "./pages/Lectures/AllLectures";
-import Notes from "./pages/Notes/Notes";
-import UpTeacherNotes from "./pages/Notes/UpTeacherNotes";
-import UpTextbook from "./pages/Notes/UpTextbook";
-import UpPastpapers from "./pages/Notes/UpPastpapers";
-import Transport from "./pages/Transport/Transport";
-import AdminLogin from "./pages/AdminLogin/AdminLogin";
-import Teachers from "./pages/Teachers/Teachers";
-import AddTeacher from "./pages/Teachers/AddTeacher";
-import SingleTeacher from "./pages/Teachers/SingleTeacher";
-import ViewLecture from "./pages/Lectures/ViewLecture";
-import Employee from "./pages/EmployeeManagement/Employee";
-import Finance from "./pages/Finance/Finance";
-import PassedOut from "./pages/PassedOutStudent/PassedOut";
-import EditStudent from "./pages/AllStudents/EditStudent";
-import DragDrop from "./pages/DragDrop/DragDrop";
-import UpdateTeacher from "./pages/Teachers/UpdateTeacher";
+import AllStudents from "./pages/AdminPages/AllStudents/AllStudents";
+import Attendance from "./pages/AdminPages/Attendance/Attendance";
+import SingleStudent from "./pages/AdminPages/AllStudents/SingleStudent";
+import LecturesPage from "./pages/AdminPages/Lectures/LecturesPage";
+import UploadLecture from "./pages/AdminPages/Lectures/UploadLecture";
+import AllLectures from "./pages/AdminPages/Lectures/AllLectures";
+import Notes from "./pages/AdminPages/Notes/Notes";
+import UpTeacherNotes from "./pages/AdminPages/Notes/UpTeacherNotes";
+import UpTextbook from "./pages/AdminPages/Notes/UpTextbook";
+import UpPastpapers from "./pages/AdminPages/Notes/UpPastpapers";
+import Transport from "./pages/AdminPages/Transport/Transport";
+import AdminLogin from "./pages/AdminPages/AdminLogin/AdminLogin";
+import Teachers from "./pages/AdminPages/Teachers/Teachers";
+import AddTeacher from "./pages/AdminPages/Teachers/AddTeacher";
+import SingleTeacher from "./pages/AdminPages/Teachers/SingleTeacher";
+import ViewLecture from "./pages/AdminPages/Lectures/ViewLecture";
+import Employee from "./pages/AdminPages/EmployeeManagement/Employee";
+import Finance from "./pages/AdminPages/Finance/Finance";
+import PassedOut from "./pages/CommonPages/PassedOutStudent/PassedOut";
+import EditStudent from "./pages/AdminPages/AllStudents/EditStudent";
+import UpdateTeacher from "./pages/AdminPages/Teachers/UpdateTeacher";
 
 function App() {
   const location = useLocation();
@@ -127,8 +126,6 @@ function App() {
 
               {/* Passed Out Students */}
               <Route exact path="/passedstudent" element={<PassedOut />} />
-
-              <Route exact path="/dragdrop" element={<DragDrop />} />
             </>
           )}
         </Routes>
