@@ -7,7 +7,7 @@ import AdminStaffForm from "../../../components/AdminComponents/AdminStaffForm";
 import OfficeBoyForm from "../../../components/AdminComponents/OfficeBoyForm";
 import GaurdForm from "../../../components/AdminComponents/GaurdForm";
 import JanitorForm from "../../../components/AdminComponents/JanitorForm";
-import AdminStaffList from "../../../components/AdminComponents/AdminStaffList";
+import AdminStaffList from "../../../components/AdminComponents/AdminStaffForm";
 import OfficeBoyList from "../../../components/AdminComponents/OfficeBoyList";
 import GaurdList from "../../../components/AdminComponents/GaurdList";
 import JanitorList from "../../../components/AdminComponents/JanitorList";

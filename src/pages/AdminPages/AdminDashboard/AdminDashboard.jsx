@@ -1,5 +1,7 @@
 import { useEffect, useState } from "react";
 import { Card, Title } from "@tremor/react";
+import { logout } from "../../../utils/helpers";
+
 import {
   BarChart,
   Bar,
@@ -27,6 +29,10 @@ function Dashboard() {
   const [campusData, setCampusData] = useState([]);
   const [boardProgressData, setBoardProgressData] = useState([]);
   const [classData, setClassData] = useState([]);
+
+  // src/utils/auth.js
+
+  logout();
 
   useEffect(() => {
     const fetchStudentData = async () => {
