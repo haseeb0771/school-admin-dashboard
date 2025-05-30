@@ -23,7 +23,7 @@ function OfficeBoyList() {
   useEffect(() => {
     const fetchOfficeBoys = async () => {
       try {
-        const response = await fetch("http://localhost:5000/api/officeBoy/all");
+        const response = await fetch(`http://localhost:3300//officeBoy/all`);
         if (!response.ok) {
           throw new Error("Failed to fetch office boys data");
         }
@@ -44,7 +44,7 @@ function OfficeBoyList() {
   const deleteOfficeBoy = async (id) => {
     try {
       const response = await fetch(
-        `http://localhost:5000/api/officeBoy/delete/${id}`,
+        `http://localhost:3300//officeBoy/delete/${id}`,
         {
           method: "DELETE",
         }

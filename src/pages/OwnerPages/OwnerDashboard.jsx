@@ -2,7 +2,7 @@ import React from "react";
 import { logout } from "../../utils/helpers";
 
 function OwnerDashboard() {
-  logout();
+  // logout();
 
   return (
     <div>

@@ -39,7 +39,7 @@ function JanitorForm({ onFormSubmit }) {
 
     try {
       const response = await axios.post(
-        "http://localhost:5000/api/janitors/add",
+        `http://localhost:3300//janitors/add`,
         formDataToSend,
         { headers: { "Content-Type": "multipart/form-data" } }
       );

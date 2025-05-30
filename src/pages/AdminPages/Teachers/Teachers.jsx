@@ -3,6 +3,8 @@ import axios from "axios";
 import Female from "../../../assets/female.png";
 import MaleFemale from "../../../assets/male-female.png";
 import Male from "../../../assets/male.png";
+import Sidebar from "../../../components/commonComponents/Sidebar";
+
 import {
   Card,
   Badge,
@@ -30,7 +32,7 @@ function Teachers() {
   useEffect(() => {
     const fetchTeachers = async () => {
       try {
-        const response = await axios.get("http://localhost:5000/api/teachers", {
+        const response = await axios.get("http://localhost:3300/teachers", {
           headers: { Authorization: `Bearer ${token}` },
         });
         // Sort students by 'createdAt' in descending order
@@ -47,7 +49,7 @@ function Teachers() {
     const fetchTeacherStats = async () => {
       try {
         const response = await axios.get(
-          "http://localhost:5000/api/teachers/stats/count",
+          "http://localhost:3300/teachers/stats/count",
           {
             headers: { Authorization: `Bearer ${token}` },
           }
@@ -87,7 +89,7 @@ function Teachers() {
     }
 
     try {
-      await axios.delete(`http://localhost:5000/api/teachers/${teacherId}`, {
+      await axios.delete(`http://localhost:3300/teachers/${teacherId}`, {
         headers: { Authorization: `Bearer ${token}` },
       });
 
@@ -104,128 +106,142 @@ function Teachers() {
   };
 
   return (
-    <div className="h-full w-full bg-gray-50 px-3 py-5 xl:px-20 xl:py-12">
-      <header className="flex w-full justify-between">
-        <h1 className="text-3xl font-bold text-gray-900 xl:text-3xl">
-          Teachers
-        </h1>
-      </header>
-
-      <div className="mt-6 flex justify-between gap-4">
-        <div className="hover flex w-1/3 flex-col items-center rounded-lg bg-white p-4 shadow-md hover:shadow-lg">
-          <img src={MaleFemale} alt="Total Teachers" className="h-12 w-12" />
-          <h2 className="text-lg font-semibold text-gray-700">
-            Total Teachers
-          </h2>
-          <p className="text-2xl font-bold text-blue-500">
-            {teacherStats.totalTeachers}
-          </p>
+    <>
+      {" "}
+      <div className="flex h-screen">
+        <div className="w-64">
+          <Sidebar />
         </div>
+        <div className="h-full w-full bg-gray-50 px-3 py-5 xl:px-20 xl:py-12">
+          <header className="flex w-full justify-between">
+            <h1 className="text-3xl font-bold text-gray-900 xl:text-3xl">
+              Teachers
+            </h1>
+          </header>
 
-        <div className="hover flex w-1/3 flex-col items-center rounded-lg bg-white p-4 shadow-md hover:shadow-lg">
-          <img src={Male} alt="Male Teachers" className="h-12 w-12" />
-          <h2 className="text-lg font-semibold text-gray-700">Male Teachers</h2>
-          <p className="text-2xl font-bold text-green-500">
-            {teacherStats.maleTeachers}
-          </p>
-        </div>
+          <div className="mt-6 flex justify-between gap-4">
+            <div className="hover flex w-1/3 flex-col items-center rounded-lg bg-white p-4 shadow-md hover:shadow-lg">
+              <img
+                src={MaleFemale}
+                alt="Total Teachers"
+                className="h-12 w-12"
+              />
+              <h2 className="text-lg font-semibold text-gray-700">
+                Total Teachers
+              </h2>
+              <p className="text-2xl font-bold text-blue-500">
+                {teacherStats.totalTeachers}
+              </p>
+            </div>
 
-        <div className="hover flex w-1/3 flex-col items-center rounded-lg bg-white p-4 shadow-md hover:shadow-lg">
-          <img src={Female} alt="Female Teachers" className="h-12 w-12" />
-          <h2 className="text-lg font-semibold text-gray-700">
-            Female Teachers
-          </h2>
-          <p className="text-2xl font-bold text-pink-500">
-            {teacherStats.femaleTeachers}
-          </p>
-        </div>
-      </div>
+            <div className="hover flex w-1/3 flex-col items-center rounded-lg bg-white p-4 shadow-md hover:shadow-lg">
+              <img src={Male} alt="Male Teachers" className="h-12 w-12" />
+              <h2 className="text-lg font-semibold text-gray-700">
+                Male Teachers
+              </h2>
+              <p className="text-2xl font-bold text-green-500">
+                {teacherStats.maleTeachers}
+              </p>
+            </div>
 
-      <div className="mt-5">
-        <Card shadow={false}>
-          <div className="mb-4 flex flex-wrap gap-4">
-            <MultiSelectBox
-              onValueChange={(value) => setSelectedIds(value)}
-              placeholder="Select by ID..."
-              maxWidth="max-w-sm"
-            >
-              {teachers.map((item) => (
-                <MultiSelectBoxItem
-                  key={item._id}
-                  value={item._id}
-                  text={`${item.teacherId} : ${item.firstName} ${item.lastName}`}
-                />
-              ))}
-            </MultiSelectBox>
-
-            <MultiSelectBox
-              onValueChange={(value) => setSelectedNames(value)}
-              placeholder="Select by Name..."
-              maxWidth="max-w-sm"
-            >
-              {teachers.map((item) => (
-                <MultiSelectBoxItem
-                  key={item._id + "-name"}
-                  value={`${item.firstName} ${item.lastName}`}
-                  text={`${item.firstName} ${item.lastName}`}
-                />
-              ))}
-            </MultiSelectBox>
-
-            <Link
-              to="/teachers/add"
-              className="rounded-lg bg-blue-600 px-4 py-2 text-white transition-all hover:bg-blue-700"
-            >
-              + Add New Teacher
-            </Link>
+            <div className="hover flex w-1/3 flex-col items-center rounded-lg bg-white p-4 shadow-md hover:shadow-lg">
+              <img src={Female} alt="Female Teachers" className="h-12 w-12" />
+              <h2 className="text-lg font-semibold text-gray-700">
+                Female Teachers
+              </h2>
+              <p className="text-2xl font-bold text-pink-500">
+                {teacherStats.femaleTeachers}
+              </p>
+            </div>
           </div>
 
-          <Table marginTop="mt-6">
-            <TableHead>
-              <TableRow>
-                <TableHeaderCell>Teacher ID</TableHeaderCell>
-                <TableHeaderCell>Name</TableHeaderCell>
-                <TableHeaderCell>Subject</TableHeaderCell>
-                <TableHeaderCell>Joining Date</TableHeaderCell>
-                <TableHeaderCell>Phone</TableHeaderCell>
-                <TableHeaderCell>Status</TableHeaderCell>
-                <TableHeaderCell>Actions</TableHeaderCell>
-              </TableRow>
-            </TableHead>
-            <TableBody>
-              {teachers.filter(isTeacherSelected).map((teacher) => (
-                <TableRow key={teacher._id}>
-                  <TableCell>
-                    <Badge text={teacher.teacherId} size="xs" color="sky" />
-                  </TableCell>
-                  <TableCell>{`${teacher.firstName} ${teacher.lastName}`}</TableCell>
-                  <TableCell>{teacher.subjectSpecialization}</TableCell>
-                  <TableCell>
-                    {new Date(teacher.joiningDate).toLocaleDateString()}
-                  </TableCell>
-                  <TableCell>{teacher.phoneNumber}</TableCell>
-                  <TableCell>{teacher.teacherStatus}</TableCell>
-                  <TableCell>
-                    <Link
-                      to={`/teachers/${teacher._id}`}
-                      className=" rounded-md bg-gray-900 py-[3px] px-3 text-xs text-gray-50 transition-all hover:bg-gray-700"
-                    >
-                      View
-                    </Link>
-                    <Link
-                      to={`/teachers/edit/${teacher._id}`}
-                      className="ml-3 rounded-md bg-gray-900 py-[3px] px-3 text-xs text-gray-50 transition-all hover:bg-gray-700"
-                    >
-                      Edit
-                    </Link>
-                  </TableCell>
-                </TableRow>
-              ))}
-            </TableBody>
-          </Table>
-        </Card>
+          <div className="mt-5">
+            <Card shadow={false}>
+              <div className="mb-4 flex flex-wrap gap-4">
+                <MultiSelectBox
+                  onValueChange={(value) => setSelectedIds(value)}
+                  placeholder="Select by ID..."
+                  maxWidth="max-w-sm"
+                >
+                  {teachers.map((item) => (
+                    <MultiSelectBoxItem
+                      key={item._id}
+                      value={item._id}
+                      text={`${item.teacherId} : ${item.firstName} ${item.lastName}`}
+                    />
+                  ))}
+                </MultiSelectBox>
+
+                <MultiSelectBox
+                  onValueChange={(value) => setSelectedNames(value)}
+                  placeholder="Select by Name..."
+                  maxWidth="max-w-sm"
+                >
+                  {teachers.map((item) => (
+                    <MultiSelectBoxItem
+                      key={item._id + "-name"}
+                      value={`${item.firstName} ${item.lastName}`}
+                      text={`${item.firstName} ${item.lastName}`}
+                    />
+                  ))}
+                </MultiSelectBox>
+
+                <Link
+                  to="/teachers/add"
+                  className="rounded-lg bg-blue-600 px-4 py-2 text-white transition-all hover:bg-blue-700"
+                >
+                  + Add New Teacher
+                </Link>
+              </div>
+
+              <Table marginTop="mt-6">
+                <TableHead>
+                  <TableRow>
+                    <TableHeaderCell>Teacher ID</TableHeaderCell>
+                    <TableHeaderCell>Name</TableHeaderCell>
+                    <TableHeaderCell>Subject</TableHeaderCell>
+                    <TableHeaderCell>Joining Date</TableHeaderCell>
+                    <TableHeaderCell>Phone</TableHeaderCell>
+                    <TableHeaderCell>Status</TableHeaderCell>
+                    <TableHeaderCell>Actions</TableHeaderCell>
+                  </TableRow>
+                </TableHead>
+                <TableBody>
+                  {teachers.filter(isTeacherSelected).map((teacher) => (
+                    <TableRow key={teacher._id}>
+                      <TableCell>
+                        <Badge text={teacher.teacherId} size="xs" color="sky" />
+                      </TableCell>
+                      <TableCell>{`${teacher.firstName} ${teacher.lastName}`}</TableCell>
+                      <TableCell>{teacher.subjectSpecialization}</TableCell>
+                      <TableCell>
+                        {new Date(teacher.joiningDate).toLocaleDateString()}
+                      </TableCell>
+                      <TableCell>{teacher.phoneNumber}</TableCell>
+                      <TableCell>{teacher.teacherStatus}</TableCell>
+                      <TableCell>
+                        <Link
+                          to={`/teachers/${teacher._id}`}
+                          className=" rounded-md bg-gray-900 py-[3px] px-3 text-xs text-gray-50 transition-all hover:bg-gray-700"
+                        >
+                          View
+                        </Link>
+                        <Link
+                          to={`/teachers/edit/${teacher._id}`}
+                          className="ml-3 rounded-md bg-gray-900 py-[3px] px-3 text-xs text-gray-50 transition-all hover:bg-gray-700"
+                        >
+                          Edit
+                        </Link>
+                      </TableCell>
+                    </TableRow>
+                  ))}
+                </TableBody>
+              </Table>
+            </Card>
+          </div>
+        </div>
       </div>
-    </div>
+    </>
   );
 }
 

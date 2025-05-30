@@ -36,7 +36,7 @@ function AdminStaffForm({ onFormSubmit }) {
       }
 
       const response = await axios.post(
-        `${process.env.BASE_URL}/api/admin-staff/add`,
+        `http://localhost:3300//admin-staff/add`,
         data,
         { headers: { "Content-Type": "multipart/form-data" } }
       );

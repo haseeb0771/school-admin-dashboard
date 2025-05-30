@@ -23,7 +23,7 @@ function GuardList() {
   useEffect(() => {
     const fetchGuards = async () => {
       try {
-        const response = await fetch("http://localhost:5000/api/guards/all");
+        const response = await fetch(`http://localhost:3300//guards/all`);
         if (!response.ok) {
           throw new Error("Failed to fetch guards data");
         }
@@ -44,7 +44,7 @@ function GuardList() {
   const deleteGuard = async (id) => {
     try {
       const response = await fetch(
-        `http://localhost:5000/api/guards/delete/${id}`,
+        `http://localhost:3300//guards/delete/${id}`,
         {
           method: "DELETE",
         }
@@ -86,7 +86,7 @@ function GuardList() {
   return (
     <div className="mt-5">
       <Card shadow={false}>
-      <h1 className="mb-5 text-2xl font-bold">Gaurds</h1>
+        <h1 className="mb-5 text-2xl font-bold">Gaurds</h1>
         <div className="mb-4 flex flex-wrap gap-4">
           <MultiSelectBox
             onValueChange={(value) => setSelectedIds(value)}
@@ -140,13 +140,13 @@ function GuardList() {
                   <Link
                     to={`/guards/${guard._id}`}
                     className="rounded-md bg-gray-900 py-[3px] px-3 text-xs text-gray-50 transition-all hover:bg-gray-700"
-                    >
+                  >
                     View
                   </Link>
                   <Link
                     to={`/guards/edit/${guard._id}`}
                     className="ml-3 rounded-md bg-gray-900 py-[3px] px-3 text-xs text-gray-50 transition-all hover:bg-gray-700"
-                    >
+                  >
                     Edit
                   </Link>
                 </TableCell>

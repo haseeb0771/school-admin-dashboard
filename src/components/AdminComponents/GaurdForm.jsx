@@ -46,7 +46,7 @@ function GuardForm({ onFormSubmit }) {
     data.append("idCardImage", formData.idCardImage);
 
     try {
-      const response = await fetch("http://localhost:5000/api/guards/add", {
+      const response = await fetch(`http://localhost:3300//guards/add`, {
         method: "POST",
         body: data,
       });

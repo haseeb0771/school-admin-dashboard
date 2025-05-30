@@ -13,6 +13,7 @@ import {
   BarChart,
   Bar,
 } from "recharts";
+import Sidebar from "../../../components/commonComponents/Sidebar";
 
 function Finance() {
   // Sample data for charts
@@ -89,160 +90,168 @@ function Finance() {
   });
 
   return (
-    <div className="h-full w-full bg-gradient-to-br from-gray-50 to-gray-100 px-3 py-5 xl:px-20 xl:py-12">
-      <header className="flex w-full justify-between">
-        <h1 className="text-3xl font-bold text-gray-900 xl:text-4xl">
-          Financial Overview
-        </h1>
-      </header>
+    <>
+      {" "}
+      <div className="flex h-screen">
+        <div className="w-64">
+          <Sidebar />
+        </div>
+        <div className="h-full w-full bg-gradient-to-br from-gray-50 to-gray-100 px-3 py-5 xl:px-20 xl:py-12">
+          <header className="flex w-full justify-between">
+            <h1 className="text-3xl font-bold text-gray-900 xl:text-4xl">
+              Financial Overview
+            </h1>
+          </header>
 
-      {/* Metrics Cards */}
-      <div className="mt-6 grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-4">
-        <div className="flex flex-col items-center rounded-lg border border-gray-200 bg-white p-6 shadow-md transition-transform hover:scale-105 hover:shadow-lg">
-          <h2 className="text-center text-lg font-semibold text-gray-700">
-            Verified Fees
-          </h2>
-          <p className="mt-2 text-2xl font-bold text-blue-500">$12,345</p>
-        </div>
-        <div className="flex flex-col items-center rounded-lg border border-gray-200 bg-white p-6 shadow-md transition-transform hover:scale-105 hover:shadow-lg">
-          <h2 className="text-center text-lg font-semibold text-gray-700">
-            Remaining Fees
-          </h2>
-          <p className="mt-2 text-2xl font-bold text-blue-500">$5,678</p>
-        </div>
-        <div className="flex flex-col items-center rounded-lg border border-gray-200 bg-white p-6 shadow-md transition-transform hover:scale-105 hover:shadow-lg">
-          <h2 className="text-center text-lg font-semibold text-gray-700">
-            Paid Salary
-          </h2>
-          <p className="mt-2 text-2xl font-bold text-blue-500">$45,678</p>
-        </div>
-        <div className="flex flex-col items-center rounded-lg border border-gray-200 bg-white p-6 shadow-md transition-transform hover:scale-105 hover:shadow-lg">
-          <h2 className="text-center text-lg font-semibold text-gray-700">
-            Remaining Salary
-          </h2>
-          <p className="mt-2 text-2xl font-bold text-blue-500">$10,000</p>
-        </div>
-      </div>
+          {/* Metrics Cards */}
+          <div className="mt-6 grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-4">
+            <div className="flex flex-col items-center rounded-lg border border-gray-200 bg-white p-6 shadow-md transition-transform hover:scale-105 hover:shadow-lg">
+              <h2 className="text-center text-lg font-semibold text-gray-700">
+                Verified Fees
+              </h2>
+              <p className="mt-2 text-2xl font-bold text-blue-500">$12,345</p>
+            </div>
+            <div className="flex flex-col items-center rounded-lg border border-gray-200 bg-white p-6 shadow-md transition-transform hover:scale-105 hover:shadow-lg">
+              <h2 className="text-center text-lg font-semibold text-gray-700">
+                Remaining Fees
+              </h2>
+              <p className="mt-2 text-2xl font-bold text-blue-500">$5,678</p>
+            </div>
+            <div className="flex flex-col items-center rounded-lg border border-gray-200 bg-white p-6 shadow-md transition-transform hover:scale-105 hover:shadow-lg">
+              <h2 className="text-center text-lg font-semibold text-gray-700">
+                Paid Salary
+              </h2>
+              <p className="mt-2 text-2xl font-bold text-blue-500">$45,678</p>
+            </div>
+            <div className="flex flex-col items-center rounded-lg border border-gray-200 bg-white p-6 shadow-md transition-transform hover:scale-105 hover:shadow-lg">
+              <h2 className="text-center text-lg font-semibold text-gray-700">
+                Remaining Salary
+              </h2>
+              <p className="mt-2 text-2xl font-bold text-blue-500">$10,000</p>
+            </div>
+          </div>
 
-      {/* Charts Section */}
-      <div className="mt-8 grid grid-cols-1 gap-6 lg:grid-cols-2">
-        {/* Line Chart for Fees */}
-        <div className="rounded-lg border border-gray-200 bg-white p-6 shadow-md">
-          <h2 className="text-xl font-semibold text-gray-700">
-            Fee Trends (Last 6 Months)
-          </h2>
-          <LineChart
-            className="mt-7 ml-10"
-            width={500}
-            height={300}
-            data={feeData}
-            margin={{ top: 20, right: 30, left: 20, bottom: 5 }}
-          >
-            <CartesianGrid strokeDasharray="3 3" />
-            <XAxis dataKey="name" />
-            <YAxis />
-            <Tooltip />
-            <Legend />
-            <Line type="monotone" dataKey="verified" stroke="#8884d8" />
-            <Line type="monotone" dataKey="remaining" stroke="#82ca9d" />
-          </LineChart>
-        </div>
+          {/* Charts Section */}
+          <div className="mt-8 grid grid-cols-1 gap-6 lg:grid-cols-2">
+            {/* Line Chart for Fees */}
+            <div className="rounded-lg border border-gray-200 bg-white p-6 shadow-md">
+              <h2 className="text-xl font-semibold text-gray-700">
+                Fee Trends (Last 6 Months)
+              </h2>
+              <LineChart
+                className="mt-7 ml-10"
+                width={500}
+                height={300}
+                data={feeData}
+                margin={{ top: 20, right: 30, left: 20, bottom: 5 }}
+              >
+                <CartesianGrid strokeDasharray="3 3" />
+                <XAxis dataKey="name" />
+                <YAxis />
+                <Tooltip />
+                <Legend />
+                <Line type="monotone" dataKey="verified" stroke="#8884d8" />
+                <Line type="monotone" dataKey="remaining" stroke="#82ca9d" />
+              </LineChart>
+            </div>
 
-        {/* Pie Chart for Salary Breakdown */}
-        <div className="rounded-lg border border-gray-200 bg-white p-6 shadow-md">
-          <h2 className="text-xl font-semibold text-gray-700">
-            Salary Breakdown
-          </h2>
-          <PieChart className="ml-16" width={500} height={300}>
-            <Pie
-              data={salaryData}
-              cx="50%"
-              cy="50%"
-              innerRadius={60}
-              outerRadius={80}
-              fill="#8884d8"
-              paddingAngle={5}
-              dataKey="value"
-              label
+            {/* Pie Chart for Salary Breakdown */}
+            <div className="rounded-lg border border-gray-200 bg-white p-6 shadow-md">
+              <h2 className="text-xl font-semibold text-gray-700">
+                Salary Breakdown
+              </h2>
+              <PieChart className="ml-16" width={500} height={300}>
+                <Pie
+                  data={salaryData}
+                  cx="50%"
+                  cy="50%"
+                  innerRadius={60}
+                  outerRadius={80}
+                  fill="#8884d8"
+                  paddingAngle={5}
+                  dataKey="value"
+                  label
+                >
+                  {salaryData.map((entry, index) => (
+                    <Cell
+                      key={`cell-${index}`}
+                      fill={COLORS[index % COLORS.length]}
+                    />
+                  ))}
+                </Pie>
+                <Tooltip />
+                <Legend />
+              </PieChart>
+            </div>
+          </div>
+
+          {/* Expense Tracking */}
+          <div className="mt-8 rounded-lg border border-gray-200 bg-white p-6 shadow-md">
+            <h2 className="text-xl font-semibold text-gray-700">
+              Expense Breakdown
+            </h2>
+            <BarChart
+              width={500}
+              height={300}
+              data={expenseData}
+              margin={{ top: 20, right: 30, left: 20, bottom: 5 }}
             >
-              {salaryData.map((entry, index) => (
-                <Cell
-                  key={`cell-${index}`}
-                  fill={COLORS[index % COLORS.length]}
-                />
-              ))}
-            </Pie>
-            <Tooltip />
-            <Legend />
-          </PieChart>
+              <CartesianGrid strokeDasharray="3 3" />
+              <XAxis dataKey="name" />
+              <YAxis />
+              <Tooltip />
+              <Legend />
+              <Bar dataKey="value" fill="#8884d8" />
+            </BarChart>
+          </div>
+
+          {/* Transaction History */}
+          <div className="mt-8 rounded-lg border border-gray-200 bg-white p-6 shadow-md">
+            <h2 className="text-xl font-semibold text-gray-700">
+              Transaction History
+            </h2>
+            <div className="mt-4 flex justify-between">
+              <input
+                type="text"
+                placeholder="Search transactions..."
+                value={searchQuery}
+                onChange={(e) => setSearchQuery(e.target.value)}
+                className="rounded-md border border-gray-300 p-2"
+              />
+              <select
+                value={filterType}
+                onChange={(e) => setFilterType(e.target.value)}
+                className="rounded-md border border-gray-300 p-2"
+              >
+                <option value="All">All</option>
+                <option value="Income">Income</option>
+                <option value="Expense">Expense</option>
+              </select>
+            </div>
+            <table className="mt-4 w-full">
+              <thead>
+                <tr className="border-b">
+                  <th className="p-2 text-left">Date</th>
+                  <th className="p-2 text-left">Description</th>
+                  <th className="p-2 text-left">Amount</th>
+                  <th className="p-2 text-left">Type</th>
+                </tr>
+              </thead>
+              <tbody>
+                {filteredTransactions.map((transaction) => (
+                  <tr key={transaction.id} className="border-b">
+                    <td className="p-2">{transaction.date}</td>
+                    <td className="p-2">{transaction.description}</td>
+                    <td className="p-2">{transaction.amount}</td>
+                    <td className="p-2">{transaction.type}</td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          </div>
         </div>
       </div>
-
-      {/* Expense Tracking */}
-      <div className="mt-8 rounded-lg border border-gray-200 bg-white p-6 shadow-md">
-        <h2 className="text-xl font-semibold text-gray-700">
-          Expense Breakdown
-        </h2>
-        <BarChart
-          width={500}
-          height={300}
-          data={expenseData}
-          margin={{ top: 20, right: 30, left: 20, bottom: 5 }}
-        >
-          <CartesianGrid strokeDasharray="3 3" />
-          <XAxis dataKey="name" />
-          <YAxis />
-          <Tooltip />
-          <Legend />
-          <Bar dataKey="value" fill="#8884d8" />
-        </BarChart>
-      </div>
-
-      {/* Transaction History */}
-      <div className="mt-8 rounded-lg border border-gray-200 bg-white p-6 shadow-md">
-        <h2 className="text-xl font-semibold text-gray-700">
-          Transaction History
-        </h2>
-        <div className="mt-4 flex justify-between">
-          <input
-            type="text"
-            placeholder="Search transactions..."
-            value={searchQuery}
-            onChange={(e) => setSearchQuery(e.target.value)}
-            className="rounded-md border border-gray-300 p-2"
-          />
-          <select
-            value={filterType}
-            onChange={(e) => setFilterType(e.target.value)}
-            className="rounded-md border border-gray-300 p-2"
-          >
-            <option value="All">All</option>
-            <option value="Income">Income</option>
-            <option value="Expense">Expense</option>
-          </select>
-        </div>
-        <table className="mt-4 w-full">
-          <thead>
-            <tr className="border-b">
-              <th className="p-2 text-left">Date</th>
-              <th className="p-2 text-left">Description</th>
-              <th className="p-2 text-left">Amount</th>
-              <th className="p-2 text-left">Type</th>
-            </tr>
-          </thead>
-          <tbody>
-            {filteredTransactions.map((transaction) => (
-              <tr key={transaction.id} className="border-b">
-                <td className="p-2">{transaction.date}</td>
-                <td className="p-2">{transaction.description}</td>
-                <td className="p-2">{transaction.amount}</td>
-                <td className="p-2">{transaction.type}</td>
-              </tr>
-            ))}
-          </tbody>
-        </table>
-      </div>
-    </div>
+    </>
   );
 }
 

@@ -72,7 +72,8 @@ function App() {
     const storedRole = localStorage.getItem("userRole");
     const storedToken = localStorage.getItem("authToken");
 
-    if (storedRole && storedToken) {
+    // Only redirect if user lands on root `/`
+    if (window.location.pathname === "/" && storedRole && storedToken) {
       const redirectPaths = {
         ADMIN: "/admin/dashboard",
         OWNER: "/owner/dashboard",
@@ -87,12 +88,6 @@ function App() {
     }
   }, [navigate]);
 
-  // Safe way to get role with fallback
-  const getRolePath = () => {
-    const userRole = localStorage.getItem("userRole");
-    return userRole ? `/${userRole.toUpperCase()}/dashboard` : "/login";
-  };
-
   return (
     <Routes>
       {/* Public routes */}
@@ -106,23 +101,6 @@ function App() {
       />
 
       {/* Home/Default route with automatic redirection */}
-      <Route
-        path="/"
-        element={
-          <PrivateRoute
-            redirectPath={{
-              ADMIN: "/admin/dashboard",
-              OWNER: "/owner/dashboard",
-              STUDENT: "/student/dashboard",
-              PARENT: "/parent/dashboard",
-              TEACHER: "/teacher/dashboard",
-            }}
-            allowedRoles={["ADMIN", "OWNER", "STUDENT", "PARENT", "TEACHER"]}
-          >
-            <Navigate to={getRolePath()} />
-          </PrivateRoute>
-        }
-      />
 
       {/* Admin routes */}
       <Route
@@ -157,7 +135,158 @@ function App() {
           </PrivateRoute>
         }
       />
-      {/* Add all other admin routes in the same pattern */}
+      <Route
+        path="/admin/attendance"
+        element={
+          <PrivateRoute allowedRoles={["ADMIN"]}>
+            <Attendance />
+          </PrivateRoute>
+        }
+      />
+      <Route
+        path="/admin/single-student/:id"
+        element={
+          <PrivateRoute allowedRoles={["ADMIN"]}>
+            <SingleStudent />
+          </PrivateRoute>
+        }
+      />
+      <Route
+        path="/admin/lectures"
+        element={
+          <PrivateRoute allowedRoles={["ADMIN"]}>
+            <LecturesPage />
+          </PrivateRoute>
+        }
+      />
+      <Route
+        path="/admin/upload-lecture"
+        element={
+          <PrivateRoute allowedRoles={["ADMIN"]}>
+            <UploadLecture />
+          </PrivateRoute>
+        }
+      />
+      <Route
+        path="/admin/all-lectures"
+        element={
+          <PrivateRoute allowedRoles={["ADMIN"]}>
+            <AllLectures />
+          </PrivateRoute>
+        }
+      />
+      <Route
+        path="/admin/view-lecture/:id"
+        element={
+          <PrivateRoute allowedRoles={["ADMIN"]}>
+            <ViewLecture />
+          </PrivateRoute>
+        }
+      />
+      <Route
+        path="/admin/notes"
+        element={
+          <PrivateRoute allowedRoles={["ADMIN"]}>
+            <Notes />
+          </PrivateRoute>
+        }
+      />
+      <Route
+        path="/admin/up-teacher-notes"
+        element={
+          <PrivateRoute allowedRoles={["ADMIN"]}>
+            <UpTeacherNotes />
+          </PrivateRoute>
+        }
+      />
+      <Route
+        path="/admin/up-textbook"
+        element={
+          <PrivateRoute allowedRoles={["ADMIN"]}>
+            <UpTextbook />
+          </PrivateRoute>
+        }
+      />
+      <Route
+        path="/admin/up-pastpapers"
+        element={
+          <PrivateRoute allowedRoles={["ADMIN"]}>
+            <UpPastpapers />
+          </PrivateRoute>
+        }
+      />
+      <Route
+        path="/admin/transport"
+        element={
+          <PrivateRoute allowedRoles={["ADMIN"]}>
+            <Transport />
+          </PrivateRoute>
+        }
+      />
+      <Route
+        path="/admin/teachers"
+        element={
+          <PrivateRoute allowedRoles={["ADMIN"]}>
+            <Teachers />
+          </PrivateRoute>
+        }
+      />
+      <Route
+        path="/admin/add-teacher"
+        element={
+          <PrivateRoute allowedRoles={["ADMIN"]}>
+            <AddTeacher />
+          </PrivateRoute>
+        }
+      />
+      <Route
+        path="/admin/single-teacher/:id"
+        element={
+          <PrivateRoute allowedRoles={["ADMIN"]}>
+            <SingleTeacher />
+          </PrivateRoute>
+        }
+      />
+      <Route
+        path="/admin/update-teacher/:id"
+        element={
+          <PrivateRoute allowedRoles={["ADMIN"]}>
+            <UpdateTeacher />
+          </PrivateRoute>
+        }
+      />
+      <Route
+        path="/admin/employee"
+        element={
+          <PrivateRoute allowedRoles={["ADMIN"]}>
+            <Employee />
+          </PrivateRoute>
+        }
+      />
+      <Route
+        path="/admin/finance"
+        element={
+          <PrivateRoute allowedRoles={["ADMIN"]}>
+            <Finance />
+          </PrivateRoute>
+        }
+      />
+      <Route
+        path="/admin/passed-out"
+        element={
+          <PrivateRoute allowedRoles={["ADMIN"]}>
+            <PassedOut />
+          </PrivateRoute>
+        }
+      />
+      <Route
+        path="/admin/edit-student/:id"
+        element={
+          <PrivateRoute allowedRoles={["ADMIN"]}>
+            <EditStudent />
+          </PrivateRoute>
+        }
+      />
 
       {/* Owner routes */}
       <Route

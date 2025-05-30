@@ -24,7 +24,7 @@ function JanitorList() {
   useEffect(() => {
     const fetchJanitors = async () => {
       try {
-        const response = await fetch("http://localhost:5000/api/janitors/all");
+        const response = await fetch(`http://localhost:3300//janitors/all`);
         if (!response.ok) {
           throw new Error("Failed to fetch janitors data");
         }
@@ -45,7 +45,7 @@ function JanitorList() {
   const deleteJanitor = async (id) => {
     try {
       const response = await fetch(
-        `http://localhost:5000/api/janitors/delete/${id}`,
+        `http://localhost:3300//janitors/delete/${id}`,
         {
           method: "DELETE",
         }

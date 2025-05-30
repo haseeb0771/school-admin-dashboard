@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from "react";
 import { useParams, useNavigate } from "react-router-dom";
 import axios from "axios";
+import Sidebar from "../../../components/commonComponents/Sidebar";
 
 function UpdateTeacher() {
   const { id } = useParams(); // Get the teacher ID from the URL
@@ -38,7 +39,7 @@ function UpdateTeacher() {
         }
 
         const response = await axios.get(
-          `http://localhost:5000/api/teachers/${id}`,
+          `http://localhost:3300/teachers/${id}`,
           {
             headers: { Authorization: `Bearer ${token}` },
           }
@@ -92,7 +93,7 @@ function UpdateTeacher() {
       }
 
       const response = await axios.put(
-        `http://localhost:5000/api/teachers/${id}`,
+        `http://localhost:3300/teachers/${id}`,
         formDataToSend,
         {
           headers: {
@@ -116,261 +117,275 @@ function UpdateTeacher() {
   if (error) return <p className="text-center text-red-500">{error}</p>;
 
   return (
-    <div className="h-full w-full bg-gray-50 px-3 py-5 xl:px-20 xl:py-12">
-      <header className="flex w-full justify-between">
-        <h1 className="text-3xl font-bold text-gray-900 xl:text-3xl">
-          Update Teacher
-        </h1>
-      </header>
-
-      <div className="mt-5">
-        <form onSubmit={handleSubmit} className="space-y-6">
-          {/* Personal Details */}
-          <div className="rounded-lg bg-white p-6 shadow-md">
-            <h2 className="mb-4 text-xl font-semibold">Personal Details</h2>
-            <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
-              <div>
-                <label className="block text-sm font-medium text-gray-700">
-                  First Name
-                </label>
-                <input
-                  type="text"
-                  name="firstName"
-                  value={teacher.firstName}
-                  onChange={handleChange}
-                  className="mt-1 block w-full rounded-md border-gray-300 shadow-sm"
-                  required
-                />
-              </div>
-              <div>
-                <label className="block text-sm font-medium text-gray-700">
-                  Last Name
-                </label>
-                <input
-                  type="text"
-                  name="lastName"
-                  value={teacher.lastName}
-                  onChange={handleChange}
-                  className="mt-1 block w-full rounded-md border-gray-300 shadow-sm"
-                  required
-                />
-              </div>
-              <div>
-                <label className="block text-sm font-medium text-gray-700">
-                  Date of Birth
-                </label>
-                <input
-                  type="date"
-                  name="dateOfBirth"
-                  value={teacher.dateOfBirth}
-                  onChange={handleChange}
-                  className="mt-1 block w-full rounded-md border-gray-300 shadow-sm"
-                />
-              </div>
-              <div>
-                <label className="block text-sm font-medium text-gray-700">
-                  Religion
-                </label>
-                <input
-                  type="text"
-                  name="religion"
-                  value={teacher.religion}
-                  onChange={handleChange}
-                  className="mt-1 block w-full rounded-md border-gray-300 shadow-sm"
-                />
-              </div>
-              <div>
-                <label className="block text-sm font-medium text-gray-700">
-                  Gender
-                </label>
-                <select
-                  name="gender"
-                  value={teacher.gender}
-                  onChange={handleChange}
-                  className="mt-1 block w-full rounded-md border-gray-300 shadow-sm"
-                >
-                  <option value="">Select</option>
-                  <option value="Male">Male</option>
-                  <option value="Female">Female</option>
-                </select>
-              </div>
-              <div>
-                <label className="block text-sm font-medium text-gray-700">
-                  Blood Group
-                </label>
-                <input
-                  type="text"
-                  name="bloodGroup"
-                  value={teacher.bloodGroup}
-                  onChange={handleChange}
-                  className="mt-1 block w-full rounded-md border-gray-300 shadow-sm"
-                />
-              </div>
-            </div>
-          </div>
-
-          {/* Contact Details */}
-          <div className="rounded-lg bg-white p-6 shadow-md">
-            <h2 className="mb-4 text-xl font-semibold">Contact Details</h2>
-            <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
-              <div>
-                <label className="block text-sm font-medium text-gray-700">
-                  Phone Number
-                </label>
-                <input
-                  type="text"
-                  name="phoneNumber"
-                  value={teacher.phoneNumber}
-                  onChange={handleChange}
-                  className="mt-1 block w-full rounded-md border-gray-300 shadow-sm"
-                />
-              </div>
-              <div>
-                <label className="block text-sm font-medium text-gray-700">
-                  WhatsApp Number
-                </label>
-                <input
-                  type="text"
-                  name="whatsappNumber"
-                  value={teacher.whatsappNumber}
-                  onChange={handleChange}
-                  className="mt-1 block w-full rounded-md border-gray-300 shadow-sm"
-                />
-              </div>
-              <div>
-                <label className="block text-sm font-medium text-gray-700">
-                  City
-                </label>
-                <input
-                  type="text"
-                  name="city"
-                  value={teacher.city}
-                  onChange={handleChange}
-                  className="mt-1 block w-full rounded-md border-gray-300 shadow-sm"
-                />
-              </div>
-              <div>
-                <label className="block text-sm font-medium text-gray-700">
-                  Street Address
-                </label>
-                <input
-                  type="text"
-                  name="streetAddress"
-                  value={teacher.streetAddress}
-                  onChange={handleChange}
-                  className="mt-1 block w-full rounded-md border-gray-300 shadow-sm"
-                />
-              </div>
-            </div>
-          </div>
-
-          {/* Professional Details */}
-          <div className="rounded-lg bg-white p-6 shadow-md">
-            <h2 className="mb-4 text-xl font-semibold">Professional Details</h2>
-            <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
-              <div>
-                <label className="block text-sm font-medium text-gray-700">
-                  Subject Specialization
-                </label>
-                <input
-                  type="text"
-                  name="subjectSpecialization"
-                  value={teacher.subjectSpecialization}
-                  onChange={handleChange}
-                  className="mt-1 block w-full rounded-md border-gray-300 shadow-sm"
-                />
-              </div>
-              <div>
-                <label className="block text-sm font-medium text-gray-700">
-                  Education
-                </label>
-                <input
-                  type="text"
-                  name="education"
-                  value={teacher.education}
-                  onChange={handleChange}
-                  className="mt-1 block w-full rounded-md border-gray-300 shadow-sm"
-                />
-              </div>
-              <div>
-                <label className="block text-sm font-medium text-gray-700">
-                  Joining Date
-                </label>
-                <input
-                  type="date"
-                  name="joiningDate"
-                  value={teacher.joiningDate}
-                  onChange={handleChange}
-                  className="mt-1 block w-full rounded-md border-gray-300 shadow-sm"
-                />
-              </div>
-              <div>
-                <label className="block text-sm font-medium text-gray-700">
-                  Salary
-                </label>
-                <input
-                  type="text"
-                  name="salary"
-                  value={teacher.salary}
-                  onChange={handleChange}
-                  className="mt-1 block w-full rounded-md border-gray-300 shadow-sm"
-                />
-              </div>
-            </div>
-          </div>
-
-          {/* Image Uploads */}
-          <div className="rounded-lg bg-white p-6 shadow-md">
-            <h2 className="mb-4 text-xl font-semibold">Upload Images</h2>
-            <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
-              <div>
-                <label className="block text-sm font-medium text-gray-700">
-                  Teacher Image
-                </label>
-                <input
-                  type="file"
-                  accept="image/*"
-                  onChange={(e) => handleFileChange(e, "teacherImage")}
-                  className="mt-1 block w-full rounded-md border-gray-300 shadow-sm"
-                />
-              </div>
-              <div>
-                <label className="block text-sm font-medium text-gray-700">
-                  Teacher Degree Image
-                </label>
-                <input
-                  type="file"
-                  accept="image/*"
-                  onChange={(e) => handleFileChange(e, "teacherDegreeImage")}
-                  className="mt-1 block w-full rounded-md border-gray-300 shadow-sm"
-                />
-              </div>
-              <div>
-                <label className="block text-sm font-medium text-gray-700">
-                  Teacher ID Card Image
-                </label>
-                <input
-                  type="file"
-                  accept="image/*"
-                  onChange={(e) => handleFileChange(e, "teacherIdCardImage")}
-                  className="mt-1 block w-full rounded-md border-gray-300 shadow-sm"
-                />
-              </div>
-            </div>
-          </div>
-
-          {/* Submit Button */}
-          <div className="flex justify-end">
-            <button
-              type="submit"
-              className="rounded-md bg-blue-600 px-6 py-2 text-white hover:bg-blue-700"
-            >
+    <>
+      {" "}
+      <div className="flex h-screen">
+        <div className="w-64">
+          <Sidebar />
+        </div>
+        <div className="h-full w-full bg-gray-50 px-3 py-5 xl:px-20 xl:py-12">
+          <header className="flex w-full justify-between">
+            <h1 className="text-3xl font-bold text-gray-900 xl:text-3xl">
               Update Teacher
-            </button>
+            </h1>
+          </header>
+
+          <div className="mt-5">
+            <form onSubmit={handleSubmit} className="space-y-6">
+              {/* Personal Details */}
+              <div className="rounded-lg bg-white p-6 shadow-md">
+                <h2 className="mb-4 text-xl font-semibold">Personal Details</h2>
+                <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
+                  <div>
+                    <label className="block text-sm font-medium text-gray-700">
+                      First Name
+                    </label>
+                    <input
+                      type="text"
+                      name="firstName"
+                      value={teacher.firstName}
+                      onChange={handleChange}
+                      className="mt-1 block w-full rounded-md border-gray-300 shadow-sm"
+                      required
+                    />
+                  </div>
+                  <div>
+                    <label className="block text-sm font-medium text-gray-700">
+                      Last Name
+                    </label>
+                    <input
+                      type="text"
+                      name="lastName"
+                      value={teacher.lastName}
+                      onChange={handleChange}
+                      className="mt-1 block w-full rounded-md border-gray-300 shadow-sm"
+                      required
+                    />
+                  </div>
+                  <div>
+                    <label className="block text-sm font-medium text-gray-700">
+                      Date of Birth
+                    </label>
+                    <input
+                      type="date"
+                      name="dateOfBirth"
+                      value={teacher.dateOfBirth}
+                      onChange={handleChange}
+                      className="mt-1 block w-full rounded-md border-gray-300 shadow-sm"
+                    />
+                  </div>
+                  <div>
+                    <label className="block text-sm font-medium text-gray-700">
+                      Religion
+                    </label>
+                    <input
+                      type="text"
+                      name="religion"
+                      value={teacher.religion}
+                      onChange={handleChange}
+                      className="mt-1 block w-full rounded-md border-gray-300 shadow-sm"
+                    />
+                  </div>
+                  <div>
+                    <label className="block text-sm font-medium text-gray-700">
+                      Gender
+                    </label>
+                    <select
+                      name="gender"
+                      value={teacher.gender}
+                      onChange={handleChange}
+                      className="mt-1 block w-full rounded-md border-gray-300 shadow-sm"
+                    >
+                      <option value="">Select</option>
+                      <option value="Male">Male</option>
+                      <option value="Female">Female</option>
+                    </select>
+                  </div>
+                  <div>
+                    <label className="block text-sm font-medium text-gray-700">
+                      Blood Group
+                    </label>
+                    <input
+                      type="text"
+                      name="bloodGroup"
+                      value={teacher.bloodGroup}
+                      onChange={handleChange}
+                      className="mt-1 block w-full rounded-md border-gray-300 shadow-sm"
+                    />
+                  </div>
+                </div>
+              </div>
+
+              {/* Contact Details */}
+              <div className="rounded-lg bg-white p-6 shadow-md">
+                <h2 className="mb-4 text-xl font-semibold">Contact Details</h2>
+                <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
+                  <div>
+                    <label className="block text-sm font-medium text-gray-700">
+                      Phone Number
+                    </label>
+                    <input
+                      type="text"
+                      name="phoneNumber"
+                      value={teacher.phoneNumber}
+                      onChange={handleChange}
+                      className="mt-1 block w-full rounded-md border-gray-300 shadow-sm"
+                    />
+                  </div>
+                  <div>
+                    <label className="block text-sm font-medium text-gray-700">
+                      WhatsApp Number
+                    </label>
+                    <input
+                      type="text"
+                      name="whatsappNumber"
+                      value={teacher.whatsappNumber}
+                      onChange={handleChange}
+                      className="mt-1 block w-full rounded-md border-gray-300 shadow-sm"
+                    />
+                  </div>
+                  <div>
+                    <label className="block text-sm font-medium text-gray-700">
+                      City
+                    </label>
+                    <input
+                      type="text"
+                      name="city"
+                      value={teacher.city}
+                      onChange={handleChange}
+                      className="mt-1 block w-full rounded-md border-gray-300 shadow-sm"
+                    />
+                  </div>
+                  <div>
+                    <label className="block text-sm font-medium text-gray-700">
+                      Street Address
+                    </label>
+                    <input
+                      type="text"
+                      name="streetAddress"
+                      value={teacher.streetAddress}
+                      onChange={handleChange}
+                      className="mt-1 block w-full rounded-md border-gray-300 shadow-sm"
+                    />
+                  </div>
+                </div>
+              </div>
+
+              {/* Professional Details */}
+              <div className="rounded-lg bg-white p-6 shadow-md">
+                <h2 className="mb-4 text-xl font-semibold">
+                  Professional Details
+                </h2>
+                <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
+                  <div>
+                    <label className="block text-sm font-medium text-gray-700">
+                      Subject Specialization
+                    </label>
+                    <input
+                      type="text"
+                      name="subjectSpecialization"
+                      value={teacher.subjectSpecialization}
+                      onChange={handleChange}
+                      className="mt-1 block w-full rounded-md border-gray-300 shadow-sm"
+                    />
+                  </div>
+                  <div>
+                    <label className="block text-sm font-medium text-gray-700">
+                      Education
+                    </label>
+                    <input
+                      type="text"
+                      name="education"
+                      value={teacher.education}
+                      onChange={handleChange}
+                      className="mt-1 block w-full rounded-md border-gray-300 shadow-sm"
+                    />
+                  </div>
+                  <div>
+                    <label className="block text-sm font-medium text-gray-700">
+                      Joining Date
+                    </label>
+                    <input
+                      type="date"
+                      name="joiningDate"
+                      value={teacher.joiningDate}
+                      onChange={handleChange}
+                      className="mt-1 block w-full rounded-md border-gray-300 shadow-sm"
+                    />
+                  </div>
+                  <div>
+                    <label className="block text-sm font-medium text-gray-700">
+                      Salary
+                    </label>
+                    <input
+                      type="text"
+                      name="salary"
+                      value={teacher.salary}
+                      onChange={handleChange}
+                      className="mt-1 block w-full rounded-md border-gray-300 shadow-sm"
+                    />
+                  </div>
+                </div>
+              </div>
+
+              {/* Image Uploads */}
+              <div className="rounded-lg bg-white p-6 shadow-md">
+                <h2 className="mb-4 text-xl font-semibold">Upload Images</h2>
+                <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
+                  <div>
+                    <label className="block text-sm font-medium text-gray-700">
+                      Teacher Image
+                    </label>
+                    <input
+                      type="file"
+                      accept="image/*"
+                      onChange={(e) => handleFileChange(e, "teacherImage")}
+                      className="mt-1 block w-full rounded-md border-gray-300 shadow-sm"
+                    />
+                  </div>
+                  <div>
+                    <label className="block text-sm font-medium text-gray-700">
+                      Teacher Degree Image
+                    </label>
+                    <input
+                      type="file"
+                      accept="image/*"
+                      onChange={(e) =>
+                        handleFileChange(e, "teacherDegreeImage")
+                      }
+                      className="mt-1 block w-full rounded-md border-gray-300 shadow-sm"
+                    />
+                  </div>
+                  <div>
+                    <label className="block text-sm font-medium text-gray-700">
+                      Teacher ID Card Image
+                    </label>
+                    <input
+                      type="file"
+                      accept="image/*"
+                      onChange={(e) =>
+                        handleFileChange(e, "teacherIdCardImage")
+                      }
+                      className="mt-1 block w-full rounded-md border-gray-300 shadow-sm"
+                    />
+                  </div>
+                </div>
+              </div>
+
+              {/* Submit Button */}
+              <div className="flex justify-end">
+                <button
+                  type="submit"
+                  className="rounded-md bg-blue-600 px-6 py-2 text-white hover:bg-blue-700"
+                >
+                  Update Teacher
+                </button>
+              </div>
+            </form>
           </div>
-        </form>
+        </div>
       </div>
-    </div>
+    </>
   );
 }
 

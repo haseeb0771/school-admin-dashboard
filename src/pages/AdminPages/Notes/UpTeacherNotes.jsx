@@ -1,5 +1,7 @@
 import React, { useState, useEffect } from "react";
 import { PlusCircle } from "lucide-react";
+import Sidebar from "../../../components/commonComponents/Sidebar";
+
 import axios from "axios";
 
 function UpTeacherNotes() {
@@ -27,12 +29,12 @@ function UpTeacherNotes() {
         const headers = { Authorization: `Bearer ${token}` };
 
         const classesResponse = await axios.get(
-          "http://localhost:5000/api/classes/all"
+          "http://localhost:3300/class/all"
         );
         setClasses(classesResponse.data);
 
         const teachersResponse = await axios.get(
-          "http://localhost:5000/api/teachers/",
+          "http://localhost:3300/teachers/",
           { headers }
         );
         setTeachers(teachersResponse.data);
@@ -87,13 +89,9 @@ function UpTeacherNotes() {
     });
 
     try {
-      await axios.post(
-        "http://localhost:5000/api/notes/upload",
-        formDataToSend,
-        {
-          headers: { "Content-Type": "multipart/form-data" },
-        }
-      );
+      await axios.post("http://localhost:3300/notes/upload", formDataToSend, {
+        headers: { "Content-Type": "multipart/form-data" },
+      });
 
       setFormData({
         topicName: "",
@@ -112,114 +110,124 @@ function UpTeacherNotes() {
   };
 
   return (
-    <div className="h-full w-full bg-gray-50 px-3 py-5 xl:px-20 xl:py-12">
-      <h1 className="mb-6 text-3xl font-bold text-gray-900">
-        Upload Teacher Notes
-      </h1>
+    <>
+      {" "}
+      <div className="flex h-screen">
+        <div className="w-64">
+          <Sidebar />
+        </div>
+        <div className="h-full w-full bg-gray-50 px-3 py-5 xl:px-20 xl:py-12">
+          <h1 className="mb-6 text-3xl font-bold text-gray-900">
+            Upload Teacher Notes
+          </h1>
 
-      <div className="flex flex-col gap-6 xl:flex-row">
-        <label className="flex h-64 w-full cursor-pointer flex-col items-center justify-center rounded-lg border-2 border-dashed border-gray-300 bg-white p-6 text-center hover:border-blue-500 hover:bg-blue-50 xl:w-1/2">
-          <PlusCircle className="h-12 w-12 text-gray-400" />
-          <p className="mt-2 text-gray-600">Click to upload PDF notes</p>
-          <input
-            type="file"
-            accept="application/pdf"
-            className="hidden"
-            onChange={handleFileChange}
-          />
-        </label>
+          <div className="flex flex-col gap-6 xl:flex-row">
+            <label className="flex h-64 w-full cursor-pointer flex-col items-center justify-center rounded-lg border-2 border-dashed border-gray-300 bg-white p-6 text-center hover:border-blue-500 hover:bg-blue-50 xl:w-1/2">
+              <PlusCircle className="h-12 w-12 text-gray-400" />
+              <p className="mt-2 text-gray-600">Click to upload PDF notes</p>
+              <input
+                type="file"
+                accept="application/pdf"
+                className="hidden"
+                onChange={handleFileChange}
+              />
+            </label>
 
-        {selectedFile && (
-          <div className="w-full rounded-lg bg-white p-4 shadow-md xl:w-1/2">
-            <h2 className="text-lg font-semibold text-gray-700">Preview:</h2>
-            <embed
-              src={URL.createObjectURL(selectedFile)}
-              type="application/pdf"
-              className="mt-2 h-64 w-full rounded border border-gray-300"
-            />
+            {selectedFile && (
+              <div className="w-full rounded-lg bg-white p-4 shadow-md xl:w-1/2">
+                <h2 className="text-lg font-semibold text-gray-700">
+                  Preview:
+                </h2>
+                <embed
+                  src={URL.createObjectURL(selectedFile)}
+                  type="application/pdf"
+                  className="mt-2 h-64 w-full rounded border border-gray-300"
+                />
+              </div>
+            )}
           </div>
-        )}
+
+          <div className="mt-8 rounded-lg bg-white p-6 shadow-md">
+            <h2 className="mb-4 text-lg font-semibold text-gray-700">
+              Note Details
+            </h2>
+            <form
+              onSubmit={handleSubmit}
+              className="grid grid-cols-1 gap-4 md:grid-cols-2"
+            >
+              <input
+                type="text"
+                name="topicName"
+                placeholder="Topic Name"
+                className="w-full rounded border p-2"
+                value={formData.topicName}
+                onChange={handleInputChange}
+              />
+              <input
+                type="text"
+                name="topicNum"
+                placeholder="Topic Number"
+                className="w-full rounded border p-2"
+                value={formData.topicNum}
+                onChange={handleInputChange}
+              />
+
+              <select
+                name="classEnrolled"
+                value={formData.classEnrolled}
+                onChange={handleClassChange}
+                className="w-full rounded-lg border p-3"
+              >
+                <option value="">Select Class</option>
+                {classes.map((cls) => (
+                  <option key={cls._id} value={cls._id}>
+                    {cls.className}
+                  </option>
+                ))}
+              </select>
+
+              <select
+                value={formData.subjects}
+                onChange={handleSubjectChange}
+                className="w-full rounded-lg border p-3"
+                disabled={!subjects.length}
+              >
+                <option value="">Select Subject</option>
+                {subjects.map((subject, index) => (
+                  <option key={index} value={subject}>
+                    {subject}
+                  </option>
+                ))}
+              </select>
+
+              <select
+                name="teacher"
+                value={formData.teacher}
+                onChange={handleInputChange}
+                className="w-full rounded-lg border p-3"
+              >
+                <option value="">Select Teacher</option>
+                {teachers.map((teacher) => (
+                  <option key={teacher._id} value={teacher._id}>
+                    {teacher.firstName} {teacher.lastName}
+                  </option>
+                ))}
+              </select>
+
+              <button
+                type="submit"
+                className="col-span-full mt-4 bg-blue-500 text-white hover:bg-blue-600"
+                style={{ height: "50px", borderRadius: "25px" }}
+                disabled={uploading}
+              >
+                {uploading ? "Uploading..." : "Upload Note"}
+              </button>
+            </form>
+            {error && <p className="mt-4 text-red-600">{error}</p>}
+          </div>
+        </div>
       </div>
-
-      <div className="mt-8 rounded-lg bg-white p-6 shadow-md">
-        <h2 className="mb-4 text-lg font-semibold text-gray-700">
-          Note Details
-        </h2>
-        <form
-          onSubmit={handleSubmit}
-          className="grid grid-cols-1 gap-4 md:grid-cols-2"
-        >
-          <input
-            type="text"
-            name="topicName"
-            placeholder="Topic Name"
-            className="w-full rounded border p-2"
-            value={formData.topicName}
-            onChange={handleInputChange}
-          />
-          <input
-            type="text"
-            name="topicNum"
-            placeholder="Topic Number"
-            className="w-full rounded border p-2"
-            value={formData.topicNum}
-            onChange={handleInputChange}
-          />
-
-          <select
-            name="classEnrolled"
-            value={formData.classEnrolled}
-            onChange={handleClassChange}
-            className="w-full rounded-lg border p-3"
-          >
-            <option value="">Select Class</option>
-            {classes.map((cls) => (
-              <option key={cls._id} value={cls._id}>
-                {cls.className}
-              </option>
-            ))}
-          </select>
-
-          <select
-            value={formData.subjects}
-            onChange={handleSubjectChange}
-            className="w-full rounded-lg border p-3"
-            disabled={!subjects.length}
-          >
-            <option value="">Select Subject</option>
-            {subjects.map((subject, index) => (
-              <option key={index} value={subject}>
-                {subject}
-              </option>
-            ))}
-          </select>
-
-          <select
-            name="teacher"
-            value={formData.teacher}
-            onChange={handleInputChange}
-            className="w-full rounded-lg border p-3"
-          >
-            <option value="">Select Teacher</option>
-            {teachers.map((teacher) => (
-              <option key={teacher._id} value={teacher._id}>
-                {teacher.firstName} {teacher.lastName}
-              </option>
-            ))}
-          </select>
-
-          <button
-            type="submit"
-            className="col-span-full mt-4 bg-blue-500 text-white hover:bg-blue-600"
-            style={{ height: "50px", borderRadius: "25px" }}
-            disabled={uploading}
-          >
-            {uploading ? "Uploading..." : "Upload Note"}
-          </button>
-        </form>
-        {error && <p className="mt-4 text-red-600">{error}</p>}
-      </div>
-    </div>
+    </>
   );
 }
 

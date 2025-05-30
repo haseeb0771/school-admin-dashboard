@@ -16,19 +16,24 @@ import User from "../../assets/user.png";
 import { NavLink } from "react-router-dom";
 import ConfirmBox from "./ConfirmBox";
 import { createPortal } from "react-dom";
+import logout from "../../utils/helpers";
 
 const sidebarLinks = [
-  { name: "Dashboard", href: "/dashboard", icon: HomeIcon },
-  { name: "New Admission", href: "/new-admission", icon: UserPlusIcon },
-  { name: "All Students", href: "/allstudents", icon: UsersIcon },
-  { name: "Teachers", href: "/teachers", icon: UserIcon },
-  { name: "Attendance", href: "/attendance", icon: ShieldCheckIcon },
-  { name: "Lectures", href: "/lectures", icon: VideoCameraIcon },
-  { name: "Notes", href: "/notes", icon: ClipboardDocumentIcon },
-  { name: "PassedOut Students", href: "/passedstudent", icon: AcademicCapIcon },
-  { name: "Transportation", href: "/transport", icon: Bus },
-  { name: "Employee Management", href: "/employee", icon: UserIcon },
-  { name: "Finance", href: "/finance", icon: CurrencyDollarIcon },
+  { name: "Dashboard", href: "/admin/dashboard", icon: HomeIcon },
+  { name: "New Admission", href: "/admin/new-admission", icon: UserPlusIcon },
+  { name: "All Students", href: "/admin/all-students", icon: UsersIcon },
+  { name: "Teachers", href: "/admin/teachers", icon: UserIcon },
+  { name: "Attendance", href: "/admin/attendance", icon: ShieldCheckIcon },
+  { name: "Lectures", href: "/admin/lectures", icon: VideoCameraIcon },
+  { name: "Notes", href: "/admin/notes", icon: ClipboardDocumentIcon },
+  {
+    name: "PassedOut Students",
+    href: "/admin/passedstudent",
+    icon: AcademicCapIcon,
+  },
+  { name: "Transportation", href: "/admin/transport", icon: Bus },
+  { name: "Employee Management", href: "/admin/employee", icon: UserIcon },
+  { name: "Finance", href: "/admin/finance", icon: CurrencyDollarIcon },
 ];
 
 function Sidebar({ handleLogout }) {
@@ -104,10 +109,8 @@ function Sidebar({ handleLogout }) {
           <div
             className="group flex h-12 w-52 cursor-pointer items-center gap-2 rounded-md px-3 py-2 transition-all hover:scale-105 hover:bg-gray-300"
             onClick={() =>
-              openConfirmBox(
-                "Logout",
-                "Are you sure you want to logout?",
-                handleLogout
+              openConfirmBox("Logout", "Are you sure you want to logout?", () =>
+                logout()
               )
             }
           >

@@ -7,7 +7,7 @@ function AcademicDetailsForm({ newStudent, setNewStudent, setSections }) {
 
   useEffect(() => {
     axios
-      .get("http://localhost:5000/api/classes/all")
+      .get("http://localhost:3300/class/all")
       .then((res) => {
         console.log("Classes Data:", res.data);
         setClasses(res.data);
