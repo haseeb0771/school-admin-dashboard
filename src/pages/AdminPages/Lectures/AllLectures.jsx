@@ -55,14 +55,12 @@ function AllLectures() {
       const token = localStorage.getItem("token"); // Get token from localStorage
       const headers = { Authorization: `Bearer ${token}` };
 
-      console.log("Deleting Lecture ID:", lectureId); // Debugging log
 
       // Call the delete API
       await axios.delete(`http://localhost:3300/lectures/${lectureId}`, {
         headers,
       });
 
-      console.log("Lecture deleted successfully!");
 
       // Remove the deleted lecture from the state
       setLectures((prevLectures) =>
@@ -75,9 +73,6 @@ function AllLectures() {
       );
     }
   };
-  // Debugging: Log lectures and filtered lectures
-  console.log("Lectures:", lectures);
-  console.log("Filtered Lectures:", filteredLectures);
 
   return (
     <>

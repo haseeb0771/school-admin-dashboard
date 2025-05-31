@@ -32,7 +32,6 @@ function UploadLecture() {
         const classesResponse = await axios
           .get("http://localhost:3300/class/all")
           .then((res) => {
-            console.log("Classes Data:", res.data);
             setClasses(res.data);
           });
 
@@ -41,7 +40,6 @@ function UploadLecture() {
           { headers }
         );
         setTeachers(teachersResponse.data);
-        console.log("Teachers fetched:", teachersResponse.data);
       } catch (error) {
         console.error("Error fetching data:", error);
       } finally {
@@ -54,7 +52,6 @@ function UploadLecture() {
   }, []);
 
   const handleClassChange = (event) => {
-    console.log("handleClassChange", event.target.value);
     const selectedClass = classes.find((cls) => cls._id === event.target.value);
 
     if (selectedClass && selectedClass.subjects.length > 0) {

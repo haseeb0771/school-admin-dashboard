@@ -1,5 +1,6 @@
 import React, { useState } from "react";
 import axios from "axios";
+import { toast } from "react-toastify";
 
 function AdminStaffForm({ onFormSubmit }) {
   const [formData, setFormData] = useState({
@@ -41,8 +42,7 @@ function AdminStaffForm({ onFormSubmit }) {
         { headers: { "Content-Type": "multipart/form-data" } }
       );
 
-      alert("Admin staff added successfully!");
-      console.log(response.data);
+      toast.success("Admin staff added successfully!");
 
       // Reset the form
       setFormData({
@@ -64,7 +64,7 @@ function AdminStaffForm({ onFormSubmit }) {
       onFormSubmit();
     } catch (err) {
       console.error("Error adding admin staff:", error);
-      alert("Failed to add admin staff. Try again.");
+      toast.error("Failed to add admin staff. Try again.");
     }
   };
 

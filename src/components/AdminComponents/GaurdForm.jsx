@@ -1,4 +1,5 @@
 import React, { useState } from "react";
+import { toast } from "react-toastify";
 
 function GuardForm({ onFormSubmit }) {
   const [formData, setFormData] = useState({
@@ -53,7 +54,7 @@ function GuardForm({ onFormSubmit }) {
 
       const result = await response.json();
       if (response.ok) {
-        alert("Gaurd Added Successfully");
+        toast.success("Gaurd Added Successfully");
         setMessage("");
         setFormData({
           firstName: "",

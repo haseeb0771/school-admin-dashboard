@@ -9,7 +9,6 @@ function AcademicDetailsForm({ newStudent, setNewStudent, setSections }) {
     axios
       .get("http://localhost:3300/class/all")
       .then((res) => {
-        console.log("Classes Data:", res.data);
         setClasses(res.data);
       })
       .catch((err) => {
@@ -18,7 +17,6 @@ function AcademicDetailsForm({ newStudent, setNewStudent, setSections }) {
   }, []);
 
   const handleClassChange = (event) => {
-    console.log("handleClassChange", event.target.value);
     const selectedClass = classes.find((cls) => cls._id === event.target.value);
 
     if (selectedClass && selectedClass.sections.length > 0) {

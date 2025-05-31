@@ -1,22 +1,37 @@
 import React from "react";
 import { FaLock } from "react-icons/fa";
 import { useNavigate } from "react-router-dom";
+import { getUserRole, isAuthenticated } from "../../../utils/auth";
 
 function NotAuthorized() {
   const navigate = useNavigate();
-  const userRole = localStorage.getItem("userRole");
-  const isAuthenticated = !!localStorage.getItem("authToken");
+  const userRole = getUserRole();
+  const authenticated = isAuthenticated();
 
   const handleGoBack = () => {
-    if (!isAuthenticated) {
+    if (!authenticated) {
       navigate("/login");
       return;
     }
 
-    if (userRole === "ADMIN") {
-      navigate("/dashboard");
-    } else {
-      navigate("/");
+    switch (userRole) {
+      case "ADMIN":
+        navigate("/admin/dashboard");
+        break;
+      case "OWNER":
+        navigate("/owner/dashboard");
+        break;
+      case "STUDENT":
+        navigate("/student/dashboard");
+        break;
+      case "PARENT":
+        navigate("/parent/dashboard");
+        break;
+      case "TEACHER":
+        navigate("/teacher/dashboard");
+        break;
+      default:
+        navigate("/login");
     }
   };
 
@@ -28,7 +43,7 @@ function NotAuthorized() {
           Access Denied
         </h1>
         <p className="mb-6 text-lg text-red-600">
-          {isAuthenticated
+          {authenticated
             ? "You don't have permission to access this page."
             : "Please log in to access this page."}
         </p>
@@ -36,7 +51,7 @@ function NotAuthorized() {
           onClick={handleGoBack}
           className="rounded-md bg-red-500 px-6 py-3 text-xl text-white transition-all hover:bg-red-400"
         >
-          {isAuthenticated ? "Go Back" : "Go to Login"}
+          {authenticated ? "Go Back" : "Go to Login"}
         </button>
       </div>
     </div>

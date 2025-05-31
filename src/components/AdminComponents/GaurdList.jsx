@@ -11,6 +11,7 @@ import {
   MultiSelectBoxItem,
 } from "@tremor/react";
 import { Link } from "react-router-dom";
+import { toast } from "react-toastify";
 
 function GuardList() {
   const [selectedIds, setSelectedIds] = useState([]);
@@ -57,10 +58,10 @@ function GuardList() {
       // Remove the deleted guard from the state
       setGuards((prevGuards) => prevGuards.filter((guard) => guard._id !== id));
 
-      alert("Guard deleted successfully!");
+      toast.success("Guard deleted successfully!");
     } catch (error) {
       console.error("Error deleting guard:", error);
-      alert("Failed to delete guard. Please try again.");
+      toast.error("Failed to delete guard. Please try again.");
     }
   };
 

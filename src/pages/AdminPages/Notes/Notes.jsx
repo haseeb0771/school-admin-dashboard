@@ -29,10 +29,6 @@ function Notes() {
     },
   ]);
 
-  const handleUpload = (type) => {
-    console.log(`Redirecting to upload ${type}`);
-    // Add navigation logic here
-  };
 
   return (
     <>

@@ -90,7 +90,6 @@ function AddTeacher() {
         alert("Failed to admit teacher");
       }
     } catch (error) {
-      console.log("Error:", error);
       alert("An error occurred while admitting the teacher");
     }
   };

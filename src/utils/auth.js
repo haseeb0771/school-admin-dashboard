@@ -13,4 +13,4 @@ export const getUserRole = () => {
   return localStorage.getItem("userRole");
 };
 
-export default logout;
+export default { logout, isAuthenticated, getUserRole };

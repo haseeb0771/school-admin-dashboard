@@ -1,16 +1,3 @@
-import {
-  Badge,
-  Button,
-  Card,
-  Table,
-  TableRow,
-  TableCell,
-  TableHead,
-  TableHeaderCell,
-  TableBody,
-  MultiSelectBox,
-  MultiSelectBoxItem,
-} from "@tremor/react";
 import { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 import axios from "axios";
@@ -34,12 +21,10 @@ const AllStudents = () => {
       const response = await axios.get(`http://localhost:3300/students/all`, {
         headers: { Authorization: `Bearer ${token}` },
       });
-      // Sort students by 'createdAt' in descending order
-      const sortedStudents = response.data.sort(
+      const sorted = response.data.sort(
         (a, b) => new Date(b.createdAt) - new Date(a.createdAt)
       );
-
-      setStudents(response.data);
+      setStudents(sorted);
     } catch (err) {
       console.error("Error fetching students:", err);
       setError("Failed to fetch students");
@@ -48,169 +33,154 @@ const AllStudents = () => {
     }
   };
 
-  const handleDelete = async (id) => {
-    const confirmDelete = window.confirm(
-      "Are you sure you want to delete this student?"
-    );
-    if (!confirmDelete) return;
-
-    try {
-      const token = localStorage.getItem("token");
-      await axios.delete(`http://localhost:3300//students/${id}`, {
-        headers: { Authorization: `Bearer ${token}` },
-      });
-
-      setStudents(students.filter((student) => student._id !== id));
-    } catch (err) {
-      console.error("Error deleting student:", err);
-      alert("Failed to delete student");
-    }
-  };
-
   const isStudentSelected = (student) => {
-    const isIdMatch = selectedIds.includes(student._id);
-    const isNameMatch = selectedNames.includes(
-      `${student.studentFirstName} ${student.studentMiddleLastName}`
-    );
-
+    const fullName = `${student.studentFirstName} ${student.studentMiddleLastName}`;
     return (
       (selectedIds.length === 0 && selectedNames.length === 0) ||
-      isIdMatch ||
-      isNameMatch
+      selectedIds.includes(student._id) ||
+      selectedNames.includes(fullName)
     );
   };
 
   return (
-    <>
-      {" "}
-      <div className="flex h-screen">
-        <div className="w-64">
-          <Sidebar />
-        </div>
-        <div className="h-full w-full bg-gray-50 px-3 py-5 xl:px-20 xl:py-12">
-          <header className="flex w-full justify-between">
-            <h1 className="text-3xl font-bold text-gray-900 xl:text-3xl">
-              All Students
-            </h1>
-          </header>
-
-          <div className="mt-5">
-            <Card shadow={false}>
-              {loading && <p>Loading students...</p>}
-              {error && <p className="text-red-500">{error}</p>}
-
-              {!loading && students.length === 0 && <p>No students found.</p>}
-
-              {!loading && students.length > 0 && (
-                <>
-                  {/* Filters */}
-                  <div className="mb-4 flex flex-wrap gap-4">
-                    <MultiSelectBox
-                      onValueChange={(value) => setSelectedIds(value)}
-                      placeholder="Select by ID..."
-                      maxWidth="max-w-lg"
-                    >
-                      {students.map((item) => (
-                        <MultiSelectBoxItem
-                          key={item._id}
-                          value={item._id}
-                          text={`${item._id} : ${item.studentFirstName} ${item.studentMiddleLastName}`}
-                        />
-                      ))}
-                    </MultiSelectBox>
-
-                    <MultiSelectBox
-                      onValueChange={(value) => setSelectedNames(value)}
-                      placeholder="Select by Name..."
-                      maxWidth="max-w-lg"
-                    >
-                      {students.map((item) => (
-                        <MultiSelectBoxItem
-                          key={item._id + "-name"}
-                          value={`${item.studentFirstName} ${item.studentMiddleLastName}`}
-                          text={`${item.studentFirstName} ${item.studentMiddleLastName}`}
-                        />
-                      ))}
-                    </MultiSelectBox>
-                  </div>
-
-                  {/* Table */}
-                  <Table marginTop="mt-6">
-                    <TableHead>
-                      <TableRow>
-                        <TableHeaderCell>Student ID</TableHeaderCell>
-                        <TableHeaderCell>Name</TableHeaderCell>
-                        <TableHeaderCell>Class / Section</TableHeaderCell>
-                        <TableHeaderCell>Date of Admission</TableHeaderCell>
-                        <TableHeaderCell>Guardian's Name</TableHeaderCell>
-                        <TableHeaderCell>Guardian's Phone</TableHeaderCell>
-                        <TableHeaderCell>Status</TableHeaderCell>
-                        <TableHeaderCell>Actions</TableHeaderCell>
-                      </TableRow>
-                    </TableHead>
-
-                    <TableBody>
-                      {students
-                        .filter((item) => isStudentSelected(item))
-                        .map((item) => (
-                          <TableRow key={item._id}>
-                            <TableCell>
-                              <Badge
-                                text={item.studentId}
-                                size="xs"
-                                color="sky"
-                              />
-                            </TableCell>
-                            <TableCell>
-                              {item.studentFirstName +
-                                " " +
-                                item.studentMiddleLastName}
-                            </TableCell>
-                            <TableCell>
-                              {item.classEnrolled.className +
-                                " / " +
-                                item.sectionAssigned}
-                            </TableCell>
-                            <TableCell>
-                              {DateTime.fromISO(item.createdAt).toFormat(
-                                "dd/MM/yyyy"
-                              )}
-                            </TableCell>
-                            <TableCell>{item.guardianFullName}</TableCell>
-                            <TableCell>{item.guardianPhone}</TableCell>
-                            <TableCell>{item.studentStatus}</TableCell>
-
-                            <TableCell>
-                              <Link
-                                to={`/students/${item._id}`}
-                                className="mx-3 rounded-md  bg-gray-900 py-[3px] px-3 text-xs text-gray-50 transition-all hover:bg-gray-700"
-                              >
-                                View
-                              </Link>
-                              <Link
-                                to={`/students/edit/${item._id}`}
-                                className="rounded-md bg-gray-900 py-[3px] px-3 text-xs text-gray-50 transition-all hover:bg-gray-700"
-                              >
-                                Edit
-                              </Link>
-                              {/* <button
-                            onClick={() => handleDelete(item._id)}
-                            className="ml-3 rounded-full bg-red-200 py-[3px] px-3 text-xs text-red-900 transition-all hover:bg-red-100"
-                          >
-                            Delete
-                          </button> */}
-                            </TableCell>
-                          </TableRow>
-                        ))}
-                    </TableBody>
-                  </Table>
-                </>
-              )}
-            </Card>
-          </div>
-        </div>
+    <div className="flex h-screen bg-gray-100">
+      <div className="w-64">
+        <Sidebar />
       </div>
-    </>
+      <div className="flex-1 overflow-auto px-4 py-6 xl:px-12 xl:py-10">
+        <h1 className="mb-6 text-3xl font-bold text-gray-800">All Students</h1>
+
+        {loading && <p>Loading students...</p>}
+        {error && <p className="text-red-500">{error}</p>}
+        {!loading && students.length === 0 && <p>No students found.</p>}
+
+        {!loading && students.length > 0 && (
+          <>
+            {/* Filter Boxes */}
+            <div className="mb-4 flex flex-wrap gap-4">
+              <select
+                onChange={(e) =>
+                  setSelectedIds([...(e.target.value ? [e.target.value] : [])])
+                }
+                className="w-64 rounded border border-gray-300 p-2 text-sm shadow-sm"
+              >
+                <option value="">Select by ID...</option>
+                {students.map((s) => (
+                  <option key={s._id} value={s._id}>
+                    {s._id} : {s.studentFirstName} {s.studentMiddleLastName}
+                  </option>
+                ))}
+              </select>
+
+              <select
+                onChange={(e) =>
+                  setSelectedNames([
+                    ...(e.target.value ? [e.target.value] : []),
+                  ])
+                }
+                className="w-64 rounded border border-gray-300 p-2 text-sm shadow-sm"
+              >
+                <option value="">Select by Name...</option>
+                {students.map((s) => (
+                  <option
+                    key={s._id + "-name"}
+                    value={`${s.studentFirstName} ${s.studentMiddleLastName}`}
+                  >
+                    {s.studentFirstName} {s.studentMiddleLastName}
+                  </option>
+                ))}
+              </select>
+            </div>
+
+            {/* Table */}
+            <div className="overflow-x-auto rounded-md border border-gray-300 shadow-sm">
+              <table className="w-full table-auto border-collapse text-sm">
+                <thead className="bg-gray-200 text-left text-gray-700">
+                  <tr>
+                    <th className="border border-gray-300 px-4 py-2">
+                      Student ID
+                    </th>
+                    <th className="border border-gray-300 px-4 py-2">Name</th>
+                    <th className="border border-gray-300 px-4 py-2">
+                      Class / Section
+                    </th>
+                    <th className="border border-gray-300 px-4 py-2">
+                      Date of Admission
+                    </th>
+                    <th className="border border-gray-300 px-4 py-2">
+                      Guardian's Name
+                    </th>
+                    <th className="border border-gray-300 px-4 py-2">
+                      Guardian's Phone
+                    </th>
+                    <th className="border border-gray-300 px-4 py-2">Status</th>
+                    <th className="border border-gray-300 px-4 py-2">
+                      Actions
+                    </th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {students.filter(isStudentSelected).map((student, index) => (
+                    <tr
+                      key={student._id}
+                      className={index % 2 === 0 ? "bg-white" : "bg-gray-50"}
+                    >
+                      <td className="border border-gray-300 px-4 py-2 font-semibold text-blue-700">
+                        {student.studentId}
+                      </td>
+                      <td className="border border-gray-300 px-4 py-2">
+                        {student.studentFirstName}{" "}
+                        {student.studentMiddleLastName}
+                      </td>
+                      <td className="border border-gray-300 px-4 py-2">
+                        {student.classEnrolled?.className} /{" "}
+                        {student.sectionAssigned}
+                      </td>
+                      <td className="border border-gray-300 px-4 py-2">
+                        {DateTime.fromISO(student.createdAt).toFormat(
+                          "dd/MM/yyyy"
+                        )}
+                      </td>
+                      <td className="border border-gray-300 px-4 py-2">
+                        {student.guardianFullName}
+                      </td>
+                      <td className="border border-gray-300 px-4 py-2">
+                        {student.guardianPhone}
+                      </td>
+                      <td className="border border-gray-300 px-4 py-2">
+                        <span
+                          className={`rounded-full px-2 py-1 text-xs font-medium ${
+                            student.studentStatus === "ACTIVE"
+                              ? "bg-green-100 text-green-700"
+                              : "bg-yellow-100 text-yellow-700"
+                          }`}
+                        >
+                          {student.studentStatus}
+                        </span>
+                      </td>
+                      <td className="space-x-2 border border-gray-300 px-4 py-2">
+                        <Link
+                          to={`/students/${student._id}`}
+                          className="inline-block rounded bg-blue-600 px-3 py-1 text-xs text-white hover:bg-blue-700"
+                        >
+                          View
+                        </Link>
+                        <Link
+                          to={`/students/edit/${student._id}`}
+                          className="inline-block rounded bg-green-600 px-3 py-1 text-xs text-white hover:bg-green-700"
+                        >
+                          Edit
+                        </Link>
+                      </td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+            </div>
+          </>
+        )}
+      </div>
+    </div>
   );
 };
 

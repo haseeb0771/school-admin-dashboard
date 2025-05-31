@@ -1,21 +1,7 @@
-import {
-  Badge,
-  Button,
-  Card,
-  Table,
-  TableRow,
-  TableCell,
-  TableHead,
-  TableHeaderCell,
-  TableBody,
-  MultiSelectBox,
-  MultiSelectBoxItem,
-} from "@tremor/react";
 import { useEffect, useState } from "react";
-import Sidebar from "../../../components/commonComponents/Sidebar";
-
 import { Link } from "react-router-dom";
 import { DateTime } from "luxon";
+import Sidebar from "../../../components/commonComponents/Sidebar";
 
 function PassedOut() {
   const [students, setStudents] = useState([]);
@@ -25,23 +11,19 @@ function PassedOut() {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
 
-  // Fetch all students from the backend API
   useEffect(() => {
     const fetchStudents = async () => {
       try {
-        const token = localStorage.getItem("token");
+        const token = localStorage.getItem("authToken");
         if (!token) {
           setError("Authentication token is missing.");
           return;
         }
 
-        const headers = {
-          Authorization: `Bearer ${token}`,
-        };
-
-        const response = await fetch("http://localhost:3300/students", {
-          method: "GET",
-          headers: headers,
+        const response = await fetch("http://localhost:3300/students/all", {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
         });
 
         if (!response.ok) {
@@ -49,14 +31,12 @@ function PassedOut() {
         }
 
         const data = await response.json();
-
-        // Filter students with status "PassedOut"
-        const passedOutStudents = data.filter(
-          (student) => student.studentStatus === "PassedOut"
+        const passedOut = data.filter(
+          (student) => student.studentStatus === "PASSEDOUT"
         );
 
-        setStudents(data); // Store all students (optional, if needed)
-        setFilteredStudents(passedOutStudents); // Store filtered students
+        setStudents(data);
+        setFilteredStudents(passedOut);
       } catch (err) {
         setError(err.message);
       } finally {
@@ -67,162 +47,151 @@ function PassedOut() {
     fetchStudents();
   }, []);
 
-  const handleDelete = (id) => {
-    const confirmDelete = window.confirm(
-      "Are you sure you want to delete this student?"
-    );
-    if (!confirmDelete) return;
-
-    setFilteredStudents((prevStudents) =>
-      prevStudents.filter((student) => student._id !== id)
-    );
-  };
-
   const isStudentSelected = (student) => {
-    const isIdMatch = selectedIds.includes(student._id);
-    const isNameMatch = selectedNames.includes(
+    const idMatch = selectedIds.includes(student._id);
+    const nameMatch = selectedNames.includes(
       `${student.studentFirstName} ${student.studentMiddleLastName}`
     );
-
     return (
       (selectedIds.length === 0 && selectedNames.length === 0) ||
-      isIdMatch ||
-      isNameMatch
+      idMatch ||
+      nameMatch
     );
   };
 
-  if (loading) return <p className="text-center text-gray-700">Loading...</p>;
-  if (error) return <p className="text-center text-red-500">{error}</p>;
-
   return (
-    <>
-      {" "}
-      <div className="flex h-screen">
-        <div className="w-64">
-          <Sidebar />
-        </div>
-        <div className="h-full w-full bg-gray-50 px-3 py-5 xl:px-20 xl:py-12">
-          <header className="flex w-full justify-between">
-            <h1 className="text-3xl font-bold text-gray-900 xl:text-3xl">
-              Passed Out Students
-            </h1>
-          </header>
+    <div className="flex h-screen">
+      <div className="w-64">
+        <Sidebar />
+      </div>
 
-          <div className="mt-5">
-            <Card shadow={false}>
-              {filteredStudents.length === 0 && (
-                <p>No passed out students found.</p>
-              )}
+      <div className="h-full w-full bg-gray-50 px-3 py-5 xl:px-20 xl:py-12">
+        <header className="flex justify-between">
+          <h1 className="text-3xl font-bold text-gray-900">
+            Passed Out Students
+          </h1>
+        </header>
 
-              {filteredStudents.length > 0 && (
-                <>
-                  {/* Filters */}
-                  <div className="mb-4 flex flex-wrap gap-4">
-                    <MultiSelectBox
-                      onValueChange={(value) => setSelectedIds(value)}
-                      placeholder="Select by ID..."
-                      maxWidth="max-w-lg"
+        <div className="mt-6">
+          {loading && <p className="text-gray-700">Loading...</p>}
+          {error && <p className="text-red-500">{error}</p>}
+          {!loading && filteredStudents.length === 0 && (
+            <p>No passed out students found.</p>
+          )}
+
+          {!loading && filteredStudents.length > 0 && (
+            <>
+              {/* Filters */}
+              <div className="mb-6 flex flex-col gap-4 sm:flex-row">
+                <select
+                  multiple
+                  onChange={(e) =>
+                    setSelectedIds(
+                      Array.from(e.target.selectedOptions, (o) => o.value)
+                    )
+                  }
+                  className="w-full max-w-sm rounded border border-gray-300 p-2"
+                >
+                  <option disabled>Select by ID</option>
+                  {filteredStudents.map((student) => (
+                    <option key={student._id} value={student._id}>
+                      {student._id} : {student.studentFirstName}{" "}
+                      {student.studentMiddleLastName}
+                    </option>
+                  ))}
+                </select>
+
+                <select
+                  multiple
+                  onChange={(e) =>
+                    setSelectedNames(
+                      Array.from(e.target.selectedOptions, (o) => o.value)
+                    )
+                  }
+                  className="w-full max-w-sm rounded border border-gray-300 p-2"
+                >
+                  <option disabled>Select by Name</option>
+                  {filteredStudents.map((student) => (
+                    <option
+                      key={`${student._id}-name`}
+                      value={`${student.studentFirstName} ${student.studentMiddleLastName}`}
                     >
-                      {filteredStudents.map((item) => (
-                        <MultiSelectBoxItem
-                          key={item._id}
-                          value={item._id}
-                          text={`${item._id} : ${item.studentFirstName} ${item.studentMiddleLastName}`}
-                        />
+                      {student.studentFirstName} {student.studentMiddleLastName}
+                    </option>
+                  ))}
+                </select>
+              </div>
+
+              {/* Table */}
+              <div className="overflow-auto rounded-md border border-gray-300">
+                <table className="min-w-full table-auto">
+                  <thead className="bg-gray-200 text-sm font-medium text-gray-700">
+                    <tr>
+                      <th className="border px-4 py-2">Student ID</th>
+                      <th className="border px-4 py-2">Name</th>
+                      <th className="border px-4 py-2">Class / Section</th>
+                      <th className="border px-4 py-2">Date of Admission</th>
+                      <th className="border px-4 py-2">Guardian's Name</th>
+                      <th className="border px-4 py-2">Guardian's Phone</th>
+                      <th className="border px-4 py-2">Status</th>
+                      <th className="border px-4 py-2">Actions</th>
+                    </tr>
+                  </thead>
+                  <tbody className="text-sm text-gray-800">
+                    {filteredStudents
+                      .filter(isStudentSelected)
+                      .map((student, index) => (
+                        <tr
+                          key={student._id}
+                          className={
+                            index % 2 === 0 ? "bg-white" : "bg-gray-50"
+                          }
+                        >
+                          <td className="border px-4 py-2 font-semibold text-blue-700">
+                            {student.studentId}
+                          </td>
+                          <td className="border px-4 py-2">
+                            {student.studentFirstName}{" "}
+                            {student.studentMiddleLastName}
+                          </td>
+                          <td className="border px-4 py-2">
+                            {student.classEnrolled?.className} /{" "}
+                            {student.sectionAssigned}
+                          </td>
+                          <td className="border px-4 py-2">
+                            {DateTime.fromISO(student.createdAt).toFormat(
+                              "dd/MM/yyyy"
+                            )}
+                          </td>
+                          <td className="border px-4 py-2">
+                            {student.guardianFullName}
+                          </td>
+                          <td className="border px-4 py-2">
+                            {student.guardianPhone}
+                          </td>
+                          <td className="border px-4 py-2">
+                            <span className="inline-block rounded-full bg-yellow-100 px-2 py-1 text-xs font-medium text-yellow-800">
+                              {student.studentStatus}
+                            </span>
+                          </td>
+                          <td className="border px-4 py-2">
+                            <Link
+                              to={`/students/${student._id}`}
+                              className="inline-block rounded bg-gray-900 px-3 py-1 text-xs text-white hover:bg-gray-700"
+                            >
+                              View
+                            </Link>
+                          </td>
+                        </tr>
                       ))}
-                    </MultiSelectBox>
-
-                    <MultiSelectBox
-                      onValueChange={(value) => setSelectedNames(value)}
-                      placeholder="Select by Name..."
-                      maxWidth="max-w-lg"
-                    >
-                      {filteredStudents.map((item) => (
-                        <MultiSelectBoxItem
-                          key={item._id + "-name"}
-                          value={`${item.studentFirstName} ${item.studentMiddleLastName}`}
-                          text={`${item.studentFirstName} ${item.studentMiddleLastName}`}
-                        />
-                      ))}
-                    </MultiSelectBox>
-                  </div>
-
-                  {/* Table */}
-                  <Table marginTop="mt-6">
-                    <TableHead>
-                      <TableRow>
-                        <TableHeaderCell>Student ID</TableHeaderCell>
-                        <TableHeaderCell>Name</TableHeaderCell>
-                        <TableHeaderCell>Class / Section</TableHeaderCell>
-                        <TableHeaderCell>Date of Admission</TableHeaderCell>
-                        <TableHeaderCell>Guardian's Name</TableHeaderCell>
-                        <TableHeaderCell>Guardian's Phone</TableHeaderCell>
-                        <TableHeaderCell>Status</TableHeaderCell>
-                        <TableHeaderCell>Actions</TableHeaderCell>
-                      </TableRow>
-                    </TableHead>
-
-                    <TableBody>
-                      {filteredStudents
-                        .filter((item) => isStudentSelected(item))
-                        .map((item) => (
-                          <TableRow key={item._id}>
-                            <TableCell>
-                              <Badge
-                                text={item.studentId}
-                                size="xs"
-                                color="sky"
-                              />
-                            </TableCell>
-                            <TableCell>
-                              {item.studentFirstName +
-                                " " +
-                                item.studentMiddleLastName}
-                            </TableCell>
-                            <TableCell>
-                              {item.classEnrolled.className +
-                                " / " +
-                                item.sectionAssigned}
-                            </TableCell>
-                            <TableCell>
-                              {DateTime.fromISO(item.createdAt).toFormat(
-                                "dd/MM/yyyy"
-                              )}
-                            </TableCell>
-                            <TableCell>{item.guardianFullName}</TableCell>
-                            <TableCell>{item.guardianPhone}</TableCell>
-                            <TableCell>{item.studentStatus}</TableCell>
-                            <TableCell>
-                              <Link
-                                to={`/students/${item._id}`}
-                                className="rounded-md bg-gray-900 py-[3px] px-3 text-xs text-gray-50 transition-all hover:bg-gray-700"
-                              >
-                                View
-                              </Link>
-                              {/* <Link
-                            to={`/students/edit/${item._id}`}
-                            className="ml-3 rounded-full bg-orange-200 py-[3px] px-3 text-xs text-orange-900 transition-all hover:bg-orange-100"
-                          >
-                            Edit
-                          </Link> */}
-                              {/* <button
-                            onClick={() => handleDelete(item._id)}
-                            className="ml-3 rounded-full bg-red-200 py-[3px] px-3 text-xs text-red-900 transition-all hover:bg-red-100"
-                          >
-                            Delete
-                          </button> */}
-                            </TableCell>
-                          </TableRow>
-                        ))}
-                    </TableBody>
-                  </Table>
-                </>
-              )}
-            </Card>
-          </div>
+                  </tbody>
+                </table>
+              </div>
+            </>
+          )}
         </div>
       </div>
-    </>
+    </div>
   );
 }
 

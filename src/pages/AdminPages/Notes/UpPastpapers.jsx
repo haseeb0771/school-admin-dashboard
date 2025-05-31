@@ -26,9 +26,6 @@ function UpPastpapers() {
 
   const handleSubmit = (event) => {
     event.preventDefault();
-    // Handle form submission logic here
-    console.log("Form Data:", formData);
-    console.log("Selected File:", selectedFile);
   };
 
   return (

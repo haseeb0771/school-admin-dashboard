@@ -1,5 +1,5 @@
 import React from "react";
-import { logout } from "../../utils/helpers";
+import { logout } from "../../utils/auth";
 
 function OwnerDashboard() {
   // logout();

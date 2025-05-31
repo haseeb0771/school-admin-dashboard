@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 import { Card, Title } from "@tremor/react";
-import { logout } from "../../../utils/helpers";
+import { logout } from "../../../utils/auth";
 
 import {
   BarChart,
@@ -56,7 +56,6 @@ function Dashboard() {
         if (!response.ok) throw new Error("Failed to fetch data");
 
         const data = await response.json();
-        console.log("Fetched data:", data);
 
         setStudentData({
           totalStudents: data.totalStudents || 0,
@@ -74,7 +73,6 @@ function Dashboard() {
     fetchStudentData();
   }, []);
 
-  // Simulate dynamic data updates for Campus-wise Student Distribution
   useEffect(() => {
     const initialCampusData = [
       { Campus: "Campus A", Students: 500 },

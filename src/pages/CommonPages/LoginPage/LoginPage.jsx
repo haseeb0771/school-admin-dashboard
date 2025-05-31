@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
+import { toast } from "react-toastify";
 import axios from "axios";
 
 function LoginPage() {
@@ -27,25 +28,33 @@ function LoginPage() {
         usernameOrEmail,
         password,
       });
+
       localStorage.setItem("authToken", response.data.token);
       localStorage.setItem("userRole", response.data.user.role);
       localStorage.setItem("userData", JSON.stringify(response.data.user));
+
+      // Remember email if checkbox checked
+      if (rememberMe) {
+        localStorage.setItem("rememberedEmail", usernameOrEmail);
+      } else {
+        localStorage.removeItem("rememberedEmail");
+      }
+
+      toast.success(`Welcome back, ${response.data.user.name || "User"}!`);
+
       setTimeout(() => {
-        if (response.data.user.role === "ADMIN") {
-          navigate("/admin/dashboard");
-        } else if (response.data.user.role === "OWNER") {
-          navigate("/owner/dashboard");
-        } else if (response.data.user.role === "STUDENT") {
-          navigate("/student/dashboard");
-        } else if (response.data.user.role === "PARENT") {
-          navigate("/parent/dashboard");
-        } else if (response.data.user.role === "TEACHER") {
-          navigate("/teacher/dashboard");
-        }
+        const role = response.data.user.role;
+        if (role === "ADMIN") navigate("/admin/dashboard");
+        else if (role === "OWNER") navigate("/owner/dashboard");
+        else if (role === "STUDENT") navigate("/student/dashboard");
+        else if (role === "PARENT") navigate("/parent/dashboard");
+        else if (role === "TEACHER") navigate("/teacher/dashboard");
       }, 1500);
     } catch (err) {
       const errorMessage =
         err.response?.data?.message || "Login failed. Please try again.";
+      setError(errorMessage);
+      toast.error(errorMessage);
     } finally {
       setLoading(false);
     }
