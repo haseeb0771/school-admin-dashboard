@@ -1,6 +1,7 @@
-import React, { useRef, useState } from "react";
-import { json, Link } from "react-router-dom";
+import { useRef, useState } from "react";
+import { Link } from "react-router-dom";
 import axios from "axios";
+import { toast } from "react-toastify";
 import AcademicDetailsForm from "./sc_forms/AcademicDetailsForm";
 import GuardianDetailsForm from "./sc_forms/GuardianDetailsForm";
 import IndividualDetailsForm from "./sc_forms/IndividualDetailsForm";
@@ -63,7 +64,7 @@ function NewAdmission() {
       });
 
       if (response.ok) {
-        alert("Student admitted successfully");
+        toast.success(`Student Admitted Successfully`);
         setNewStudent({
           studentFirstName: "",
           studentMiddleLastName: "",
@@ -88,7 +89,7 @@ function NewAdmission() {
           guardianWhatsApp: "",
           previousSchoolName: "",
           previousSchoolAddress: "",
-          studentImage: "", // Empty string instead of null or file
+          studentImage: "",
         });
       } else {
         const errorData = await response.json();

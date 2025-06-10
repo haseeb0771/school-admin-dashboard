@@ -1,5 +1,6 @@
 import React, { useState, useRef } from "react";
 import Sidebar from "../../../components/commonComponents/Sidebar";
+import { toast } from "react-toastify";
 
 function AddTeacher() {
   const [newTeacher, setNewTeacher] = useState({
@@ -60,13 +61,13 @@ function AddTeacher() {
       const response = await fetch("http://localhost:3300/teachers/add", {
         method: "POST",
         headers: {
+          "Content-Type": "application/json",
           Authorization: `Bearer ${localStorage.getItem("token")}`,
         },
-        body: formData,
+        body: JSON.stringify(newTeacher),
       });
-
       if (response.ok) {
-        alert("teacher admitted successfully");
+        toast.success(`Teacher Admitted Successfully`);
         setNewTeacher({
           firstName: "",
           lastName: "",
@@ -90,7 +91,8 @@ function AddTeacher() {
         alert("Failed to admit teacher");
       }
     } catch (error) {
-      alert("An error occurred while admitting the teacher");
+      alert("An error occurred while admitting the teacher", error);
+      console.log(error);
     }
   };
 
@@ -103,11 +105,12 @@ function AddTeacher() {
   return (
     <>
       {" "}
-      <div className="flex h-screen">
-        <div className="w-64">
+      <div className="flex">
+        <div className="fixed left-0 top-0 h-screen w-64">
           <Sidebar />
         </div>
-        <div className="h-full w-full bg-gray-50 px-3 py-5 xl:px-20 xl:py-12">
+
+        <div className="ml-64 w-full overflow-y-auto bg-gray-50 px-3 py-5 xl:px-20 xl:py-12">
           <header className="flex w-full justify-between">
             <h1 className="text-3xl font-bold text-gray-900 xl:text-3xl">
               Add Teacher
@@ -406,7 +409,7 @@ function AddTeacher() {
                 type="submit"
                 className="rounded border border-blue-700 bg-blue-700 px-10 py-2 text-base font-medium text-white transition-all hover:border-blue-800 hover:bg-blue-800"
               >
-                Admit
+                Add
               </button>
             </form>
           </div>

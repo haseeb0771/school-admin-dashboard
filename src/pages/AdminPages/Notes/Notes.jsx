@@ -29,7 +29,6 @@ function Notes() {
     },
   ]);
 
-
   return (
     <>
       {" "}
@@ -53,7 +52,7 @@ function Notes() {
                 Notes by Teachers
               </h2>
               <Link
-                to="/teachernotes"
+                to="/admin/up-teacher-notes"
                 className="mt-4 rounded bg-blue-500 py-2 px-4 text-white hover:bg-blue-600"
               >
                 Upload
@@ -66,7 +65,7 @@ function Notes() {
                 PDF Textbooks
               </h2>
               <Link
-                to="/textbooks"
+                to="/admin/up-textbook"
                 className="mt-4 rounded bg-green-500 py-2 px-4 text-white hover:bg-green-600"
               >
                 Upload
@@ -79,7 +78,7 @@ function Notes() {
                 Past Papers
               </h2>
               <Link
-                to="/pastpapers"
+                to="/admin/up-pastpapers"
                 className="mt-4 rounded bg-red-500 py-2 px-4 text-white hover:bg-red-600"
               >
                 Upload

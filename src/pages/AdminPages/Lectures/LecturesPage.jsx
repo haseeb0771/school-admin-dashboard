@@ -54,7 +54,7 @@ function LecturesPage() {
                 Easily upload new lectures and share them with your students.
               </p>
               <Link
-                to="/uploadlecture"
+                to="/admin/upload-lecture"
                 className="rounded-xl border border-gray-300 bg-white py-3 px-8 font-semibold text-green-600 shadow-lg transition duration-300 hover:bg-gray-100"
               >
                 Upload Now
@@ -68,7 +68,7 @@ function LecturesPage() {
                 Browse through all the lectures and manage your content.
               </p>
               <Link
-                to="/alllectures"
+                to="/admin/all-lectures"
                 className="rounded-xl border border-gray-300 bg-white py-3 px-8 font-semibold text-blue-600 shadow-lg transition duration-300 hover:bg-gray-100"
               >
                 View Lectures

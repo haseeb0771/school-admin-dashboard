@@ -4,19 +4,6 @@ import Female from "../../../assets/female.png";
 import MaleFemale from "../../../assets/male-female.png";
 import Male from "../../../assets/male.png";
 import Sidebar from "../../../components/commonComponents/Sidebar";
-
-import {
-  Card,
-  Badge,
-  Table,
-  TableRow,
-  TableCell,
-  TableHead,
-  TableHeaderCell,
-  TableBody,
-  MultiSelectBox,
-  MultiSelectBoxItem,
-} from "@tremor/react";
 import { Link } from "react-router-dom";
 
 function Teachers() {
@@ -32,7 +19,7 @@ function Teachers() {
   useEffect(() => {
     const fetchTeachers = async () => {
       try {
-        const response = await axios.get("http://localhost:3300/teachers", {
+        const response = await axios.get("http://localhost:3300/teachers/all", {
           headers: { Authorization: `Bearer ${token}` },
         });
         // Sort students by 'createdAt' in descending order
@@ -49,7 +36,7 @@ function Teachers() {
     const fetchTeacherStats = async () => {
       try {
         const response = await axios.get(
-          "http://localhost:3300/teachers/stats/count",
+          "http://localhost:3300/teachers/count",
           {
             headers: { Authorization: `Bearer ${token}` },
           }
@@ -60,12 +47,8 @@ function Teachers() {
       }
     };
 
-    if (token) {
-      fetchTeachers();
-      fetchTeacherStats();
-    } else {
-      console.error("No token found. Please log in.");
-    }
+    fetchTeachers();
+    fetchTeacherStats();
   }, [token]);
 
   const [selectedIds, setSelectedIds] = useState([]);
@@ -108,11 +91,12 @@ function Teachers() {
   return (
     <>
       {" "}
-      <div className="flex h-screen">
-        <div className="w-64">
+      <div className="flex">
+        <div className="fixed left-0 top-0 h-screen w-64">
           <Sidebar />
         </div>
-        <div className="h-full w-full bg-gray-50 px-3 py-5 xl:px-20 xl:py-12">
+
+        <div className="ml-64 w-full overflow-y-auto bg-gray-50 px-3 py-5 xl:px-20 xl:py-12">
           <header className="flex w-full justify-between">
             <h1 className="text-3xl font-bold text-gray-900 xl:text-3xl">
               Teachers
@@ -156,88 +140,90 @@ function Teachers() {
           </div>
 
           <div className="mt-5">
-            <Card shadow={false}>
-              <div className="mb-4 flex flex-wrap gap-4">
-                <MultiSelectBox
-                  onValueChange={(value) => setSelectedIds(value)}
-                  placeholder="Select by ID..."
-                  maxWidth="max-w-sm"
-                >
-                  {teachers.map((item) => (
-                    <MultiSelectBoxItem
-                      key={item._id}
-                      value={item._id}
-                      text={`${item.teacherId} : ${item.firstName} ${item.lastName}`}
-                    />
-                  ))}
-                </MultiSelectBox>
-
-                <MultiSelectBox
-                  onValueChange={(value) => setSelectedNames(value)}
-                  placeholder="Select by Name..."
-                  maxWidth="max-w-sm"
-                >
-                  {teachers.map((item) => (
-                    <MultiSelectBoxItem
-                      key={item._id + "-name"}
-                      value={`${item.firstName} ${item.lastName}`}
-                      text={`${item.firstName} ${item.lastName}`}
-                    />
-                  ))}
-                </MultiSelectBox>
-
-                <Link
-                  to="/teachers/add"
-                  className="rounded-lg bg-blue-600 px-4 py-2 text-white transition-all hover:bg-blue-700"
-                >
-                  + Add New Teacher
-                </Link>
-              </div>
-
-              <Table marginTop="mt-6">
-                <TableHead>
-                  <TableRow>
-                    <TableHeaderCell>Teacher ID</TableHeaderCell>
-                    <TableHeaderCell>Name</TableHeaderCell>
-                    <TableHeaderCell>Subject</TableHeaderCell>
-                    <TableHeaderCell>Joining Date</TableHeaderCell>
-                    <TableHeaderCell>Phone</TableHeaderCell>
-                    <TableHeaderCell>Status</TableHeaderCell>
-                    <TableHeaderCell>Actions</TableHeaderCell>
-                  </TableRow>
-                </TableHead>
-                <TableBody>
-                  {teachers.filter(isTeacherSelected).map((teacher) => (
-                    <TableRow key={teacher._id}>
-                      <TableCell>
-                        <Badge text={teacher.teacherId} size="xs" color="sky" />
-                      </TableCell>
-                      <TableCell>{`${teacher.firstName} ${teacher.lastName}`}</TableCell>
-                      <TableCell>{teacher.subjectSpecialization}</TableCell>
-                      <TableCell>
+            <Link
+              to="/admin/add-teacher"
+              className="rounded-lg bg-blue-600 px-4 py-2 text-white transition-all hover:bg-blue-700"
+            >
+              + Add New Teacher
+            </Link>
+            <div className="mt-5 overflow-x-auto rounded-md border border-gray-300 shadow-sm">
+              <table className="w-full table-auto border-collapse text-sm">
+                <thead className="bg-gray-200 text-left text-gray-700">
+                  <tr>
+                    <th className="border border-gray-300 px-4 py-2">
+                      Teacher ID
+                    </th>
+                    <th className="border border-gray-300 px-4 py-2">Name</th>
+                    <th className="border border-gray-300 px-4 py-2">
+                      Subject
+                    </th>
+                    <th className="border border-gray-300 px-4 py-2">
+                      Joining Date
+                    </th>
+                    <th className="border border-gray-300 px-4 py-2">Phone</th>
+                    <th className="border border-gray-300 px-4 py-2">Status</th>
+                    <th className="border border-gray-300 px-4 py-2">
+                      Actions
+                    </th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {teachers.filter(isTeacherSelected).map((teacher, index) => (
+                    <tr
+                      key={teacher._id}
+                      className={index % 2 === 0 ? "bg-white" : "bg-gray-50"}
+                    >
+                      <td className="border border-gray-300 px-4 py-2 font-semibold text-blue-700">
+                        {teacher.teacherId}
+                      </td>
+                      <td className="border border-gray-300 px-4 py-2">
+                        {teacher.firstName} {teacher.lastName}
+                      </td>
+                      <td className="border border-gray-300 px-4 py-2">
+                        {teacher.subjectSpecialization}
+                      </td>
+                      <td className="border border-gray-300 px-4 py-2">
                         {new Date(teacher.joiningDate).toLocaleDateString()}
-                      </TableCell>
-                      <TableCell>{teacher.phoneNumber}</TableCell>
-                      <TableCell>{teacher.teacherStatus}</TableCell>
-                      <TableCell>
+                      </td>
+                      <td className="border border-gray-300 px-4 py-2">
+                        {teacher.phoneNumber}
+                      </td>
+                      <td className="border border-gray-300 px-4 py-2">
+                        <span
+                          className={`rounded-full px-2 py-1 text-xs font-medium ${
+                            teacher.teacherStatus === "ACTIVE"
+                              ? "bg-green-100 text-green-700"
+                              : "bg-yellow-100 text-yellow-700"
+                          }`}
+                        >
+                          {teacher.teacherStatus}
+                        </span>
+                      </td>
+                      <td className="space-x-2 border border-gray-300 px-4 py-2">
                         <Link
                           to={`/teachers/${teacher._id}`}
-                          className=" rounded-md bg-gray-900 py-[3px] px-3 text-xs text-gray-50 transition-all hover:bg-gray-700"
+                          className="inline-block rounded bg-blue-600 px-3 py-1 text-xs text-white hover:bg-blue-700"
                         >
                           View
                         </Link>
                         <Link
                           to={`/teachers/edit/${teacher._id}`}
-                          className="ml-3 rounded-md bg-gray-900 py-[3px] px-3 text-xs text-gray-50 transition-all hover:bg-gray-700"
+                          className="inline-block rounded bg-green-600 px-3 py-1 text-xs text-white hover:bg-green-700"
                         >
                           Edit
                         </Link>
-                      </TableCell>
-                    </TableRow>
+                        <button
+                          onClick={() => handleDelete(teacher._id)}
+                          className="inline-block rounded bg-red-600 px-3 py-1 text-xs text-white hover:bg-red-700"
+                        >
+                          Delete
+                        </button>
+                      </td>
+                    </tr>
                   ))}
-                </TableBody>
-              </Table>
-            </Card>
+                </tbody>
+              </table>
+            </div>
           </div>
         </div>
       </div>

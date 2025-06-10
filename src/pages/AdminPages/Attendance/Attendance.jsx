@@ -103,10 +103,8 @@ function Attendance() {
               }`}
               onClick={() => setExpanded(!expanded)}
             >
-              <div className="absolute right-4 top-4 flex cursor-pointer items-center text-sm font-medium text-blue-500">
-                {expanded
-                  ? "Click to shrink to view less students"
-                  : "Click to view more students"}
+              <div className="absolute right-4 top-4 flex cursor-pointer items-center rounded bg-blue-500 px-4 py-2 text-sm font-medium text-white hover:bg-blue-600">
+                {expanded ? " " : "Click to view more students"}
                 {expanded ? (
                   <ChevronUp className="ml-2 h-4 w-4" />
                 ) : (
