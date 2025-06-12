@@ -3,6 +3,9 @@ import { Link } from "react-router-dom";
 import axios from "axios";
 import { DateTime } from "luxon";
 import Sidebar from "../../../components/commonComponents/Sidebar";
+import Loading from "../../../assets/loading.svg";
+import Error from "../../../assets/no-internet.png";
+import NoData from "../../../assets/no-data.png";
 
 const AllStudents = () => {
   const [students, setStudents] = useState([]);
@@ -50,9 +53,24 @@ const AllStudents = () => {
       <div className="flex-1 overflow-auto px-4 py-6 xl:px-12 xl:py-10">
         <h1 className="mb-6 text-3xl font-bold text-gray-800">All Students</h1>
 
-        {loading && <p>Loading students...</p>}
-        {error && <p className="text-red-500">{error}</p>}
-        {!loading && students.length === 0 && <p>No students found.</p>}
+        {loading && (
+          <div className="flex h-full items-center justify-center">
+            <img src={Loading} alt="Loading..." className="h-16 w-16 " />
+          </div>
+        )}
+        {error && (
+          <div className="flex h-full flex-col items-center justify-center space-y-4">
+            <img src={Error} alt="Error" className="h-20 w-20" />
+            <p className="text-center text-lg font-bold text-gray-600">
+              {error}
+            </p>
+          </div>
+        )}
+        {!loading && students.length < 0 && (
+          <div className="flex h-full items-center justify-center">
+            <img src={NoData} alt="No Data..." className="h-24 w-24 " />
+          </div>
+        )}
 
         {!loading && students.length > 0 && (
           <>
@@ -160,13 +178,13 @@ const AllStudents = () => {
                       </td>
                       <td className="space-x-2 border border-gray-300 px-4 py-2">
                         <Link
-                          to={`/students/${student._id}`}
+                          to={`/admin/single-student/${student._id}`}
                           className="inline-block rounded bg-blue-600 px-3 py-1 text-xs text-white hover:bg-blue-700"
                         >
                           View
                         </Link>
                         <Link
-                          to={`/students/edit/${student._id}`}
+                          to={`/admin/edit-student/${student._id}`}
                           className="inline-block rounded bg-green-600 px-3 py-1 text-xs text-white hover:bg-green-700"
                         >
                           Edit

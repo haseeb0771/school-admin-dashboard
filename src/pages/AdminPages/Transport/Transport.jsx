@@ -2,6 +2,7 @@ import React, { useState, useEffect } from "react";
 import { Bus, Users, UserCheck } from "lucide-react";
 import BusStaffForm from "../../../components/AdminComponents/BusStaffForm";
 import PassengerForm from "../../../components/AdminComponents/PassengerForm";
+import { toast } from "react-toastify";
 import Sidebar from "../../../components/commonComponents/Sidebar";
 
 import axios from "axios";
@@ -48,7 +49,7 @@ function Transport() {
 
     try {
       const response = await axios.post("http://localhost:3300/buses", busData);
-      alert("Bus added successfully!");
+      toast.success("Bus added successfully!");
       setBusData({ busName: "", busNumber: "", route: "", capacity: "" });
       setShowBusForm(false); // Hide the form after submission
       fetchbusCount(); // Fetch the updated bus count

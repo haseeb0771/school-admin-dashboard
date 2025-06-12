@@ -1,7 +1,6 @@
 import { useEffect, useState } from "react";
 import { Card, Title } from "@tremor/react";
-import { logout } from "../../../utils/auth";
-
+import { toast } from "react-toastify";
 import {
   BarChart,
   Bar,
@@ -17,6 +16,8 @@ import {
 import Female from "../../../assets/female.png";
 import MaleFemale from "../../../assets/male-female.png";
 import Male from "../../../assets/male.png";
+import Loading from "../../../assets/loading.svg";
+import Error from "../../../assets/no-internet.png";
 import Sidebar from "../../../components/commonComponents/Sidebar";
 
 function Dashboard() {
@@ -63,6 +64,7 @@ function Dashboard() {
           girlsCount: data.girlsCount || 0,
         });
       } catch (error) {
+        toast.error(error);
         console.error("Error fetching student count:", error);
         setError("Failed to load data. Please try again.");
       } finally {
@@ -152,13 +154,16 @@ function Dashboard() {
 
           {/* Loading & Error Handling */}
           {loading ? (
-            <p className="mt-6 text-center text-lg font-semibold text-gray-700">
-              Loading...
-            </p>
+            <div className="flex h-full items-center justify-center">
+              <img src={Loading} alt="Loading..." className="h-16 w-16 " />
+            </div>
           ) : error ? (
-            <p className="mt-6 text-center text-lg font-semibold text-red-500">
-              {error}
-            </p>
+            <div className="flex h-full flex-col items-center justify-center space-y-4">
+              <img src={Error} alt="Error" className="h-20 w-20" />
+              <p className="text-center text-lg font-bold text-gray-600">
+                {error}
+              </p>
+            </div>
           ) : (
             <>
               {/* Student Statistics */}

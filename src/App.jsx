@@ -102,8 +102,6 @@ function App() {
           }
         />
 
-        {/* Home/Default route with automatic redirection */}
-
         {/* Admin routes */}
         <Route
           path="/admin/dashboard"

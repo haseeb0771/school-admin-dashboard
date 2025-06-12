@@ -59,10 +59,10 @@ function OfficeBoyList() {
         prevOfficeBoys.filter((officeBoy) => officeBoy._id !== id)
       );
 
-      alert("Office boy deleted successfully!");
+      toast.success("Office boy deleted successfully!");
     } catch (error) {
       console.error("Error deleting office boy:", error);
-      alert("Failed to delete office boy. Please try again.");
+      toast.success("Failed to delete office boy. Please try again.");
     }
   };
 

@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
-import { PaperClipIcon } from "@heroicons/react/24/outline";
 import Sidebar from "../../../components/commonComponents/Sidebar";
+import { toast } from "react-toastify";
 
 import User from "../../../assets/user.png";
 
@@ -84,10 +84,10 @@ function SingleTeacher() {
 
       const updatedTeacher = await response.json();
       setTeacher(updatedTeacher.teacher); // Update the local state with the new teacher data
-      alert(`Teacher status updated to ${status}`);
+      toast.success(`Teacher status updated to ${status}`);
     } catch (err) {
       console.error("Error updating teacher status:", err);
-      alert("Failed to update teacher status");
+      toast.success("Failed to update teacher status");
     }
   };
 

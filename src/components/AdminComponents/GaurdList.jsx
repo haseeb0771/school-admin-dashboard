@@ -24,9 +24,10 @@ function GuardList() {
   useEffect(() => {
     const fetchGuards = async () => {
       try {
-        const response = await fetch(`http://localhost:3300//guards/all`);
+        const response = await fetch(`http:/localhost:3300/guards/all`);
         if (!response.ok) {
           throw new Error("Failed to fetch guards data");
+          toast.error("Failed to fetch Gaurds!");
         }
         const data = await response.json();
         setGuards(data); // Set fetched data to state
@@ -41,23 +42,17 @@ function GuardList() {
     fetchGuards();
   }, []);
 
-  // Function to delete a guard
   const deleteGuard = async (id) => {
     try {
-      const response = await fetch(
-        `http://localhost:3300//guards/delete/${id}`,
-        {
-          method: "DELETE",
-        }
-      );
+      const response = await fetch(`http:/localhost:3300/guards/delete/${id}`, {
+        method: "DELETE",
+      });
 
       if (!response.ok) {
         throw new Error("Failed to delete guard");
+        toast.error("Failed to delete Gaurd!");
       }
-
-      // Remove the deleted guard from the state
       setGuards((prevGuards) => prevGuards.filter((guard) => guard._id !== id));
-
       toast.success("Guard deleted successfully!");
     } catch (error) {
       console.error("Error deleting guard:", error);
@@ -65,7 +60,6 @@ function GuardList() {
     }
   };
 
-  // Filter function for multi-select
   const isGuardSelected = (guard) => {
     if (selectedIds.length === 0 && selectedNames.length === 0) return true;
     return (
@@ -74,7 +68,6 @@ function GuardList() {
     );
   };
 
-  // Loading state
   if (loading) {
     return <div className="mt-5 text-center">Loading...</div>;
   }

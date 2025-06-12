@@ -1,0 +1,4 @@
+[Button]
+h-12 w-full cursor-pointer rounded bg-blue-600 py-2.5 px-4 text-sm font-semibold text-white shadow-xl hover:bg-blue-700 focus:outline-none disabled:cursor-not-allowed disabled:opacity-70
+
+

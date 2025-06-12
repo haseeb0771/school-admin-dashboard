@@ -1,5 +1,6 @@
 import React, { useState } from "react";
 import axios from "axios";
+import { toast } from "react-toastify";
 
 function OfficeBoyForm({ onSuccess, onFormSubmit }) {
   const [formData, setFormData] = useState({
@@ -43,7 +44,7 @@ function OfficeBoyForm({ onSuccess, onFormSubmit }) {
       );
 
       if (response.status === 201) {
-        alert("Office Boy Added Successfully");
+        toast.success("Office Boy Added Successfully");
         onSuccess(); // Close form after success
         setFormData({
           firstName: "",

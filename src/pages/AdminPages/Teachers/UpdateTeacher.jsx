@@ -1,6 +1,8 @@
 import React, { useState, useEffect } from "react";
 import { useParams, useNavigate } from "react-router-dom";
 import axios from "axios";
+import { toast } from "react-toastify";
+
 import Sidebar from "../../../components/commonComponents/Sidebar";
 
 function UpdateTeacher() {
@@ -104,7 +106,7 @@ function UpdateTeacher() {
       );
 
       if (response.data) {
-        alert("Teacher updated successfully!");
+        toast.success("Teacher updated successfully!");
         navigate(`/teachers/${id}`); // Redirect to the teacher's profile page
       }
     } catch (err) {

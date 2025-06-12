@@ -1,23 +1,25 @@
 import React, { useState, useRef } from "react";
 import Sidebar from "../../../components/commonComponents/Sidebar";
 import { toast } from "react-toastify";
+import Loading from "../../../assets/loading.svg";
 
 function AddTeacher() {
+  const [loading, setLoading] = useState(false);
   const [newTeacher, setNewTeacher] = useState({
-    firstName: "",
-    lastName: "",
-    dateOfBirth: "",
-    religion: "",
-    gender: "",
-    phoneNumber: "",
-    whatsappNumber: "",
-    bloodGroup: "",
-    city: "",
-    streetAddress: "",
-    subjectSpecialization: "",
-    education: "",
-    joiningDate: "",
-    salary: "",
+    firstName: "Haseeb",
+    lastName: "Tariq",
+    dateOfBirth: "2025-06-07",
+    religion: "Islam",
+    gender: "Male",
+    phoneNumber: "12345678",
+    whatsappNumber: "12345678",
+    bloodGroup: "O-",
+    city: "Gujranwala",
+    streetAddress: "4",
+    subjectSpecialization: "BSCS",
+    education: "BSCS",
+    joiningDate: "2025-06-07",
+    salary: "2000",
     teacherImage: null,
     teacherDegreeImage: null,
     teacherIdCardImage: null,
@@ -51,6 +53,7 @@ function AddTeacher() {
 
   const submitFormHandler = async (event) => {
     event.preventDefault();
+    setLoading(true);
 
     const formData = new FormData();
     for (const key in newTeacher) {
@@ -66,6 +69,7 @@ function AddTeacher() {
         },
         body: JSON.stringify(newTeacher),
       });
+
       if (response.ok) {
         toast.success(`Teacher Admitted Successfully`);
         setNewTeacher({
@@ -88,11 +92,13 @@ function AddTeacher() {
           teacherIdCardImage: null,
         });
       } else {
-        alert("Failed to admit teacher");
+        toast.error("Failed to admit teacher");
       }
     } catch (error) {
-      alert("An error occurred while admitting the teacher", error);
+      toast.error("An error occurred while admitting the teacher");
       console.log(error);
+    } finally {
+      setLoading(false); // ✅ Stop loading
     }
   };
 
@@ -404,13 +410,19 @@ function AddTeacher() {
               </div>
 
               {/* ✅ Submit Button */}
-              <button
-                ref={submitButtonRef}
-                type="submit"
-                className="rounded border border-blue-700 bg-blue-700 px-10 py-2 text-base font-medium text-white transition-all hover:border-blue-800 hover:bg-blue-800"
-              >
-                Add
-              </button>
+              {loading ? (
+                <div className="flex items-center justify-center px-10 py-2">
+                  <img src={Loading} alt="Loading..." className="h-12 w-12 " />
+                </div>
+              ) : (
+                <button
+                  ref={submitButtonRef}
+                  type="submit"
+                  className="rounded border border-blue-700 bg-blue-700 px-10 py-2 text-base font-medium text-white transition-all hover:border-blue-800 hover:bg-blue-800"
+                >
+                  Add
+                </button>
+              )}
             </form>
           </div>
         </div>

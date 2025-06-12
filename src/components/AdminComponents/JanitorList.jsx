@@ -12,6 +12,7 @@ import {
   MultiSelectBoxItem,
 } from "@tremor/react";
 import { Link } from "react-router-dom";
+import { toast } from "react-toastify";
 
 function JanitorList() {
   const [selectedIds, setSelectedIds] = useState([]);
@@ -53,6 +54,7 @@ function JanitorList() {
 
       if (!response.ok) {
         throw new Error("Failed to delete janitor");
+        toast.success("Admin staff added successfully!");
       }
 
       // Remove the deleted janitor from the state
@@ -60,10 +62,10 @@ function JanitorList() {
         prevJanitors.filter((janitor) => janitor._id !== id)
       );
 
-      alert("Janitor deleted successfully!");
+      toast.success("Janitor deleted successfully!");
     } catch (error) {
       console.error("Error deleting janitor:", error);
-      alert("Failed to delete janitor. Please try again.");
+      toast.error("Failed to delete janitor. Please try again.");
     }
   };
 

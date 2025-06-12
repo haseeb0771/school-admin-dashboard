@@ -3,6 +3,8 @@ import axios from "axios";
 import Female from "../../../assets/female.png";
 import MaleFemale from "../../../assets/male-female.png";
 import Male from "../../../assets/male.png";
+import { toast } from "react-toastify";
+
 import Sidebar from "../../../components/commonComponents/Sidebar";
 import { Link } from "react-router-dom";
 
@@ -81,10 +83,10 @@ function Teachers() {
         prevTeachers.filter((teacher) => teacher._id !== teacherId)
       );
 
-      alert("Teacher deleted successfully!");
+      toast.success("Teacher deleted successfully!");
     } catch (error) {
       console.error("Error deleting teacher:", error);
-      alert("Failed to delete teacher.");
+      toast.success("Failed to delete teacher.");
     }
   };
 

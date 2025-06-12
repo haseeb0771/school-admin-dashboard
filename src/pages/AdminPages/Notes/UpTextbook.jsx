@@ -1,5 +1,7 @@
 import React, { useState } from "react";
 import { UploadCloud } from "lucide-react";
+import { toast } from "react-toastify";
+
 import Sidebar from "../../../components/commonComponents/Sidebar";
 
 function UpTextbook() {
@@ -14,7 +16,7 @@ function UpTextbook() {
     if (file && file.type === "application/pdf") {
       setSelectedFile(file);
     } else {
-      alert("Please upload a valid PDF file.");
+      toast.success("Please upload a valid PDF file.");
     }
   };
 

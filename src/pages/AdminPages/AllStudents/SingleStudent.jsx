@@ -2,6 +2,8 @@ import { useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
 import User from "../../../assets/user.png";
 import Sidebar from "../../../components/commonComponents/Sidebar";
+import { toast } from "react-toastify";
+
 
 function SingleStudent() {
   const { studentId } = useParams();
@@ -95,10 +97,10 @@ function SingleStudent() {
 
       const updatedStudent = await response.json();
       setStudent(updatedStudent.student); // Update the local state with the new student data
-      alert(`Student status updated to ${status}`);
+      toast.success(`Student status updated to ${status}`);
     } catch (err) {
       console.error("Error updating student status:", err);
-      alert("Failed to update student status");
+      toast.success("Failed to update student status");
     }
   };
 

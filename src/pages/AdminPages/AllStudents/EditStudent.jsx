@@ -2,6 +2,8 @@ import { useEffect, useState } from "react";
 import { useParams, useNavigate } from "react-router-dom";
 import axios from "axios";
 import Sidebar from "../../../components/commonComponents/Sidebar";
+import { toast } from "react-toastify";
+
 
 function EditStudent() {
   const { studentId } = useParams(); // Get the student ID from the URL
@@ -22,8 +24,8 @@ function EditStudent() {
     studentFee: "",
     studentId: "",
     dateOfAdmission: "",
-    classEnrolled: "", // Add classEnrolled to formData
-    sectionAssigned: "", // Add sectionAssigned to formData
+    classEnrolled: "",
+    sectionAssigned: "",
     guardianFullName: "",
     guardianEmail: "",
     guardianPhone: "",
@@ -152,7 +154,7 @@ function EditStudent() {
       );
 
       if (response.data) {
-        alert("Student updated successfully!");
+        toast.success("Student updated successfully!");
         navigate(`/students/${studentId}`); // Redirect to the student's profile page
       }
     } catch (err) {

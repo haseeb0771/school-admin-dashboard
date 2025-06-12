@@ -1,5 +1,6 @@
 import React, { useState } from "react";
 import axios from "axios";
+import { toast } from "react-toastify";
 
 function JanitorForm({ onFormSubmit }) {
   const [formData, setFormData] = useState({
@@ -43,7 +44,7 @@ function JanitorForm({ onFormSubmit }) {
         formDataToSend,
         { headers: { "Content-Type": "multipart/form-data" } }
       );
-      alert("Office Boy Added Successfully");
+      toast.success("Office Boy Added Successfully");
       setMessage("");
       setFormData({
         firstName: "",

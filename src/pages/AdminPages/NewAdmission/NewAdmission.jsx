@@ -7,36 +7,34 @@ import GuardianDetailsForm from "./sc_forms/GuardianDetailsForm";
 import IndividualDetailsForm from "./sc_forms/IndividualDetailsForm";
 import PreviousSchoolDetailsForm from "./sc_forms/PreviousSchoolDetailsForm";
 import Sidebar from "../../../components/commonComponents/Sidebar";
-
-function UpdateSpan() {
-  return <span className="text-gray-300">N/A</span>;
-}
+import Loading from "../../../assets/loading.svg";
 
 function NewAdmission() {
+  const [submitting, setSubmitting] = useState(false);
   const [newStudent, setNewStudent] = useState({
-    studentFirstName: "",
-    studentMiddleLastName: "",
-    studentDateOfBirth: "",
-    studentReligion: "",
-    studentCaste: "",
-    studentSex: "",
-    studentBloodGroup: "",
-    fatherFullName: "",
-    motherFullName: "",
-    addressStreet: "",
-    addressCity: "",
-    addressState: "",
-    studentFee: "",
-    studentId: "",
-    dateOfAdmission: "",
+    studentFirstName: "John",
+    studentMiddleLastName: "Doe",
+    studentDateOfBirth: "2010-05-15",
+    studentReligion: "Christianity",
+    studentCaste: "General",
+    studentSex: "Male",
+    studentBloodGroup: "O+",
+    fatherFullName: "Michael Doe",
+    motherFullName: "Sarah Doe",
+    addressStreet: "123 Maple Street",
+    addressCity: "Springfield",
+    addressState: "Illinois",
+    studentFee: "15000",
+    studentId: "STD20250609",
+    dateOfAdmission: "2025-06-09",
     classEnrolled: "",
     sectionAssigned: "",
-    guardianFullName: "",
-    guardianEmail: "",
-    guardianPhone: "",
-    guardianWhatsApp: "",
-    previousSchoolName: "",
-    previousSchoolAddress: "",
+    guardianFullName: "Uncle Joe",
+    guardianEmail: "uncle.joe@example.com",
+    guardianPhone: "9876543210",
+    guardianWhatsApp: "9876543210",
+    previousSchoolName: "Bright Future Public School",
+    previousSchoolAddress: "456 Oak Avenue, Springfield",
     studentImage: null,
   });
 
@@ -52,6 +50,7 @@ function NewAdmission() {
 
   const submitFormHandler = async (event) => {
     event.preventDefault();
+    setSubmitting(true); // Start loading
 
     try {
       const response = await fetch("http://localhost:3300/students/add", {
@@ -89,17 +88,19 @@ function NewAdmission() {
           guardianWhatsApp: "",
           previousSchoolName: "",
           previousSchoolAddress: "",
-          studentImage: "",
+          studentImage: null,
         });
       } else {
         const errorData = await response.json();
-        alert(
+        toast.success(
           `Failed to admit student: ${errorData?.details || "Unknown error"}`
         );
       }
     } catch (error) {
       console.error("Error submitting student form:", error);
-      alert("An error occurred while admitting the student");
+      toast.success("An error occurred while admitting the student");
+    } finally {
+      setSubmitting(false); // Stop loading
     }
   };
 
@@ -194,9 +195,16 @@ function NewAdmission() {
               <button
                 ref={submitButtonRef}
                 type="submit"
-                className="rounded border border-blue-700 bg-blue-700 px-10 py-2 text-base font-medium text-white transition-all hover:border-blue-800 hover:bg-blue-800"
+                disabled={submitting}
+                className="flex items-center justify-center gap-2 rounded border border-blue-700 bg-blue-700 px-10 py-2 text-base font-medium text-white transition-all hover:border-blue-800 hover:bg-blue-800 disabled:opacity-70"
               >
-                Admit
+                {submitting ? (
+                  <>
+                    <img src={Loading} alt="Loading..." className="h-8 w-8" />
+                  </>
+                ) : (
+                  "Admit"
+                )}
               </button>
             </form>
           </div>

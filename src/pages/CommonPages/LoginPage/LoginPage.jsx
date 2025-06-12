@@ -2,6 +2,7 @@ import React, { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { toast } from "react-toastify";
 import axios from "axios";
+import Loading from "../../../assets/loading.svg";
 
 function LoginPage() {
   const [usernameOrEmail, setUsernameOrEmail] = useState("");
@@ -80,12 +81,6 @@ function LoginPage() {
             Sign in
           </h3>
 
-          {error && (
-            <div className="mb-4 rounded-md bg-red-50 p-3 text-sm text-red-600">
-              {error}
-            </div>
-          )}
-
           <div className="space-y-6">
             <div>
               <label className="mb-2 block text-sm font-medium text-slate-800">
@@ -137,14 +132,19 @@ function LoginPage() {
             </div>
           </div>
 
-          <div className="w34 !mt-12 mb-10">
-            <button
-              type="submit"
-              disabled={loading}
-              className="h-16 w-full cursor-pointer rounded bg-blue-600 py-2.5 px-4 text-sm font-semibold text-white shadow-xl hover:bg-blue-700 focus:outline-none disabled:cursor-not-allowed disabled:opacity-70"
-            >
-              {loading ? "Logging in..." : "Log in"}
-            </button>
+          <div className="w34 mt-12 mb-10">
+            {loading ? (
+              <div className="flex justify-center">
+                <img src={Loading} alt="Loading..." className="h-10 w-10" />
+              </div>
+            ) : (
+              <button
+                type="submit"
+                className="h-12 w-full cursor-pointer rounded bg-blue-600 py-2.5 px-4 text-sm font-semibold text-white shadow-xl hover:bg-blue-700 focus:outline-none"
+              >
+                Log in
+              </button>
+            )}
           </div>
         </form>
       </div>
