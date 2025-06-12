@@ -86,19 +86,17 @@ function Teachers() {
       toast.success("Teacher deleted successfully!");
     } catch (error) {
       console.error("Error deleting teacher:", error);
-      toast.success("Failed to delete teacher.");
+      toast.error("Failed to delete teacher.");
     }
   };
 
   return (
     <>
       {" "}
-      <div className="flex">
-        <div className="fixed left-0 top-0 h-screen w-64">
-          <Sidebar />
-        </div>
+      <div className="flex h-screen">
+        <Sidebar />
 
-        <div className="ml-64 w-full overflow-y-auto bg-gray-50 px-3 py-5 xl:px-20 xl:py-12">
+        <div className="flex-1 overflow-y-auto bg-gray-50 px-3 py-5 xl:px-20 xl:py-12">
           <header className="flex w-full justify-between">
             <h1 className="text-3xl font-bold text-gray-900 xl:text-3xl">
               Teachers

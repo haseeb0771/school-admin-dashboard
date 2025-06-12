@@ -144,7 +144,7 @@ function App() {
           }
         />
         <Route
-          path="/admin/single-student/:id"
+          path="/admin/single-student/:studentId"
           element={
             <PrivateRoute allowedRoles={["ADMIN"]}>
               <SingleStudent />
@@ -280,7 +280,7 @@ function App() {
           }
         />
         <Route
-          path="/admin/edit-student/:id"
+          path="/admin/edit-student/:studentId"
           element={
             <PrivateRoute allowedRoles={["ADMIN"]}>
               <EditStudent />

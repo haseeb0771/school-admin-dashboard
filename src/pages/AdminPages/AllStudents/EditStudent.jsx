@@ -4,7 +4,6 @@ import axios from "axios";
 import Sidebar from "../../../components/commonComponents/Sidebar";
 import { toast } from "react-toastify";
 
-
 function EditStudent() {
   const { studentId } = useParams(); // Get the student ID from the URL
   const navigate = useNavigate(); // For navigation after updating
@@ -43,7 +42,7 @@ function EditStudent() {
   useEffect(() => {
     const fetchStudent = async () => {
       try {
-        const token = localStorage.getItem("token");
+        const token = localStorage.getItem("authToken");
         if (!token) {
           setError("Authentication token is missing.");
           return;
@@ -73,7 +72,7 @@ function EditStudent() {
   // Fetch available classes
   const fetchClasses = async () => {
     try {
-      const token = localStorage.getItem("token");
+      const token = localStorage.getItem("authToken");
       const response = await axios.get("http://localhost:3300/class/all", {
         headers: { Authorization: `Bearer ${token}` },
       });
@@ -130,7 +129,7 @@ function EditStudent() {
     e.preventDefault();
 
     try {
-      const token = localStorage.getItem("token");
+      const token = localStorage.getItem("authToken");
       if (!token) {
         setError("Authentication token is missing.");
         return;
@@ -160,6 +159,7 @@ function EditStudent() {
     } catch (err) {
       console.error("Error updating student:", err);
       setError("Failed to update student. Please try again.");
+      toast.error("Failed to update student. Please try again.");
     }
   };
 
@@ -170,10 +170,9 @@ function EditStudent() {
     <>
       {" "}
       <div className="flex h-screen">
-        <div className="w-64">
-          <Sidebar />
-        </div>
-        <div className="h-full w-full bg-gray-50 px-3 py-5 xl:px-20 xl:py-12">
+        <Sidebar />
+
+        <div className="flex-1 overflow-y-auto bg-gray-50 px-3 py-5 xl:px-20 xl:py-12">
           <header className="flex w-full justify-between">
             <h1 className="text-3xl font-bold text-gray-900 xl:text-3xl">
               Edit Student

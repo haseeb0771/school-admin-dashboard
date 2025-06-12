@@ -55,12 +55,10 @@ function AllLectures() {
       const token = localStorage.getItem("token"); // Get token from localStorage
       const headers = { Authorization: `Bearer ${token}` };
 
-
       // Call the delete API
       await axios.delete(`http://localhost:3300/lectures/${lectureId}`, {
         headers,
       });
-
 
       // Remove the deleted lecture from the state
       setLectures((prevLectures) =>
@@ -77,11 +75,10 @@ function AllLectures() {
   return (
     <>
       {" "}
-      <div className="flex h-screen">
-        <div className="w-64">
-          <Sidebar />
-        </div>
-        <div className="h-full w-full bg-gray-50 px-3 py-5 xl:px-20 xl:py-12">
+     <div className="flex h-screen">
+        <Sidebar />
+
+        <div className="flex-1 overflow-y-auto bg-gray-50 px-3 py-5 xl:px-20 xl:py-12">
           <header className="ie-na-header flex w-full justify-between">
             <h1 className="text-3xl font-bold text-gray-900 xl:text-3xl">
               All Lectures

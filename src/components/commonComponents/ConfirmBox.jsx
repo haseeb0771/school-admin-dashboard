@@ -1,10 +1,10 @@
 import React from "react";
 
 const ConfirmBox = ({ isOpen, title, message, onConfirm, onCancel }) => {
-  if (!isOpen) return null; // Don't render if not open
+  if (!isOpen) return null;
 
   return (
-    <div className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50">
+    <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/30 backdrop-blur-sm">
       <div className="w-96 rounded-lg bg-white p-6 shadow-lg">
         <h2 className="text-lg font-semibold text-gray-800">{title}</h2>
         <p className="mt-2 text-gray-600">{message}</p>

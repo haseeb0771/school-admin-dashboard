@@ -61,6 +61,7 @@ function OfficeBoyForm({ onSuccess, onFormSubmit }) {
       onFormSubmit();
     } catch (err) {
       setError("Failed to add office boy. Try again.");
+      toast.error("Failed to add office boy. Try again.");
     } finally {
       setLoading(false);
     }

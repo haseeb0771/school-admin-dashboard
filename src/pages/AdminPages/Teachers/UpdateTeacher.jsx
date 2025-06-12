@@ -112,6 +112,7 @@ function UpdateTeacher() {
     } catch (err) {
       console.error("Error updating teacher:", err);
       setError("Failed to update teacher. Please try again.");
+      toast.error("Failed to update teacher. Please try again.");
     }
   };
 
@@ -122,10 +123,9 @@ function UpdateTeacher() {
     <>
       {" "}
       <div className="flex h-screen">
-        <div className="w-64">
-          <Sidebar />
-        </div>
-        <div className="h-full w-full bg-gray-50 px-3 py-5 xl:px-20 xl:py-12">
+        <Sidebar />
+
+        <div className="flex-1 overflow-y-auto bg-gray-50 px-3 py-5 xl:px-20 xl:py-12">
           <header className="flex w-full justify-between">
             <h1 className="text-3xl font-bold text-gray-900 xl:text-3xl">
               Update Teacher

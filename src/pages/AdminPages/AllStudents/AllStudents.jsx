@@ -46,11 +46,10 @@ const AllStudents = () => {
   };
 
   return (
-    <div className="flex h-screen bg-gray-100">
-      <div className="w-64">
-        <Sidebar />
-      </div>
-      <div className="flex-1 overflow-auto px-4 py-6 xl:px-12 xl:py-10">
+    <div className="flex h-screen">
+      <Sidebar />
+
+      <div className="flex-1 overflow-y-auto bg-gray-50 px-3 py-5 xl:px-20 xl:py-12">
         <h1 className="mb-6 text-3xl font-bold text-gray-800">All Students</h1>
 
         {loading && (
@@ -108,6 +107,12 @@ const AllStudents = () => {
                   </option>
                 ))}
               </select>
+              <Link
+                to="/admin/new-admission"
+                className="w-50 flex h-8 items-center justify-center gap-2 rounded bg-green-700 px-10 py-2 text-base  text-white transition-all hover:bg-green-800"
+              >
+                Admit New +
+              </Link>
             </div>
 
             {/* Table */}

@@ -71,9 +71,11 @@ function GuardForm({ onFormSubmit }) {
         onFormSubmit();
       } else {
         setMessage(result.error || "Something went wrong.");
+        toast.error("Something went wrong.");
       }
     } catch (error) {
       setMessage("Error adding guard. Please try again.");
+      toast.error("Error adding guard. Please try again.");
     } finally {
       setLoading(false);
     }

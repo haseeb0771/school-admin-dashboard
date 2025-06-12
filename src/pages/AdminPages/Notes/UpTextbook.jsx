@@ -16,7 +16,7 @@ function UpTextbook() {
     if (file && file.type === "application/pdf") {
       setSelectedFile(file);
     } else {
-      toast.success("Please upload a valid PDF file.");
+      toast.error("Please upload a valid PDF file.");
     }
   };
 
@@ -29,10 +29,9 @@ function UpTextbook() {
     <>
       {" "}
       <div className="flex h-screen">
-        <div className="w-64">
-          <Sidebar />
-        </div>
-        <div className="h-full w-full bg-gray-50 px-3 py-5 xl:px-20 xl:py-12">
+        <Sidebar />
+
+        <div className="flex-1 overflow-y-auto bg-gray-50 px-3 py-5 xl:px-20 xl:py-12">
           <h1 className="mb-6 text-3xl font-bold text-gray-900">
             Upload Textbook
           </h1>

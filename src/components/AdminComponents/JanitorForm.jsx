@@ -60,6 +60,7 @@ function JanitorForm({ onFormSubmit }) {
       onFormSubmit();
     } catch (error) {
       setMessage("Failed to add janitor.");
+      toast.error("Failed to add janitor.");
     } finally {
       setLoading(false);
     }

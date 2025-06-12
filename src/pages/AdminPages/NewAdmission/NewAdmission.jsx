@@ -1,6 +1,5 @@
 import { useRef, useState } from "react";
 import { Link } from "react-router-dom";
-import axios from "axios";
 import { toast } from "react-toastify";
 import AcademicDetailsForm from "./sc_forms/AcademicDetailsForm";
 import GuardianDetailsForm from "./sc_forms/GuardianDetailsForm";
@@ -92,13 +91,13 @@ function NewAdmission() {
         });
       } else {
         const errorData = await response.json();
-        toast.success(
+        toast.error(
           `Failed to admit student: ${errorData?.details || "Unknown error"}`
         );
       }
     } catch (error) {
       console.error("Error submitting student form:", error);
-      toast.success("An error occurred while admitting the student");
+      toast.error("An error occurred while admitting the student");
     } finally {
       setSubmitting(false); // Stop loading
     }
@@ -106,20 +105,18 @@ function NewAdmission() {
 
   return (
     <>
-      <div className="flex">
-        <div className="fixed left-0 top-0 h-screen w-64">
-          <Sidebar />
-        </div>
+      <div className="flex h-screen">
+        <Sidebar />
 
-        <div className="ml-64 w-full overflow-y-auto bg-gray-50 px-3 py-5 xl:px-20 xl:py-12">
+        <div className="flex-1 overflow-y-auto bg-gray-50 px-3 py-5 xl:px-20 xl:py-12">
           <header className="ie-na-header flex w-full justify-between">
             <h1 className="text-3xl font-bold text-gray-900 xl:text-3xl">
               New Admission
             </h1>
             <div className="flex gap-4">
               <Link
-                to="/newadmission/bulkadmit"
-                className="hidden h-9 rounded border border-gray-300 bg-white px-8 text-base font-medium text-gray-700 transition-all hover:border-gray-800 hover:bg-gray-800 hover:text-white sm:flex sm:items-center sm:justify-center"
+                to="/admin/bulk-admit"
+                className="w-50 flex h-8 items-center justify-center gap-2 rounded bg-green-700 px-10 py-2 text-base text-white transition-all hover:bg-green-800"
               >
                 Bulk Admit
               </Link>

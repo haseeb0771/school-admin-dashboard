@@ -3,7 +3,7 @@ import { useParams } from "react-router-dom";
 import User from "../../../assets/user.png";
 import Sidebar from "../../../components/commonComponents/Sidebar";
 import { toast } from "react-toastify";
-
+import { Link } from "react-router-dom";
 
 function SingleStudent() {
   const { studentId } = useParams();
@@ -16,17 +16,16 @@ function SingleStudent() {
   useEffect(() => {
     const fetchStudent = async () => {
       try {
-        const token = localStorage.getItem("token"); // Get the token from localStorage
+        const token = localStorage.getItem("authToken");
         if (!token) {
           setError("Authentication token is missing.");
           return;
         }
 
         const headers = {
-          Authorization: `Bearer ${token}`, // Include token in the header
+          Authorization: `Bearer ${token}`,
         };
 
-        // Fetch student details
         const response = await fetch(
           `http://localhost:3300/students/${studentId}`,
           {
@@ -39,32 +38,6 @@ function SingleStudent() {
         }
         const studentData = await response.json();
         setStudent(studentData);
-
-        // Fetch class name
-        const classRes = await fetch(`http://localhost:3300/class/all`, {
-          headers: headers,
-        });
-        if (classRes.ok) {
-          const classData = await classRes.json();
-          const foundClass = classData.find(
-            (cls) => cls._id === studentData.classEnrolled
-          );
-          if (foundClass) setClassName(foundClass.className);
-        }
-
-        // Fetch section name
-        if (studentData.sectionAssigned) {
-          const sectionRes = await fetch(
-            `http://localhost:3300/sections/${studentData.sectionAssigned}`,
-            {
-              headers: headers,
-            }
-          );
-          if (sectionRes.ok) {
-            const sectionData = await sectionRes.json();
-            setSectionName(sectionData.sectionName || "N/A");
-          }
-        }
       } catch (err) {
         setError(err.message);
       } finally {
@@ -100,7 +73,7 @@ function SingleStudent() {
       toast.success(`Student status updated to ${status}`);
     } catch (err) {
       console.error("Error updating student status:", err);
-      toast.success("Failed to update student status");
+      toast.error("Failed to update student status");
     }
   };
 
@@ -129,18 +102,20 @@ function SingleStudent() {
   return (
     <>
       <div className="flex h-screen">
-        <div className="w-64">
-          <Sidebar />
-        </div>
-        <div className="h-full w-full bg-gray-50 px-3 py-5 xl:px-20 xl:py-12">
+        <Sidebar />
+
+        <div className="flex-1 overflow-y-auto bg-gray-50 px-3 py-5 xl:px-20 xl:py-12">
           <header className="flex w-full justify-between">
             <h3 className="text-xl font-semibold text-gray-900">
               {student.studentId} - {student.studentFirstName}{" "}
               {student.studentMiddleLastName || ""}
             </h3>
-            <button className="h-9 rounded border border-blue-700 bg-blue-700 px-8 text-base font-medium text-white transition-all hover:border-blue-800 hover:bg-blue-800">
+            <Link
+              to={`/admin/edit-student/${student._id}`}
+              className="h-9 rounded border border-blue-700 bg-blue-700 px-8 text-center font-medium text-white transition-all hover:border-blue-800 hover:bg-blue-800"
+            >
               Edit
-            </button>
+            </Link>
           </header>
 
           {/* Action Buttons */}

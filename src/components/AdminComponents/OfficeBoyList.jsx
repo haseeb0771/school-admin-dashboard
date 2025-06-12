@@ -62,7 +62,7 @@ function OfficeBoyList() {
       toast.success("Office boy deleted successfully!");
     } catch (error) {
       console.error("Error deleting office boy:", error);
-      toast.success("Failed to delete office boy. Please try again.");
+      toast.error("Failed to delete office boy. Please try again.");
     }
   };
 

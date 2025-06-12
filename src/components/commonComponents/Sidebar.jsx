@@ -16,7 +16,7 @@ import User from "../../assets/user.png";
 import { NavLink } from "react-router-dom";
 import ConfirmBox from "./ConfirmBox";
 import { createPortal } from "react-dom";
-import { logout } from "../../utils/auth"; // FIXED: named import
+import { logout } from "../../utils/auth";
 
 const sidebarLinks = [
   { name: "Dashboard", href: "/admin/dashboard", icon: HomeIcon },
@@ -43,6 +43,7 @@ function Sidebar({ handleLogout }) {
     message: "",
     onConfirm: () => {},
   });
+  const [collapsed, setCollapsed] = useState(false);
 
   const openConfirmBox = (title, message, action) => {
     setConfirmData({
@@ -59,68 +60,109 @@ function Sidebar({ handleLogout }) {
 
   return (
     <>
-      <div className="sticky top-0 h-screen w-full border-r border-gray-200 bg-white px-1 py-5 xl:px-2 xl:py-12">
-        <div className="flex h-full flex-col overflow-y-auto">
-          <div className="ie-logo px-3 py-0 text-center xl:text-left">
-            <div className="text-xl font-medium text-gray-900 xl:px-3 xl:text-2xl">
-              <span className="hidden items-center gap-2 xl:flex">
-                <img className="h-12 w-12" src={User} alt="Admin" />
-                <span className="mx-4"> Admin</span>
-              </span>
-            </div>
-          </div>
-
-          <div className="ie-menu mt-8 flex flex-col">
-            <div className="flex flex-col items-center gap-3 p-1 xl:items-stretch xl:px-3">
-              {sidebarLinks.map((item) => (
-                <NavLink to={item.href} key={item.name} className="group">
-                  {({ isActive }) => (
-                    <span
-                      className={`flex items-center gap-3 rounded-md border-gray-50 px-3 py-2 shadow-sm transition-all hover:scale-110 hover:shadow-lg ${
-                        isActive ? "bg-gray-200" : "group-hover:bg-gray-100"
-                      }`}
-                    >
-                      <item.icon
-                        className={`h-5 stroke-2 ${
-                          isActive
-                            ? "stroke-blue-700"
-                            : "stroke-gray-500 group-hover:stroke-blue-700"
-                        }`}
-                      />
-                      <span
-                        className={`hidden text-base font-semibold xl:block ${
-                          isActive
-                            ? "text-blue-700"
-                            : "text-gray-500 group-hover:text-gray-900"
-                        }`}
-                      >
-                        {item.name}
-                      </span>
-                    </span>
-                  )}
-                </NavLink>
-              ))}
-            </div>
-          </div>
-
-          {/* Logout Button (sticks to bottom) */}
-          <div className="ie-logout mt-auto flex items-center justify-center p-2">
-            <div
-              className="group flex h-12 w-52 cursor-pointer items-center gap-2 rounded-md px-3 py-2 transition-all hover:scale-105 hover:bg-gray-300"
-              onClick={() =>
-                openConfirmBox(
-                  "Logout",
-                  "Are you sure you want to logout?",
-                  () => logout()
-                )
-              }
+      <div
+        className={`relative flex h-screen flex-col border-r border-gray-200 bg-white transition-all duration-300 ease-in-out ${
+          collapsed ? "w-20" : "w-64"
+        }`}
+      >
+        {/* Collapse Toggle Button */}
+        <button
+          onClick={() => setCollapsed(!collapsed)}
+          className="absolute -right-3 top-5 z-10 flex h-6 w-6 items-center justify-center rounded-full border border-gray-300 bg-white shadow-md hover:bg-gray-100"
+        >
+          {collapsed ? (
+            <svg
+              xmlns="http://www.w3.org/2000/svg"
+              className="h-4 w-4 text-gray-600"
+              fill="none"
+              viewBox="0 0 24 24"
+              stroke="currentColor"
             >
-              <ArrowLeftOnRectangleIcon className="h-6 stroke-gray-700 stroke-[1.5] group-hover:stroke-red-700" />
-              <span className="font-bold text-red-700 group-hover:text-red-700">
-                Logout
-              </span>
+              <path
+                strokeLinecap="round"
+                strokeLinejoin="round"
+                strokeWidth={2}
+                d="M9 5l7 7-7 7"
+              />
+            </svg>
+          ) : (
+            <svg
+              xmlns="http://www.w3.org/2000/svg"
+              className="h-4 w-4 text-gray-600"
+              fill="none"
+              viewBox="0 0 24 24"
+              stroke="currentColor"
+            >
+              <path
+                strokeLinecap="round"
+                strokeLinejoin="round"
+                strokeWidth={2}
+                d="M15 19l-7-7 7-7"
+              />
+            </svg>
+          )}
+        </button>
+
+        {/* Logo/User Section */}
+        <div className="flex items-center justify-between border-b border-gray-200 p-4">
+          {!collapsed && (
+            <div className="flex items-center space-x-3">
+              <img className="h-10 w-10 rounded-full" src={User} alt="Admin" />
+              <div>
+                <p className="text-sm font-medium text-gray-900">Admin</p>
+                <p className="text-xs text-gray-500">Administrator</p>
+              </div>
             </div>
-          </div>
+          )}
+          {collapsed && (
+            <div className="flex justify-center">
+              <img className="h-10 w-10 rounded-full" src={User} alt="Admin" />
+            </div>
+          )}
+        </div>
+
+        {/* Navigation Links */}
+        <nav className="flex-1 overflow-y-auto pt-4">
+          <ul className="space-y-1 px-2">
+            {sidebarLinks.map((item) => (
+              <li key={item.name}>
+                <NavLink
+                  to={item.href}
+                  className={({ isActive }) =>
+                    `group flex items-center rounded-md p-3 text-sm font-medium shadow-sm transition-colors hover:scale-105 hover:text-blue-600 ${
+                      isActive
+                        ? "bg-blue-50 text-blue-700"
+                        : "text-gray-600 hover:bg-gray-100 hover:text-gray-900"
+                    } ${collapsed ? "justify-center" : ""}`
+                  }
+                >
+                  <item.icon
+                    className={`h-5 w-5 flex-shrink-0 ${
+                      collapsed ? "" : "mr-3"
+                    }`}
+                  />
+                  {!collapsed && item.name}
+                </NavLink>
+              </li>
+            ))}
+          </ul>
+        </nav>
+
+        {/* Logout Button */}
+        <div className="border-t border-gray-200 p-4">
+          <button
+            onClick={() =>
+              openConfirmBox("Logout", "Are you sure you want to logout?", () =>
+                logout()
+              )
+            }
+            className={`group flex w-full items-center rounded-md p-3 text-sm font-medium text-gray-600 transition-colors hover:bg-gray-100 hover:text-gray-900 ${
+              collapsed ? "justify-center" : ""
+            }`}
+          >
+            <ArrowLeftOnRectangleIcon className="h-5 w-5 flex-shrink-0 text-red-500" />
+            {!collapsed && <span className="ml-3 text-red-500">Logout</span>}
+          </button>
         </div>
       </div>
 

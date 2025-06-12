@@ -187,10 +187,9 @@ function UploadLecture() {
     <>
       {" "}
       <div className="flex h-screen">
-        <div className="w-64">
-          <Sidebar />
-        </div>
-        <div className="h-full w-full bg-gray-50 px-3 py-5 xl:px-20 xl:py-12">
+        <Sidebar />
+
+        <div className="flex-1 overflow-y-auto bg-gray-50 px-3 py-5 xl:px-20 xl:py-12">
           {uploadSuccess && (
             <div className="mb-4 w-full rounded-lg bg-green-500 p-4 text-center text-white shadow-lg">
               Video uploaded successfully!
