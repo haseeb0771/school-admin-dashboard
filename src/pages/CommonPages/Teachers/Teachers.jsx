@@ -16,6 +16,8 @@ function Teachers() {
   const [searchTerm, setSearchTerm] = useState("");
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState("");
+  const userRole = localStorage.getItem("userRole");
+
   const [teacherStats, setTeacherStats] = useState({
     totalTeachers: 0,
     maleTeachers: 0,
@@ -270,12 +272,14 @@ function Teachers() {
                           >
                             View
                           </Link>
-                          <Link
-                            to={`/teachers/edit/${teacher._id}`}
-                            className="inline-block rounded bg-green-600 px-3 py-1 text-xs text-white hover:bg-green-700"
-                          >
-                            Edit
-                          </Link>
+                          {userRole === "ADMIN" && (
+                            <Link
+                              to={`/teachers/edit/${teacher._id}`}
+                              className="inline-block rounded bg-green-600 px-3 py-1 text-xs text-white hover:bg-green-700"
+                            >
+                              Edit
+                            </Link>
+                          )}
                         </td>
                       </tr>
                     ))}

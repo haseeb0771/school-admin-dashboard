@@ -36,21 +36,23 @@ const roleBasedLinks = {
     { name: "Employee Management", href: "/admin/employee", icon: UserIcon },
     { name: "Finance", href: "/admin/finance", icon: CurrencyDollarIcon },
   ],
+
   owner: [
     { name: "Dashboard", href: "/owner/dashboard", icon: HomeIcon },
     {
-      name: "Financial Reports",
+      name: "Finance",
       href: "/owner/finance",
       icon: CurrencyDollarIcon,
     },
-    { name: "Branch Management", href: "/owner/branches", icon: UsersIcon },
+    { name: "Branch Management", href: "/owner/branch", icon: UsersIcon },
     {
-      name: "Analytics",
-      href: "/owner/analytics",
-      icon: ClipboardDocumentIcon,
+      name: "Teachers",
+      href: "/owner/teachers",
+      icon: UsersIcon,
     },
-    { name: "System Settings", href: "/owner/settings", icon: ShieldCheckIcon },
+    { name: "Students", href: "/owner/students", icon: UsersIcon },
   ],
+
   teacher: [
     { name: "Dashboard", href: "/teacher/dashboard", icon: HomeIcon },
     {
@@ -66,6 +68,7 @@ const roleBasedLinks = {
     },
     { name: "System Settings", href: "/owner/settings", icon: ShieldCheckIcon },
   ],
+
   student: [
     { name: "Dashboard", href: "/student/dashboard", icon: HomeIcon },
     {

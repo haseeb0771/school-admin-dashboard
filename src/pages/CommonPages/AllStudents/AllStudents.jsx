@@ -13,6 +13,7 @@ const AllStudents = () => {
   const [searchTerm, setSearchTerm] = useState("");
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState("");
+  const userRole = localStorage.getItem("userRole");
 
   useEffect(() => {
     fetchStudents();
@@ -176,12 +177,14 @@ const AllStudents = () => {
                         >
                           View
                         </Link>
-                        <Link
-                          to={`/admin/edit-student/${student._id}`}
-                          className="inline-block rounded bg-green-600 px-3 py-1 text-xs text-white hover:bg-green-700"
-                        >
-                          Edit
-                        </Link>
+                        {userRole === "ADMIN" && (
+                          <Link
+                            to={`/admin/edit-student/${student._id}`}
+                            className="inline-block rounded bg-green-600 px-3 py-1 text-xs text-white hover:bg-green-700"
+                          >
+                            Edit
+                          </Link>
+                        )}
                       </td>
                     </tr>
                   ))}

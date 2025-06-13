@@ -15,9 +15,9 @@ import Toaster from "./components/commonComponents/Toaster";
 import AdminDashboard from "./pages/AdminPages/AdminDashboard/AdminDashboard";
 import NewAdmission from "./pages/AdminPages/NewAdmission/NewAdmission";
 import BulkAdmit from "./pages/AdminPages/NewAdmission/BulkAdmit/BulkAdmit";
-import AllStudents from "./pages/AdminPages/AllStudents/AllStudents";
+import AllStudents from "./pages/CommonPages/AllStudents/AllStudents";
 import Attendance from "./pages/AdminPages/Attendance/Attendance";
-import SingleStudent from "./pages/AdminPages/AllStudents/SingleStudent";
+import SingleStudent from "./pages/CommonPages/AllStudents/SingleStudent";
 import LecturesPage from "./pages/AdminPages/Lectures/LecturesPage";
 import UploadLecture from "./pages/AdminPages/Lectures/UploadLecture";
 import AllLectures from "./pages/AdminPages/Lectures/AllLectures";
@@ -26,21 +26,23 @@ import UpTeacherNotes from "./pages/AdminPages/Notes/UpTeacherNotes";
 import UpTextbook from "./pages/AdminPages/Notes/UpTextbook";
 import UpPastpapers from "./pages/AdminPages/Notes/UpPastpapers";
 import Transport from "./pages/AdminPages/Transport/Transport";
-import Teachers from "./pages/AdminPages/Teachers/Teachers";
-import AddTeacher from "./pages/AdminPages/Teachers/AddTeacher";
-import SingleTeacher from "./pages/AdminPages/Teachers/SingleTeacher";
+import Teachers from "./pages/CommonPages/Teachers/Teachers";
+import AddTeacher from "./pages/CommonPages/Teachers/AddTeacher";
+import SingleTeacher from "./pages/CommonPages/Teachers/SingleTeacher";
 import ViewLecture from "./pages/AdminPages/Lectures/ViewLecture";
 import Employee from "./pages/AdminPages/EmployeeManagement/Employee";
 import Finance from "./pages/AdminPages/Finance/Finance";
 import PassedOut from "./pages/AdminPages/PassedOutStudent/PassedOut";
-import EditStudent from "./pages/AdminPages/AllStudents/EditStudent";
-import UpdateTeacher from "./pages/AdminPages/Teachers/UpdateTeacher";
+import EditStudent from "./pages/CommonPages/AllStudents/EditStudent";
+import UpdateTeacher from "./pages/CommonPages/Teachers/UpdateTeacher";
 
 // Other role pages
 import OwnerDashboard from "./pages/OwnerPages/OwnerDashboard";
 import StudentDashboard from "./pages/StudentPages/StudentDashboard";
 import ParentDashboard from "./pages/ParentPages/ParentDashboard";
 import TeacherDashboard from "./pages/TeacherPages/TeacherDashboard";
+import FinancialHandling from "./pages/OwnerPages/FinancialHandling";
+import BranchManagement from "./pages/OwnerPages/BranchManagement";
 
 const PublicRoute = ({ children }) => {
   const isAuthenticated = !!localStorage.getItem("authToken");
@@ -297,7 +299,38 @@ function App() {
             </PrivateRoute>
           }
         />
-        {/* Add more owner routes as needed */}
+        <Route
+          path="/owner/finance"
+          element={
+            <PrivateRoute allowedRoles={["OWNER"]}>
+              <FinancialHandling />
+            </PrivateRoute>
+          }
+        />
+        <Route
+          path="/owner/branch"
+          element={
+            <PrivateRoute allowedRoles={["OWNER"]}>
+              <BranchManagement />
+            </PrivateRoute>
+          }
+        />
+        <Route
+          path="/owner/teachers"
+          element={
+            <PrivateRoute allowedRoles={["OWNER"]}>
+              <Teachers />
+            </PrivateRoute>
+          }
+        />
+        <Route
+          path="/owner/students"
+          element={
+            <PrivateRoute allowedRoles={["OWNER"]}>
+              <AllStudents />
+            </PrivateRoute>
+          }
+        />
 
         {/* Student routes */}
         <Route
