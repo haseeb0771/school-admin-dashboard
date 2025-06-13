@@ -132,7 +132,7 @@ function Sidebar({ handleLogout }) {
                     `group flex items-center rounded-md p-3 text-sm font-medium shadow-sm transition-colors hover:scale-105 hover:text-blue-600 ${
                       isActive
                         ? "bg-blue-50 text-blue-700"
-                        : "text-gray-600 hover:bg-gray-100 hover:text-gray-900"
+                        : "text-gray-600 hover:bg-gray-100 hover:text-blue-700"
                     } ${collapsed ? "justify-center" : ""}`
                   }
                 >

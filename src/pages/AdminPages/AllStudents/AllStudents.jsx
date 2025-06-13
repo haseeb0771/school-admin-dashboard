@@ -4,13 +4,13 @@ import axios from "axios";
 import { DateTime } from "luxon";
 import Sidebar from "../../../components/commonComponents/Sidebar";
 import Loading from "../../../assets/loading.svg";
+import { toast } from "react-toastify";
 import Error from "../../../assets/no-internet.png";
 import NoData from "../../../assets/no-data.png";
 
 const AllStudents = () => {
   const [students, setStudents] = useState([]);
-  const [selectedIds, setSelectedIds] = useState([]);
-  const [selectedNames, setSelectedNames] = useState([]);
+  const [searchTerm, setSearchTerm] = useState("");
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState("");
 
@@ -31,19 +31,30 @@ const AllStudents = () => {
     } catch (err) {
       console.error("Error fetching students:", err);
       setError("Failed to fetch students");
+      toast.error("Failed to fetch Students");
     } finally {
       setLoading(false);
     }
   };
 
-  const isStudentSelected = (student) => {
-    const fullName = `${student.studentFirstName} ${student.studentMiddleLastName}`;
+  const filteredStudents = students.filter((student) => {
+    if (!searchTerm) return true;
+
+    const fullName =
+      `${student.studentFirstName} ${student.studentMiddleLastName}`.toLowerCase();
+    const studentId = student.studentId?.toLowerCase() || "";
+    const className = student.classEnrolled?.className?.toLowerCase() || "";
+    const guardianName = student.guardianFullName?.toLowerCase() || "";
+    const guardianPhone = student.guardianPhone?.toLowerCase() || "";
+
     return (
-      (selectedIds.length === 0 && selectedNames.length === 0) ||
-      selectedIds.includes(student._id) ||
-      selectedNames.includes(fullName)
+      fullName.includes(searchTerm.toLowerCase()) ||
+      studentId.includes(searchTerm.toLowerCase()) ||
+      className.includes(searchTerm.toLowerCase()) ||
+      guardianName.includes(searchTerm.toLowerCase()) ||
+      guardianPhone.includes(searchTerm.toLowerCase())
     );
-  };
+  });
 
   return (
     <div className="flex h-screen">
@@ -54,7 +65,7 @@ const AllStudents = () => {
 
         {loading && (
           <div className="flex h-full items-center justify-center">
-            <img src={Loading} alt="Loading..." className="h-16 w-16 " />
+            <img src={Loading} alt="Loading..." className="h-16 w-16" />
           </div>
         )}
         {error && (
@@ -67,54 +78,31 @@ const AllStudents = () => {
         )}
         {!loading && students.length < 0 && (
           <div className="flex h-full items-center justify-center">
-            <img src={NoData} alt="No Data..." className="h-24 w-24 " />
+            <img src={NoData} alt="No Data" className="h-24 w-24" />
           </div>
         )}
+        {/* Search Box and Action Button */}
+        <div className="mb-4 flex flex-wrap items-center gap-4">
+          <div className="relative flex-1">
+            <input
+              type="text"
+              placeholder="Search students by name, ID, class, etc..."
+              value={searchTerm}
+              onChange={(e) => setSearchTerm(e.target.value)}
+              className="w-full rounded border border-gray-300 p-2 pr-10 text-sm shadow-sm focus:border-blue-500 focus:outline-none focus:ring-1 focus:ring-blue-500"
+            />
+          </div>
+          <Link
+            to="/admin/new-admission"
+            className="flex h-10 items-center justify-center gap-2 rounded bg-green-700 px-4 py-2 text-sm font-medium text-white transition-all hover:bg-green-800 md:px-6"
+          >
+            <span>Admit New</span>
+            <span className="text-lg">+</span>
+          </Link>
+        </div>
 
-        {!loading && students.length > 0 && (
+        {!loading && filteredStudents.length > 0 ? (
           <>
-            {/* Filter Boxes */}
-            <div className="mb-4 flex flex-wrap gap-4">
-              <select
-                onChange={(e) =>
-                  setSelectedIds([...(e.target.value ? [e.target.value] : [])])
-                }
-                className="w-64 rounded border border-gray-300 p-2 text-sm shadow-sm"
-              >
-                <option value="">Select by ID...</option>
-                {students.map((s) => (
-                  <option key={s._id} value={s._id}>
-                    {s._id} : {s.studentFirstName} {s.studentMiddleLastName}
-                  </option>
-                ))}
-              </select>
-
-              <select
-                onChange={(e) =>
-                  setSelectedNames([
-                    ...(e.target.value ? [e.target.value] : []),
-                  ])
-                }
-                className="w-64 rounded border border-gray-300 p-2 text-sm shadow-sm"
-              >
-                <option value="">Select by Name...</option>
-                {students.map((s) => (
-                  <option
-                    key={s._id + "-name"}
-                    value={`${s.studentFirstName} ${s.studentMiddleLastName}`}
-                  >
-                    {s.studentFirstName} {s.studentMiddleLastName}
-                  </option>
-                ))}
-              </select>
-              <Link
-                to="/admin/new-admission"
-                className="w-50 flex h-8 items-center justify-center gap-2 rounded bg-green-700 px-10 py-2 text-base  text-white transition-all hover:bg-green-800"
-              >
-                Admit New +
-              </Link>
-            </div>
-
             {/* Table */}
             <div className="overflow-x-auto rounded-md border border-gray-300 shadow-sm">
               <table className="w-full table-auto border-collapse text-sm">
@@ -143,7 +131,7 @@ const AllStudents = () => {
                   </tr>
                 </thead>
                 <tbody>
-                  {students.filter(isStudentSelected).map((student, index) => (
+                  {filteredStudents.map((student, index) => (
                     <tr
                       key={student._id}
                       className={index % 2 === 0 ? "bg-white" : "bg-gray-50"}
@@ -156,8 +144,8 @@ const AllStudents = () => {
                         {student.studentMiddleLastName}
                       </td>
                       <td className="border border-gray-300 px-4 py-2">
-                        {student.classEnrolled?.className} /{" "}
-                        {student.sectionAssigned}
+                        {student.classEnrolled?.className || "N/A"} /{" "}
+                        {student.sectionAssigned || "N/A"}
                       </td>
                       <td className="border border-gray-300 px-4 py-2">
                         {DateTime.fromISO(student.createdAt).toFormat(
@@ -165,10 +153,10 @@ const AllStudents = () => {
                         )}
                       </td>
                       <td className="border border-gray-300 px-4 py-2">
-                        {student.guardianFullName}
+                        {student.guardianFullName || "N/A"}
                       </td>
                       <td className="border border-gray-300 px-4 py-2">
-                        {student.guardianPhone}
+                        {student.guardianPhone || "N/A"}
                       </td>
                       <td className="border border-gray-300 px-4 py-2">
                         <span
@@ -201,6 +189,13 @@ const AllStudents = () => {
               </table>
             </div>
           </>
+        ) : (
+          !loading && (
+            <div className="mt-44 flex flex-col items-center justify-center">
+              <img src={NoData} alt="No data" className="mb-4 h-44 w-44" />
+              <p className="text-lg text-gray-500">No student found.</p>
+            </div>
+          )
         )}
       </div>
     </div>
