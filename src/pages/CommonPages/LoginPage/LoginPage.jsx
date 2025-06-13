@@ -3,6 +3,7 @@ import { useNavigate } from "react-router-dom";
 import { toast } from "react-toastify";
 import axios from "axios";
 import Loading from "../../../assets/loading.svg";
+import School from "../../../assets/school.png";
 
 function LoginPage() {
   const [usernameOrEmail, setUsernameOrEmail] = useState("");
@@ -30,21 +31,33 @@ function LoginPage() {
         password,
       });
 
-      localStorage.setItem("authToken", response.data.token);
-      localStorage.setItem("userRole", response.data.user.role);
-      localStorage.setItem("userData", JSON.stringify(response.data.user));
+      const { role, user } = response.data;
 
-      // Remember email if checkbox checked
+      localStorage.setItem("authToken", response.data.token);
+      localStorage.setItem("userRole", role);
+      localStorage.setItem("userData", JSON.stringify(user));
+
       if (rememberMe) {
         localStorage.setItem("rememberedEmail", usernameOrEmail);
       } else {
         localStorage.removeItem("rememberedEmail");
       }
 
-      toast.success(`Welcome back, ${response.data.user.name || "User"}!`);
+      // 💡 Role-based name selection
+      let displayName = "User";
+      if (role === "ADMIN" || role === "OWNER") {
+        displayName = user.name;
+      } else if (role === "PARENT") {
+        displayName = user.fatherFullName;
+      } else if (role === "TEACHER") {
+        displayName = user.firstName;
+      } else if (role === "STUDENT") {
+        displayName = user.studentFirstName;
+      }
+
+      toast.success(`Welcome back, ${displayName || "User"}!`);
 
       setTimeout(() => {
-        const role = response.data.user.role;
         if (role === "ADMIN") navigate("/admin/dashboard");
         else if (role === "OWNER") navigate("/owner/dashboard");
         else if (role === "STUDENT") navigate("/student/dashboard");
@@ -55,6 +68,7 @@ function LoginPage() {
       const errorMessage =
         err.response?.data?.message || "Login failed. Please try again.";
       setError(errorMessage);
+      console.log(errorMessage);
       toast.error(errorMessage);
     } finally {
       setLoading(false);
@@ -62,20 +76,23 @@ function LoginPage() {
   };
 
   return (
-    <div className="flex min-h-screen flex-col items-center justify-center py-6 px-4">
-      <div className="grid w-full max-w-6xl items-center gap-10 max-md:max-w-md md:grid-cols-2">
-        <div>
+    <div className="flex h-screen flex-col items-center justify-center bg-gray-50 px-4">
+      <div className="grid h-full w-full max-w-6xl items-center gap-10 md:grid-cols-2">
+        <div className="flex h-full flex-col items-center justify-center px-4 text-center">
+          <div className="mb-6 flex items-center justify-center">
+            <img src={School} alt="No Data" className="h-52 w-52" />
+          </div>
           <h2 className="text-3xl font-bold text-slate-900 lg:text-5xl lg:leading-[57px]">
-            Login to Educational World
+            Educational World
           </h2>
-          <p className="mt-6 text-sm leading-relaxed text-slate-500">
+          <p className="mt-6 max-w-xl text-sm leading-relaxed text-slate-500">
             We are here to help you shine in your career and achieve your goals.
           </p>
         </div>
 
         <form
           onSubmit={handleSubmit}
-          className="w-full max-w-md rounded-lg border border-gray-200 p-5 shadow-md md:ml-auto"
+          className="w-full max-w-md rounded-lg border border-gray-200 p-5 shadow-lg"
         >
           <h3 className="mb-8 text-center text-2xl font-bold text-slate-900 lg:text-3xl">
             Sign in
@@ -132,7 +149,7 @@ function LoginPage() {
             </div>
           </div>
 
-          <div className="w34 mt-12 mb-10">
+          <div className="mt-12 mb-10">
             {loading ? (
               <div className="flex justify-center">
                 <img src={Loading} alt="Loading..." className="h-10 w-10" />

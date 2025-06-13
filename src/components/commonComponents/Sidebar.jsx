@@ -18,23 +18,85 @@ import ConfirmBox from "./ConfirmBox";
 import { createPortal } from "react-dom";
 import { logout } from "../../utils/auth";
 
-const sidebarLinks = [
-  { name: "Dashboard", href: "/admin/dashboard", icon: HomeIcon },
-  { name: "New Admission", href: "/admin/new-admission", icon: UserPlusIcon },
-  { name: "All Students", href: "/admin/all-students", icon: UsersIcon },
-  { name: "Teachers", href: "/admin/teachers", icon: UserIcon },
-  { name: "Attendance", href: "/admin/attendance", icon: ShieldCheckIcon },
-  { name: "Lectures", href: "/admin/lectures", icon: VideoCameraIcon },
-  { name: "Notes", href: "/admin/notes", icon: ClipboardDocumentIcon },
-  {
-    name: "PassedOut Students",
-    href: "/admin/passed-out",
-    icon: AcademicCapIcon,
-  },
-  { name: "Transportation", href: "/admin/transport", icon: Bus },
-  { name: "Employee Management", href: "/admin/employee", icon: UserIcon },
-  { name: "Finance", href: "/admin/finance", icon: CurrencyDollarIcon },
-];
+const roleBasedLinks = {
+  admin: [
+    { name: "Dashboard", href: "/admin/dashboard", icon: HomeIcon },
+    { name: "New Admission", href: "/admin/new-admission", icon: UserPlusIcon },
+    { name: "All Students", href: "/admin/all-students", icon: UsersIcon },
+    { name: "Teachers", href: "/admin/teachers", icon: UserIcon },
+    { name: "Attendance", href: "/admin/attendance", icon: ShieldCheckIcon },
+    { name: "Lectures", href: "/admin/lectures", icon: VideoCameraIcon },
+    { name: "Notes", href: "/admin/notes", icon: ClipboardDocumentIcon },
+    {
+      name: "PassedOut Students",
+      href: "/admin/passed-out",
+      icon: AcademicCapIcon,
+    },
+    { name: "Transportation", href: "/admin/transport", icon: Bus },
+    { name: "Employee Management", href: "/admin/employee", icon: UserIcon },
+    { name: "Finance", href: "/admin/finance", icon: CurrencyDollarIcon },
+  ],
+  owner: [
+    { name: "Dashboard", href: "/owner/dashboard", icon: HomeIcon },
+    {
+      name: "Financial Reports",
+      href: "/owner/finance",
+      icon: CurrencyDollarIcon,
+    },
+    { name: "Branch Management", href: "/owner/branches", icon: UsersIcon },
+    {
+      name: "Analytics",
+      href: "/owner/analytics",
+      icon: ClipboardDocumentIcon,
+    },
+    { name: "System Settings", href: "/owner/settings", icon: ShieldCheckIcon },
+  ],
+  teacher: [
+    { name: "Dashboard", href: "/teacher/dashboard", icon: HomeIcon },
+    {
+      name: "Financial Reports",
+      href: "/owner/finance",
+      icon: CurrencyDollarIcon,
+    },
+    { name: "Branch Management", href: "/owner/branches", icon: UsersIcon },
+    {
+      name: "Analytics",
+      href: "/owner/analytics",
+      icon: ClipboardDocumentIcon,
+    },
+    { name: "System Settings", href: "/owner/settings", icon: ShieldCheckIcon },
+  ],
+  student: [
+    { name: "Dashboard", href: "/student/dashboard", icon: HomeIcon },
+    {
+      name: "Financial Reports",
+      href: "/owner/finance",
+      icon: CurrencyDollarIcon,
+    },
+    { name: "Branch Management", href: "/owner/branches", icon: UsersIcon },
+    {
+      name: "Analytics",
+      href: "/owner/analytics",
+      icon: ClipboardDocumentIcon,
+    },
+    { name: "System Settings", href: "/owner/settings", icon: ShieldCheckIcon },
+  ],
+  parent: [
+    { name: "Dashboard", href: "/parent/dashboard", icon: HomeIcon },
+    {
+      name: "Financial Reports",
+      href: "/owner/finance",
+      icon: CurrencyDollarIcon,
+    },
+    { name: "Branch Management", href: "/owner/branches", icon: UsersIcon },
+    {
+      name: "Analytics",
+      href: "/owner/analytics",
+      icon: ClipboardDocumentIcon,
+    },
+    { name: "System Settings", href: "/owner/settings", icon: ShieldCheckIcon },
+  ],
+};
 
 function Sidebar({ handleLogout }) {
   const [confirmData, setConfirmData] = useState({
@@ -44,6 +106,29 @@ function Sidebar({ handleLogout }) {
     onConfirm: () => {},
   });
   const [collapsed, setCollapsed] = useState(false);
+  const userRole = localStorage.getItem("userRole").toLowerCase();
+  const userData = JSON.parse(localStorage.getItem("userData") || "{}");
+
+  const sidebarLinks = roleBasedLinks[userRole] || roleBasedLinks.admin;
+  const roleInfo = {
+    admin: {
+      title: `${userData.name}`,
+      subtitle: "Administrator",
+    },
+    owner: {
+      title: `${userData.name}`,
+      subtitle: "System Owner",
+    },
+    parent: {
+      title: `${userData.fatherFullName}`,
+    },
+    teacher: {
+      title: `${userData.firstName}`,
+    },
+    student: {
+      title: `${userData.studentFirstName}`,
+    },
+  };
 
   const openConfirmBox = (title, message, action) => {
     setConfirmData({
@@ -65,7 +150,6 @@ function Sidebar({ handleLogout }) {
           collapsed ? "w-20" : "w-64"
         }`}
       >
-        {/* Collapse Toggle Button */}
         <button
           onClick={() => setCollapsed(!collapsed)}
           className="absolute -right-3 top-5 z-10 flex h-6 w-6 items-center justify-center rounded-full border border-gray-300 bg-white shadow-md hover:bg-gray-100"
@@ -103,20 +187,31 @@ function Sidebar({ handleLogout }) {
           )}
         </button>
 
-        {/* Logo/User Section */}
         <div className="flex items-center justify-between border-b border-gray-200 p-4">
           {!collapsed && (
             <div className="flex items-center space-x-3">
-              <img className="h-10 w-10 rounded-full" src={User} alt="Admin" />
+              <img
+                className="h-10 w-10 rounded-full"
+                src={User}
+                alt={userRole}
+              />
               <div>
-                <p className="text-sm font-medium text-gray-900">Admin</p>
-                <p className="text-xs text-gray-500">Administrator</p>
+                <p className="text-sm font-medium text-gray-900">
+                  {roleInfo[userRole]?.title || "User"}
+                </p>
+                <p className="text-xs text-gray-500">
+                  {roleInfo[userRole]?.subtitle || ""}
+                </p>
               </div>
             </div>
           )}
           {collapsed && (
             <div className="flex justify-center">
-              <img className="h-10 w-10 rounded-full" src={User} alt="Admin" />
+              <img
+                className="h-10 w-10 rounded-full"
+                src={User}
+                alt={userRole}
+              />
             </div>
           )}
         </div>
@@ -148,7 +243,7 @@ function Sidebar({ handleLogout }) {
           </ul>
         </nav>
 
-        {/* Logout Button */}
+        {/* Logout Button - remains the same */}
         <div className="border-t border-gray-200 p-4">
           <button
             onClick={() =>
@@ -166,7 +261,7 @@ function Sidebar({ handleLogout }) {
         </div>
       </div>
 
-      {/* ConfirmBox Portal */}
+      {/* ConfirmBox Portal - remains the same */}
       {createPortal(
         <ConfirmBox
           isOpen={confirmData.isOpen}

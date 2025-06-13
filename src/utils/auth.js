@@ -13,4 +13,8 @@ export const getUserRole = () => {
   return localStorage.getItem("userRole");
 };
 
-export default { logout, isAuthenticated, getUserRole };
+export const getUserData = () => {
+  return localStorage.getItem("userData");
+};
+
+export default { logout, isAuthenticated, getUserRole, getUserData };

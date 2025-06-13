@@ -1,14 +1,24 @@
-import React from 'react'
+import React from "react";
+import Sidebar from "../../components/commonComponents/Sidebar";
 
 function TeacherDashboard() {
+  const userData = JSON.parse(localStorage.getItem("userData") || "{}");
+
   return (
-    <div>
-      <h1>Teacher Dashboard</h1>
-      <p>Welcome to the Teacher Dashboard!</p>
-      <p>Here you can manage your classes, assignments, and more.</p>
-      {/* Add more content and components as needed */}
-    </div>
-  )
+    <>
+      <div className="flex h-screen">
+        <Sidebar />
+
+        <div className="flex-1 overflow-y-auto bg-gray-50 px-3 py-5 xl:px-20 xl:py-12">
+          <header className="flex w-full justify-between">
+            <h1 className="text-3xl font-bold text-gray-900 xl:text-3xl">
+              Hello {userData.firstName}!
+            </h1>
+          </header>
+        </div>
+      </div>
+    </>
+  );
 }
 
-export default TeacherDashboard
+export default TeacherDashboard;
