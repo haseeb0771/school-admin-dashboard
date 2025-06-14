@@ -7,8 +7,16 @@ import Loading from "../../../assets/loading.svg";
 import { toast } from "react-toastify";
 import Error from "../../../assets/no-internet.png";
 import NoData from "../../../assets/no-data.png";
+import Female from "../../../assets/female.png";
+import MaleFemale from "../../../assets/male-female.png";
+import Male from "../../../assets/male.png";
 
 const AllStudents = () => {
+  const [studentData, setStudentData] = useState({
+    totalStudents: 0,
+    boysCount: 0,
+    girlsCount: 0,
+  });
   const [students, setStudents] = useState([]);
   const [searchTerm, setSearchTerm] = useState("");
   const [loading, setLoading] = useState(true);
@@ -17,6 +25,46 @@ const AllStudents = () => {
 
   useEffect(() => {
     fetchStudents();
+  }, []);
+  useEffect(() => {
+    const fetchStudentData = async () => {
+      try {
+        const token = localStorage.getItem("authToken");
+        const headers = { Authorization: `Bearer ${token}` };
+
+        if (!token) {
+          setError("No authentication token found.");
+          setLoading(false);
+          return;
+        }
+
+        const response = await fetch("http://localhost:3300/students/count", {
+          method: "GET",
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${token}`,
+          },
+        });
+
+        if (!response.ok) throw new Error("Failed to fetch data");
+
+        const data = await response.json();
+
+        setStudentData({
+          totalStudents: data.totalStudents || 0,
+          boysCount: data.boysCount || 0,
+          girlsCount: data.girlsCount || 0,
+        });
+      } catch (error) {
+        toast.error(error);
+        console.error("Error fetching student count:", error);
+        setError("Failed to load data. Please try again.");
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchStudentData();
   }, []);
 
   const fetchStudents = async () => {
@@ -82,8 +130,37 @@ const AllStudents = () => {
             <img src={NoData} alt="No Data" className="h-24 w-24" />
           </div>
         )}
+        <div className="mt-6 flex justify-between gap-4">
+          <div className="flex w-1/3 flex-col items-center rounded-lg bg-white p-4 shadow-md transition-shadow hover:shadow-lg">
+            <img src={MaleFemale} alt="Total Students" className="h-12 w-12" />
+            <h2 className="text-center text-lg font-semibold text-gray-700">
+              Total Students
+            </h2>
+            <p className="text-2xl font-bold text-blue-500">
+              {studentData.totalStudents}
+            </p>
+          </div>
+          <div className="flex w-1/3 flex-col items-center rounded-lg bg-white p-4 shadow-md transition-shadow hover:shadow-lg">
+            <img src={Female} alt="No of Girls" className="h-12 w-12" />
+            <h2 className="text-center text-lg font-semibold text-gray-700">
+              No of Girls
+            </h2>
+            <p className="text-2xl font-bold text-blue-500">
+              {studentData.girlsCount}
+            </p>
+          </div>
+          <div className="flex w-1/3 flex-col items-center rounded-lg bg-white p-4 shadow-md transition-shadow hover:shadow-lg">
+            <img src={Male} alt="No of Boys" className="h-12 w-12" />
+            <h2 className="text-center text-lg font-semibold text-gray-700">
+              No of Boys
+            </h2>
+            <p className="text-2xl font-bold text-blue-500">
+              {studentData.boysCount}
+            </p>
+          </div>
+        </div>
         {/* Search Box and Action Button */}
-        <div className="mb-4 flex flex-wrap items-center gap-4">
+        <div className="mb-4 mt-5 flex flex-wrap items-center gap-4">
           <div className="relative flex-1">
             <input
               type="text"

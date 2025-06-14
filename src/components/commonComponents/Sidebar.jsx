@@ -10,6 +10,9 @@ import {
   AcademicCapIcon,
   CurrencyDollarIcon,
   UserIcon,
+  BuildingOfficeIcon,
+  MegaphoneIcon,
+  CalendarDaysIcon,
 } from "@heroicons/react/24/outline";
 import { Bus } from "lucide-react";
 import User from "../../assets/user.png";
@@ -35,6 +38,11 @@ const roleBasedLinks = {
     { name: "Transportation", href: "/admin/transport", icon: Bus },
     { name: "Employee Management", href: "/admin/employee", icon: UserIcon },
     { name: "Finance", href: "/admin/finance", icon: CurrencyDollarIcon },
+    {
+      name: "Branch Management",
+      href: "/admin/branch",
+      icon: BuildingOfficeIcon,
+    },
   ],
 
   owner: [
@@ -44,13 +52,31 @@ const roleBasedLinks = {
       href: "/owner/finance",
       icon: CurrencyDollarIcon,
     },
-    { name: "Branch Management", href: "/owner/branch", icon: UsersIcon },
+    {
+      name: "Branch Management",
+      href: "/owner/branch",
+      icon: BuildingOfficeIcon,
+    },
     {
       name: "Teachers",
       href: "/owner/teachers",
       icon: UsersIcon,
     },
-    { name: "Students", href: "/owner/students", icon: UsersIcon },
+    {
+      name: "Staff Management	",
+      href: "/owner/staff-management",
+      icon: UsersIcon,
+    },
+    {
+      name: "Academic Calendar",
+      href: "/owner/academic-calendar",
+      icon: CalendarDaysIcon,
+    },
+    {
+      name: "Events / Notices	",
+      href: "/owner/notify-events",
+      icon: MegaphoneIcon,
+    },
   ],
 
   teacher: [

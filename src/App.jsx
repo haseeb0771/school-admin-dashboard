@@ -42,7 +42,10 @@ import StudentDashboard from "./pages/StudentPages/StudentDashboard";
 import ParentDashboard from "./pages/ParentPages/ParentDashboard";
 import TeacherDashboard from "./pages/TeacherPages/TeacherDashboard";
 import FinancialHandling from "./pages/OwnerPages/FinancialHandling";
-import BranchManagement from "./pages/OwnerPages/BranchManagement";
+import BranchManagement from "./pages/CommonPages/BranchManagement/BranchManagement";
+import StaffManagement from "./pages/OwnerPages/StaffManagement";
+import AcademicCalendar from "./pages/OwnerPages/AcademicCalendar";
+import EventNotice from "./pages/OwnerPages/EventNotice";
 
 const PublicRoute = ({ children }) => {
   const isAuthenticated = !!localStorage.getItem("authToken");
@@ -289,6 +292,14 @@ function App() {
             </PrivateRoute>
           }
         />
+        <Route
+          path="/admin/branch"
+          element={
+            <PrivateRoute allowedRoles={["ADMIN"]}>
+              <BranchManagement />
+            </PrivateRoute>
+          }
+        />
 
         {/* Owner routes */}
         <Route
@@ -324,10 +335,26 @@ function App() {
           }
         />
         <Route
-          path="/owner/students"
+          path="/owner/staff-management"
           element={
             <PrivateRoute allowedRoles={["OWNER"]}>
-              <AllStudents />
+              <StaffManagement />
+            </PrivateRoute>
+          }
+        />
+        <Route
+          path="/owner/academic-calendar"
+          element={
+            <PrivateRoute allowedRoles={["OWNER"]}>
+              <AcademicCalendar />
+            </PrivateRoute>
+          }
+        />
+        <Route
+          path="/owner/notify-events"
+          element={
+            <PrivateRoute allowedRoles={["OWNER"]}>
+              <EventNotice />
             </PrivateRoute>
           }
         />
