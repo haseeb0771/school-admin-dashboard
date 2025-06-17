@@ -2,20 +2,21 @@ import React, { useState } from "react";
 import axios from "axios";
 import { toast } from "react-toastify";
 
-function AdminStaffForm({ onFormSubmit }) {
+function AdminStaffForm({
+  setShowAdminForm,
+  fetchAdminStaffCount,
+  setShowAdminList,
+}) {
   const [formData, setFormData] = useState({
-    firstName: "",
-    lastName: "",
-    phoneNumber: "",
-    whatsappNumber: "",
-    qualification: "",
-    rank: "",
-    address: "",
-    salary: "",
+    firstName: "Admin",
+    lastName: "Staff",
+    phoneNumber: "12312313",
+    whatsappNumber: "1231233",
+    qualification: "BSCS",
+    rank: "asdasd",
+    address: "asdasdad",
+    salary: 12312323,
     joiningDate: "",
-    image: null,
-    degreeImage: null,
-    idCardImage: null,
   });
 
   const handleChange = (e) => {
@@ -31,20 +32,17 @@ function AdminStaffForm({ onFormSubmit }) {
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
-      const data = new FormData();
-      for (let key in formData) {
-        data.append(key, formData[key]);
-      }
-
       const response = await axios.post(
-        `http://localhost:3300//admin-staff/add`,
-        data,
-        { headers: { "Content-Type": "multipart/form-data" } }
+        "http://localhost:3300/employees/admin/add",
+        formData,
+        {
+          headers: {
+            "Content-Type": "application/json",
+          },
+        }
       );
 
       toast.success("Admin staff added successfully!");
-
-      // Reset the form
       setFormData({
         firstName: "",
         lastName: "",
@@ -53,17 +51,14 @@ function AdminStaffForm({ onFormSubmit }) {
         qualification: "",
         rank: "",
         address: "",
-        salary: "",
+        salary: 0,
         joiningDate: "",
-        image: null,
-        degreeImage: null,
-        idCardImage: null,
       });
-
-      // Call the callback function to hide the form
-      onFormSubmit();
+      setShowAdminForm(false);
+      fetchAdminStaffCount();
+      setShowAdminList(true);
     } catch (err) {
-      console.error("Error adding admin staff:", error);
+      console.error("Error adding admin staff:", err);
       toast.error("Failed to add admin staff. Try again.");
     }
   };
@@ -160,7 +155,7 @@ function AdminStaffForm({ onFormSubmit }) {
           <div className="w-1/3">
             <label className="block text-gray-700">Salary:</label>
             <input
-              type="text"
+              type="number"
               name="salary"
               value={formData.salary}
               onChange={handleChange}
@@ -189,7 +184,6 @@ function AdminStaffForm({ onFormSubmit }) {
               name="image"
               onChange={handleFileChange}
               className="mt-2 w-full rounded-md border border-gray-300 p-2"
-              required
             />
           </div>
           <div className="w-1/3">
@@ -208,7 +202,6 @@ function AdminStaffForm({ onFormSubmit }) {
               name="idCardImage"
               onChange={handleFileChange}
               className="mt-2 w-full rounded-md border border-gray-300 p-2"
-              required
             />
           </div>
         </div>

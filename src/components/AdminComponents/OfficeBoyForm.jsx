@@ -2,17 +2,19 @@ import React, { useState } from "react";
 import axios from "axios";
 import { toast } from "react-toastify";
 
-function OfficeBoyForm({ onSuccess, onFormSubmit }) {
+function OfficeBoyForm({
+  setShowOfficeBoyForm,
+  fetchOfficeBoyCount,
+  setShowOfficeBoyList,
+}) {
   const [formData, setFormData] = useState({
-    firstName: "",
-    lastName: "",
-    phoneNumber: "",
-    whatsappNumber: "",
-    address: "",
-    salary: "",
+    firstName: "Office",
+    lastName: "Boy",
+    phoneNumber: "1231323",
+    whatsappNumber: "12313232",
+    address: "123 Street",
+    salary: 0,
     joiningDate: "",
-    personImage: null,
-    idCardImage: null,
   });
 
   const [loading, setLoading] = useState(false);
@@ -38,27 +40,30 @@ function OfficeBoyForm({ onSuccess, onFormSubmit }) {
 
     try {
       const response = await axios.post(
-        `http://localhost:3300//officeBoy/add`,
+        `http://localhost:3300/employees/office-boy/add`,
         formDataToSend,
-        { headers: { "Content-Type": "multipart/form-data" } }
+        {
+          headers: {
+            "Content-Type": "application/json",
+          },
+        }
       );
 
       if (response.status === 201) {
         toast.success("Office Boy Added Successfully");
-        onSuccess(); // Close form after success
         setFormData({
           firstName: "",
           lastName: "",
           phoneNumber: "",
           whatsappNumber: "",
           address: "",
-          salary: "",
+          salary: 0,
           joiningDate: "",
-          personImage: null,
-          idCardImage: null,
         });
       }
-      onFormSubmit();
+      setShowOfficeBoyForm(false);
+      fetchOfficeBoyCount();
+      setShowOfficeBoyList(true);
     } catch (err) {
       setError("Failed to add office boy. Try again.");
       toast.error("Failed to add office boy. Try again.");
@@ -72,7 +77,6 @@ function OfficeBoyForm({ onSuccess, onFormSubmit }) {
       <h3 className="mb-4 text-xl font-semibold text-gray-800">
         Add Office Boy
       </h3>
-      {error && <p className="text-red-500">{error}</p>}
       <form className="space-y-4" onSubmit={handleSubmit}>
         <div className="flex gap-4">
           <div className="w-1/3">
@@ -165,7 +169,6 @@ function OfficeBoyForm({ onSuccess, onFormSubmit }) {
               name="personImage"
               onChange={handleChange}
               className="mt-2 w-full rounded-md border border-gray-300 p-2"
-              required
             />
           </div>
           <div className="w-1/3">
@@ -175,7 +178,6 @@ function OfficeBoyForm({ onSuccess, onFormSubmit }) {
               name="idCardImage"
               onChange={handleChange}
               className="mt-2 w-full rounded-md border border-gray-300 p-2"
-              required
             />
           </div>
         </div>

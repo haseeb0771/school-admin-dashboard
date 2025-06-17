@@ -1,166 +1,169 @@
 import React, { useState, useEffect } from "react";
-import {
-  Card,
-  Table,
-  TableRow,
-  TableCell,
-  TableHead,
-  TableHeaderCell,
-  TableBody,
-  MultiSelectBox,
-  MultiSelectBoxItem,
-} from "@tremor/react";
 import { Link } from "react-router-dom";
+import { toast } from "react-toastify";
+import Loading from "../../assets/loading.svg";
+import ErrorImg from "../../assets/no-internet.png";
+import NoData from "../../assets/no-data.png";
 
 function OfficeBoyList() {
-  const [selectedIds, setSelectedIds] = useState([]);
-  const [selectedNames, setSelectedNames] = useState([]);
-  const [officeBoys, setOfficeBoys] = useState([]); // State to store fetched office boys
-  const [loading, setLoading] = useState(true); // Loading state
-  const [error, setError] = useState(null); // Error state
+  const [officeBoys, setOfficeBoys] = useState([]);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(null);
+  const [searchTerm, setSearchTerm] = useState("");
 
-  // Fetch office boys data from the API
   useEffect(() => {
     const fetchOfficeBoys = async () => {
       try {
-        const response = await fetch(`http://localhost:3300//officeBoy/all`);
+        const response = await fetch(
+          "http://localhost:3300/employees/office-boy/all"
+        );
         if (!response.ok) {
           throw new Error("Failed to fetch office boys data");
         }
         const data = await response.json();
-        setOfficeBoys(data); // Set fetched data to state
-        setLoading(false); // Set loading to false
+        setOfficeBoys(data);
       } catch (error) {
         console.error("Error fetching office boys:", error);
-        setError(error.message); // Set error message
-        setLoading(false); // Set loading to false
+        setError(error.message);
+        toast.error("Failed to fetch office boys.");
+      } finally {
+        setLoading(false);
       }
     };
 
     fetchOfficeBoys();
   }, []);
 
-  // Function to delete an office boy
   const deleteOfficeBoy = async (id) => {
     try {
-      const response = await fetch(
-        `http://localhost:3300//officeBoy/delete/${id}`,
-        {
-          method: "DELETE",
-        }
+      const res = await fetch(
+        `http://localhost:3300/employees/office-boy/delete/${id}`,
+        { method: "DELETE" }
       );
+      if (!res.ok) throw new Error("Failed to delete office boy");
 
-      if (!response.ok) {
-        throw new Error("Failed to delete office boy");
-      }
-
-      // Remove the deleted office boy from the state
-      setOfficeBoys((prevOfficeBoys) =>
-        prevOfficeBoys.filter((officeBoy) => officeBoy._id !== id)
-      );
-
+      setOfficeBoys((prev) => prev.filter((b) => b._id !== id));
       toast.success("Office boy deleted successfully!");
-    } catch (error) {
-      console.error("Error deleting office boy:", error);
-      toast.error("Failed to delete office boy. Please try again.");
+    } catch (err) {
+      console.error("Delete Error:", err);
+      toast.error("Failed to delete office boy.");
     }
   };
 
-  // Filter function for multi-select
-  const isOfficeBoySelected = (officeBoy) => {
-    if (selectedIds.length === 0 && selectedNames.length === 0) return true;
+  const filteredOfficeBoys = officeBoys.filter((boy) => {
+    const fullName = `${boy.firstName} ${boy.lastName}`;
     return (
-      selectedIds.includes(officeBoy._id) ||
-      selectedNames.includes(`${officeBoy.firstName} ${officeBoy.lastName}`)
+      fullName.toLowerCase().includes(searchTerm.toLowerCase()) ||
+      boy.phoneNumber?.toLowerCase().includes(searchTerm.toLowerCase()) ||
+      boy.status?.toLowerCase().includes(searchTerm.toLowerCase())
     );
-  };
+  });
 
-  // Loading state
   if (loading) {
-    return <div className="mt-5 text-center">Loading...</div>;
+    return (
+      <div className="flex h-full items-center justify-center">
+        <img src={Loading} alt="Loading..." className="h-16 w-16" />
+      </div>
+    );
   }
 
-  // Error state
   if (error) {
-    return <div className="mt-5 text-center text-red-500">Error: {error}</div>;
+    return (
+      <div className="flex h-full flex-col items-center justify-center space-y-4">
+        <img src={ErrorImg} alt="Error" className="h-20 w-20" />
+        <p className="text-center text-lg font-bold text-gray-600">{error}</p>
+      </div>
+    );
   }
 
   return (
     <div className="mt-5">
-      <Card shadow={false}>
-        <h1 className="mb-5 text-2xl font-bold">Office Boy</h1>
-        <div className="mb-4 flex flex-wrap gap-4">
-          <MultiSelectBox
-            onValueChange={(value) => setSelectedIds(value)}
-            placeholder="Select by ID..."
-            maxWidth="max-w-lg"
-          >
-            {officeBoys.map((item) => (
-              <MultiSelectBoxItem
-                key={item._id}
-                value={item._id}
-                text={`${item.officeBoyId} : ${item.firstName} ${item.lastName}`}
-              />
-            ))}
-          </MultiSelectBox>
+      <div className="rounded-lg bg-white p-6 shadow-sm">
+        <h1 className="mb-5 text-2xl font-bold">Office Boys</h1>
 
-          <MultiSelectBox
-            onValueChange={(value) => setSelectedNames(value)}
-            placeholder="Select by Name..."
-            maxWidth="max-w-lg"
-          >
-            {officeBoys.map((item) => (
-              <MultiSelectBoxItem
-                key={item._id + "-name"}
-                value={`${item.firstName} ${item.lastName}`}
-                text={`${item.firstName} ${item.lastName}`}
-              />
-            ))}
-          </MultiSelectBox>
+        {/* Search bar */}
+        <div className="mb-4">
+          <input
+            type="text"
+            placeholder="Search by name, phone, or status..."
+            value={searchTerm}
+            onChange={(e) => setSearchTerm(e.target.value)}
+            className="w-full rounded border border-gray-300 p-2 text-sm shadow-sm focus:border-blue-500 focus:outline-none focus:ring-1 focus:ring-blue-500"
+          />
         </div>
 
-        <Table marginTop="mt-6">
-          <TableHead>
-            <TableRow>
-              {/* <TableHeaderCell>Office Boy ID</TableHeaderCell> */}
-              <TableHeaderCell>Name</TableHeaderCell>
-              <TableHeaderCell>Joining Date</TableHeaderCell>
-              <TableHeaderCell>Phone</TableHeaderCell>
-              <TableHeaderCell>Status</TableHeaderCell>
-              <TableHeaderCell>Actions</TableHeaderCell>
-            </TableRow>
-          </TableHead>
-          <TableBody>
-            {officeBoys.filter(isOfficeBoySelected).map((officeBoy) => (
-              <TableRow key={officeBoy._id}>
-                {/* <TableCell>
-                  <Badge text={officeBoy.officeBoyId} size="xs" color="sky" />
-                </TableCell> */}
-                <TableCell>{`${officeBoy.firstName} ${officeBoy.lastName}`}</TableCell>
-                <TableCell>
-                  {new Date(officeBoy.joiningDate).toLocaleDateString()}
-                </TableCell>
-                <TableCell>{officeBoy.phoneNumber}</TableCell>
-                <TableCell>{officeBoy.status}</TableCell>
-                <TableCell>
-                  <Link
-                    to={`/office-boys/${officeBoy._id}`}
-                    className="rounded-md bg-gray-900 py-[3px] px-3 text-xs text-gray-50 transition-all hover:bg-gray-700"
+        {filteredOfficeBoys.length > 0 ? (
+          <div className="mt-6 overflow-x-auto rounded-md border border-gray-300 shadow-sm">
+            <table className="w-full table-auto border-collapse text-sm">
+              <thead className="bg-gray-200 text-left text-gray-700">
+                <tr>
+                  <th className="border border-gray-300 px-4 py-2">Name</th>
+                  <th className="border border-gray-300 px-4 py-2">
+                    Joining Date
+                  </th>
+                  <th className="border border-gray-300 px-4 py-2">Phone</th>
+                  <th className="border border-gray-300 px-4 py-2">Status</th>
+                  <th className="border border-gray-300 px-4 py-2">Actions</th>
+                </tr>
+              </thead>
+              <tbody>
+                {filteredOfficeBoys.map((boy, index) => (
+                  <tr
+                    key={boy._id}
+                    className={index % 2 === 0 ? "bg-white" : "bg-gray-50"}
                   >
-                    View
-                  </Link>
-                  <Link
-                    to={`/office-boys/edit/${officeBoy._id}`}
-                    className="ml-3 rounded-md bg-gray-900 py-[3px] px-3 text-xs text-gray-50 transition-all hover:bg-gray-700"
-                  >
-                    Edit
-                  </Link>
-                </TableCell>
-              </TableRow>
-            ))}
-          </TableBody>
-        </Table>
-      </Card>
+                    <td className="border border-gray-300 px-4 py-2">
+                      {boy.firstName} {boy.lastName}
+                    </td>
+                    <td className="border border-gray-300 px-4 py-2">
+                      {new Date(boy.joiningDate).toLocaleDateString()}
+                    </td>
+                    <td className="border border-gray-300 px-4 py-2">
+                      {boy.phoneNumber}
+                    </td>
+                    <td className="border border-gray-300 px-4 py-2">
+                      <span
+                        className={`rounded-full px-2 py-1 text-xs font-medium ${
+                          boy.status === "ACTIVE"
+                            ? "bg-green-100 text-green-700"
+                            : "bg-yellow-100 text-yellow-700"
+                        }`}
+                      >
+                        {boy.status}
+                      </span>
+                    </td>
+                    <td className="space-x-2 border border-gray-300 px-4 py-2">
+                      <Link
+                        to={`/office-boys/${boy._id}`}
+                        className="inline-block rounded bg-blue-600 px-3 py-1 text-xs text-white hover:bg-blue-700"
+                      >
+                        View
+                      </Link>
+                      <Link
+                        to={`/office-boys/edit/${boy._id}`}
+                        className="inline-block rounded bg-green-600 px-3 py-1 text-xs text-white hover:bg-green-700"
+                      >
+                        Edit
+                      </Link>
+                      <button
+                        onClick={() => deleteOfficeBoy(boy._id)}
+                        className="inline-block rounded bg-red-600 px-3 py-1 text-xs text-white hover:bg-red-700"
+                      >
+                        Delete
+                      </button>
+                    </td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          </div>
+        ) : (
+          <div className="mt-28 flex flex-col items-center justify-center">
+            <img src={NoData} alt="No Data" className="mb-4 h-44 w-44" />
+            <p className="text-lg text-gray-500">No office boys found.</p>
+          </div>
+        )}
+      </div>
     </div>
   );
 }

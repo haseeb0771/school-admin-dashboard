@@ -1,79 +1,73 @@
 import React, { useState } from "react";
 import { toast } from "react-toastify";
 
-function GuardForm({ onFormSubmit }) {
+function GuardForm({ setShowGaurdForm, fetchGuardCount, setShowGaurdList }) {
   const [formData, setFormData] = useState({
-    firstName: "",
-    lastName: "",
-    phone: "",
-    whatsapp: "",
-    address: "",
-    salary: "",
-    joiningDate: "",
-    personImage: null,
-    gunLicenseImage: null,
-    idCardImage: null,
+    firstName: "Gaurd",
+    lastName: "school",
+    phone: "213123123",
+    whatsapp: "123123123",
+    address: "adasasdasd",
+    salary: 123123,
+    joiningDate: "2023-01-01",
   });
 
   const [loading, setLoading] = useState(false);
   const [message, setMessage] = useState("");
 
-  // Handle input changes (for text fields)
   const handleInputChange = (e) => {
     setFormData({ ...formData, [e.target.name]: e.target.value });
   };
 
-  // Handle file uploads
   const handleFileChange = (e) => {
     setFormData({ ...formData, [e.target.name]: e.target.files[0] });
   };
 
-  // Submit form data to the backend
   const handleSubmit = async (e) => {
     e.preventDefault();
     setLoading(true);
     setMessage("");
 
-    const data = new FormData();
-    data.append("firstName", formData.firstName);
-    data.append("lastName", formData.lastName);
-    data.append("phone", formData.phone);
-    data.append("whatsapp", formData.whatsapp);
-    data.append("address", formData.address);
-    data.append("salary", formData.salary);
-    data.append("joiningDate", formData.joiningDate);
-    data.append("personImage", formData.personImage);
-    data.append("gunLicenseImage", formData.gunLicenseImage);
-    data.append("idCardImage", formData.idCardImage);
+    const data = {
+      firstName: formData.firstName,
+      lastName: formData.lastName,
+      phone: formData.phone,
+      whatsapp: formData.whatsapp,
+      address: formData.address,
+      salary: formData.salary,
+      joiningDate: formData.joiningDate,
+    };
 
     try {
-      const response = await fetch(`http://localhost:3300//guards/add`, {
-        method: "POST",
-        body: data,
-      });
+      const response = await fetch(
+        "http://localhost:3300/employees/gaurd/add",
+        {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify(data),
+        }
+      );
 
       const result = await response.json();
       if (response.ok) {
-        toast.success("Gaurd Added Successfully");
-        setMessage("");
+        toast.success("Guard Added Successfully");
         setFormData({
           firstName: "",
           lastName: "",
           phone: "",
           whatsapp: "",
           address: "",
-          salary: "",
+          salary: 0,
           joiningDate: "",
-          personImage: null,
-          gunLicenseImage: null,
-          idCardImage: null,
         });
-        onFormSubmit();
-      } else {
-        setMessage(result.error || "Something went wrong.");
-        toast.error("Something went wrong.");
+        fetchGuardCount();
+        setShowGaurdForm(false);
+        setShowGaurdList(true);
       }
     } catch (error) {
+      console.error("Error adding guard:", error);
       setMessage("Error adding guard. Please try again.");
       toast.error("Error adding guard. Please try again.");
     } finally {
@@ -84,7 +78,6 @@ function GuardForm({ onFormSubmit }) {
   return (
     <div className="mt-6 rounded-lg border border-gray-300 bg-white p-6 shadow-lg">
       <h3 className="mb-4 text-xl font-semibold text-gray-800">Add Guard</h3>
-      {message && <p className="mb-4 text-red-500">{message}</p>}
       <form className="space-y-4" onSubmit={handleSubmit}>
         <div className="flex gap-4">
           <div className="w-1/3">
@@ -183,7 +176,6 @@ function GuardForm({ onFormSubmit }) {
               name="personImage"
               onChange={handleFileChange}
               className="mt-2 w-full rounded-md border border-gray-300 p-2"
-              required
             />
           </div>
           <div className="w-1/3">
@@ -193,7 +185,6 @@ function GuardForm({ onFormSubmit }) {
               name="gunLicenseImage"
               onChange={handleFileChange}
               className="mt-2 w-full rounded-md border border-gray-300 p-2"
-              required
             />
           </div>
           <div className="w-1/3">
@@ -203,7 +194,6 @@ function GuardForm({ onFormSubmit }) {
               name="idCardImage"
               onChange={handleFileChange}
               className="mt-2 w-full rounded-md border border-gray-300 p-2"
-              required
             />
           </div>
         </div>

@@ -1,170 +1,179 @@
 import React, { useState, useEffect } from "react";
-import {
-  Card,
-  Badge,
-  Table,
-  TableRow,
-  TableCell,
-  TableHead,
-  TableHeaderCell,
-  TableBody,
-  MultiSelectBox,
-  MultiSelectBoxItem,
-} from "@tremor/react";
 import { Link } from "react-router-dom";
 import { toast } from "react-toastify";
+import Loading from "../../assets/loading.svg";
+import ErrorImg from "../../assets/no-internet.png";
+import NoData from "../../assets/no-data.png";
 
 function JanitorList() {
   const [selectedIds, setSelectedIds] = useState([]);
   const [selectedNames, setSelectedNames] = useState([]);
-  const [janitors, setJanitors] = useState([]); // State to store fetched janitors
-  const [loading, setLoading] = useState(true); // Loading state
-  const [error, setError] = useState(null); // Error state
+  const [janitors, setJanitors] = useState([]);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(null);
+  const [searchTerm, setSearchTerm] = useState("");
 
-  // Fetch janitors data from the API
   useEffect(() => {
     const fetchJanitors = async () => {
       try {
-        const response = await fetch(`http://localhost:3300//janitors/all`);
+        const response = await fetch(
+          "http://localhost:3300/employees/janitor/all"
+        );
         if (!response.ok) {
           throw new Error("Failed to fetch janitors data");
         }
         const data = await response.json();
-        setJanitors(data); // Set fetched data to state
-        setLoading(false); // Set loading to false
+        setJanitors(data);
       } catch (error) {
         console.error("Error fetching janitors:", error);
-        setError(error.message); // Set error message
-        setLoading(false); // Set loading to false
+        setError(error.message);
+        toast.error(error.message || "Failed to fetch janitors!");
+      } finally {
+        setLoading(false);
       }
     };
 
     fetchJanitors();
   }, []);
 
-  // Function to delete a janitor
+  const isJanitorSelected = (janitor) => {
+    const fullName = `${janitor.firstName} ${janitor.lastName}`;
+    const matchesSearch =
+      fullName.toLowerCase().includes(searchTerm.toLowerCase()) ||
+      janitor.phone?.toLowerCase().includes(searchTerm.toLowerCase()) ||
+      janitor.status?.toLowerCase().includes(searchTerm.toLowerCase());
+
+    const matchesSelection =
+      selectedIds.includes(janitor._id) || selectedNames.includes(fullName);
+
+    const hasSelection = selectedIds.length > 0 || selectedNames.length > 0;
+    return matchesSearch && (!hasSelection || matchesSelection);
+  };
+
   const deleteJanitor = async (id) => {
     try {
-      const response = await fetch(
-        `http://localhost:3300//janitors/delete/${id}`,
-        {
-          method: "DELETE",
-        }
+      const res = await fetch(
+        `http://localhost:3300/employees/janitor/delete/${id}`,
+        { method: "DELETE" }
       );
+      if (!res.ok) throw new Error("Failed to delete janitor");
 
-      if (!response.ok) {
-        throw new Error("Failed to delete janitor");
-        toast.success("Admin staff added successfully!");
-      }
-
-      // Remove the deleted janitor from the state
-      setJanitors((prevJanitors) =>
-        prevJanitors.filter((janitor) => janitor._id !== id)
-      );
-
+      setJanitors((prev) => prev.filter((j) => j._id !== id));
       toast.success("Janitor deleted successfully!");
-    } catch (error) {
-      console.error("Error deleting janitor:", error);
-      toast.error("Failed to delete janitor. Please try again.");
+    } catch (err) {
+      console.error("Delete Error:", err);
+      toast.error("Failed to delete janitor.");
     }
   };
 
-  // Filter function for multi-select
-  const isJanitorSelected = (janitor) => {
-    if (selectedIds.length === 0 && selectedNames.length === 0) return true;
-    return (
-      selectedIds.includes(janitor._id) ||
-      selectedNames.includes(`${janitor.firstName} ${janitor.lastName}`)
-    );
-  };
-
-  // Loading state
   if (loading) {
-    return <div className="mt-5 text-center">Loading...</div>;
+    return (
+      <div className="flex h-full items-center justify-center">
+        <img src={Loading} alt="Loading..." className="h-16 w-16" />
+      </div>
+    );
   }
 
-  // Error state
   if (error) {
-    return <div className="mt-5 text-center text-red-500">Error: {error}</div>;
+    return (
+      <div className="flex h-full flex-col items-center justify-center space-y-4">
+        <img src={ErrorImg} alt="Error" className="h-20 w-20" />
+        <p className="text-center text-lg font-bold text-gray-600">{error}</p>
+      </div>
+    );
   }
+
+  const filteredJanitors = janitors.filter(isJanitorSelected);
 
   return (
     <div className="mt-5">
-      <Card shadow={false}>
+      <div className="rounded-lg bg-white p-6 shadow-sm">
         <h1 className="mb-5 text-2xl font-bold">Janitors</h1>
 
-        <div className="mb-4 flex flex-wrap gap-4">
-          <MultiSelectBox
-            onValueChange={(value) => setSelectedIds(value)}
-            placeholder="Select by ID..."
-            maxWidth="max-w-lg"
-          >
-            {janitors.map((item) => (
-              <MultiSelectBoxItem
-                key={item._id}
-                value={item._id}
-                text={`${item.janitorId} : ${item.firstName} ${item.lastName}`}
-              />
-            ))}
-          </MultiSelectBox>
-
-          <MultiSelectBox
-            onValueChange={(value) => setSelectedNames(value)}
-            placeholder="Select by Name..."
-            maxWidth="max-w-lg"
-          >
-            {janitors.map((item) => (
-              <MultiSelectBoxItem
-                key={item._id + "-name"}
-                value={`${item.firstName} ${item.lastName}`}
-                text={`${item.firstName} ${item.lastName}`}
-              />
-            ))}
-          </MultiSelectBox>
+        {/* Search bar */}
+        <div className="mb-4 flex flex-wrap items-center gap-4">
+          <input
+            type="text"
+            placeholder="Search by name, phone, or status..."
+            value={searchTerm}
+            onChange={(e) => setSearchTerm(e.target.value)}
+            className="w-full rounded border border-gray-300 p-2 text-sm shadow-sm focus:border-blue-500 focus:outline-none focus:ring-1 focus:ring-blue-500"
+          />
         </div>
 
-        <Table marginTop="mt-6">
-          <TableHead>
-            <TableRow>
-              {/* <TableHeaderCell>Janitor ID</TableHeaderCell> */}
-              <TableHeaderCell>Name</TableHeaderCell>
-              <TableHeaderCell>Joining Date</TableHeaderCell>
-              <TableHeaderCell>Phone</TableHeaderCell>
-              <TableHeaderCell>Status</TableHeaderCell>
-              <TableHeaderCell>Actions</TableHeaderCell>
-            </TableRow>
-          </TableHead>
-          <TableBody>
-            {janitors.filter(isJanitorSelected).map((janitor) => (
-              <TableRow key={janitor._id}>
-                {/* <TableCell>
-                  <Badge text={janitor.janitorId} size="xs" color="sky" />
-                </TableCell> */}
-                <TableCell>{`${janitor.firstName} ${janitor.lastName}`}</TableCell>
-                <TableCell>
-                  {new Date(janitor.joiningDate).toLocaleDateString()}
-                </TableCell>
-                <TableCell>{janitor.phone}</TableCell>
-                <TableCell>{janitor.status}</TableCell>
-                <TableCell>
-                  <Link
-                    to={`/janitors/${janitor._id}`}
-                    className="rounded-md bg-gray-900 py-[3px] px-3 text-xs text-gray-50 transition-all hover:bg-gray-700"
+        {/* Conditional rendering */}
+        {filteredJanitors.length > 0 ? (
+          <div className="mt-6 overflow-x-auto rounded-md border border-gray-300 shadow-sm">
+            <table className="w-full table-auto border-collapse text-sm">
+              <thead className="bg-gray-200 text-left text-gray-700">
+                <tr>
+                  <th className="border border-gray-300 px-4 py-2">Name</th>
+                  <th className="border border-gray-300 px-4 py-2">
+                    Joining Date
+                  </th>
+                  <th className="border border-gray-300 px-4 py-2">Phone</th>
+                  <th className="border border-gray-300 px-4 py-2">Status</th>
+                  <th className="border border-gray-300 px-4 py-2">Actions</th>
+                </tr>
+              </thead>
+              <tbody>
+                {filteredJanitors.map((janitor, index) => (
+                  <tr
+                    key={janitor._id}
+                    className={index % 2 === 0 ? "bg-white" : "bg-gray-50"}
                   >
-                    View
-                  </Link>
-                  <Link
-                    to={`/janitors/edit/${janitor._id}`}
-                    className="ml-3 rounded-md bg-gray-900 py-[3px] px-3 text-xs text-gray-50 transition-all hover:bg-gray-700"
-                  >
-                    Edit
-                  </Link>
-                </TableCell>
-              </TableRow>
-            ))}
-          </TableBody>
-        </Table>
-      </Card>
+                    <td className="border border-gray-300 px-4 py-2">
+                      {janitor.firstName} {janitor.lastName}
+                    </td>
+                    <td className="border border-gray-300 px-4 py-2">
+                      {new Date(janitor.joiningDate).toLocaleDateString()}
+                    </td>
+                    <td className="border border-gray-300 px-4 py-2">
+                      {janitor.phone}
+                    </td>
+                    <td className="border border-gray-300 px-4 py-2">
+                      <span
+                        className={`rounded-full px-2 py-1 text-xs font-medium ${
+                          janitor.status === "ACTIVE"
+                            ? "bg-green-100 text-green-700"
+                            : "bg-yellow-100 text-yellow-700"
+                        }`}
+                      >
+                        {janitor.status}
+                      </span>
+                    </td>
+                    <td className="space-x-2 border border-gray-300 px-4 py-2">
+                      <Link
+                        to={`/janitors/${janitor._id}`}
+                        className="inline-block rounded bg-blue-600 px-3 py-1 text-xs text-white hover:bg-blue-700"
+                      >
+                        View
+                      </Link>
+                      <Link
+                        to={`/janitors/edit/${janitor._id}`}
+                        className="inline-block rounded bg-green-600 px-3 py-1 text-xs text-white hover:bg-green-700"
+                      >
+                        Edit
+                      </Link>
+                      <button
+                        onClick={() => deleteJanitor(janitor._id)}
+                        className="inline-block rounded bg-red-600 px-3 py-1 text-xs text-white hover:bg-red-700"
+                      >
+                        Delete
+                      </button>
+                    </td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          </div>
+        ) : (
+          <div className="mt-28 flex flex-col items-center justify-center">
+            <img src={NoData} alt="No Data" className="mb-4 h-44 w-44" />
+            <p className="text-lg text-gray-500">No janitors found.</p>
+          </div>
+        )}
+      </div>
     </div>
   );
 }

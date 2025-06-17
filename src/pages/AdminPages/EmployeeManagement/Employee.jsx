@@ -7,7 +7,7 @@ import AdminStaffForm from "../../../components/AdminComponents/AdminStaffForm";
 import OfficeBoyForm from "../../../components/AdminComponents/OfficeBoyForm";
 import GaurdForm from "../../../components/AdminComponents/GaurdForm";
 import JanitorForm from "../../../components/AdminComponents/JanitorForm";
-import AdminStaffList from "../../../components/AdminComponents/AdminStaffForm";
+import AdminStaffList from "../../../components/AdminComponents/AdminStaffList";
 import OfficeBoyList from "../../../components/AdminComponents/OfficeBoyList";
 import GaurdList from "../../../components/AdminComponents/GaurdList";
 import JanitorList from "../../../components/AdminComponents/JanitorList";
@@ -31,7 +31,6 @@ export default function Employee() {
   const [officeBoyCount, setOfficeBoyCount] = useState(0);
   const [janitorCount, setJanitorCount] = useState(0);
 
-  // Toggle Admin Form
   const handleAddAdminFormClick = () => {
     setShowAdminForm((prev) => !prev);
     setShowAdminList(false);
@@ -43,7 +42,6 @@ export default function Employee() {
     setShowJanitorList(false);
   };
 
-  // Toggle Admin List
   const handleAdminListClick = () => {
     setShowAdminList((prev) => !prev);
     setShowAdminForm(false);
@@ -55,7 +53,6 @@ export default function Employee() {
     setShowJanitorList(false);
   };
 
-  // Toggle Office Boy Form
   const handleAddOfficeBoyFormClick = () => {
     setShowOfficeBoyForm((prev) => !prev);
     setShowAdminForm(false);
@@ -67,7 +64,6 @@ export default function Employee() {
     setShowJanitorList(false);
   };
 
-  // Toggle Office Boy List
   const handleOfficeBoyListClick = () => {
     setShowOfficeBoyList((prev) => !prev);
     setShowAdminForm(false);
@@ -79,7 +75,6 @@ export default function Employee() {
     setShowJanitorList(false);
   };
 
-  // Toggle Guard Form
   const handleAddGaurdFormClick = () => {
     setShowGaurdForm((prev) => !prev);
     setShowAdminForm(false);
@@ -91,7 +86,6 @@ export default function Employee() {
     setShowJanitorList(false);
   };
 
-  // Toggle Guard List
   const handleGaurdListClick = () => {
     setShowGaurdList((prev) => !prev);
     setShowAdminForm(false);
@@ -103,7 +97,6 @@ export default function Employee() {
     setShowJanitorList(false);
   };
 
-  // Toggle Janitor Form
   const handleAddJanitorFormClick = () => {
     setShowJanitorForm((prev) => !prev);
     setShowAdminForm(false);
@@ -127,61 +120,56 @@ export default function Employee() {
     setShowJanitorForm(false);
   };
 
-  // Fetch counts
+  const fetchGuardCount = async () => {
+    try {
+      const response = await fetch(
+        "http://localhost:3300/employees/gaurd/count"
+      );
+      const data = await response.json();
+      setGuardCount(data.count);
+    } catch (error) {
+      console.error("Error fetching guard count:", error);
+    }
+  };
+  const fetchOfficeBoyCount = async () => {
+    try {
+      const response = await fetch(
+        "http://localhost:3300/employees/office-boy/count"
+      );
+      const data = await response.json();
+      setOfficeBoyCount(data.count);
+    } catch (error) {
+      console.error("Error fetching office boy count:", error);
+    }
+  };
+  const fetchAdminStaffCount = async () => {
+    try {
+      const response = await fetch(
+        "http://localhost:3300/employees/admin/count"
+      );
+      const data = await response.json();
+      setAdminStaffCount(data.count);
+    } catch (error) {
+      console.error("Error fetching admin staff count:", error);
+    }
+  };
+  const fetchJanitorCount = async () => {
+    try {
+      const response = await fetch(
+        "http://localhost:3300/employees/janitor/count"
+      );
+      const data = await response.json();
+      setJanitorCount(data.count);
+    } catch (error) {
+      console.error("Error fetching janitor count:", error);
+    }
+  };
+
   useEffect(() => {
-    const fetchGuardCount = async () => {
-      try {
-        const response = await fetch("http://localhost:3300/guards/count");
-        const data = await response.json();
-        setGuardCount(data.count);
-      } catch (error) {
-        console.error("Error fetching guard count:", error);
-      }
-    };
-
-    fetchGuardCount();
-  }, []);
-
-  useEffect(() => {
-    const fetchAdminStaffCount = async () => {
-      try {
-        const response = await fetch("http://localhost:3300/admin-staff/count");
-        const data = await response.json();
-        setAdminStaffCount(data.count);
-      } catch (error) {
-        console.error("Error fetching admin staff count:", error);
-      }
-    };
-
-    fetchAdminStaffCount();
-  }, []);
-
-  useEffect(() => {
-    const fetchOfficeBoyCount = async () => {
-      try {
-        const response = await fetch("http://localhost:3300/officeBoy/count");
-        const data = await response.json();
-        setOfficeBoyCount(data.count);
-      } catch (error) {
-        console.error("Error fetching office boy count:", error);
-      }
-    };
-
-    fetchOfficeBoyCount();
-  }, []);
-
-  useEffect(() => {
-    const fetchJanitorCount = async () => {
-      try {
-        const response = await fetch("http://localhost:3300/janitors/count");
-        const data = await response.json();
-        setJanitorCount(data.count);
-      } catch (error) {
-        console.error("Error fetching janitor count:", error);
-      }
-    };
-
     fetchJanitorCount();
+    fetchGuardCount();
+    fetchOfficeBoyCount();
+    fetchAdminStaffCount();
   }, []);
 
   return (
@@ -395,34 +383,30 @@ export default function Employee() {
           {/* Forms */}
           {showAdminForm && (
             <AdminStaffForm
-              onFormSubmit={() => {
-                setShowAdminForm(false);
-                fetchAdminStaffCount();
-              }}
+              setShowAdminForm={setShowAdminForm}
+              fetchAdminStaffCount={fetchAdminStaffCount}
+              setShowAdminList={setShowAdminList}
             />
           )}
           {showOfficeBoyForm && (
             <OfficeBoyForm
-              onFormSubmit={() => {
-                setShowOfficeBoyForm(false);
-                fetchOfficeBoyCount();
-              }}
+              setShowOfficeBoyForm={setShowOfficeBoyForm}
+              fetchOfficeBoyCount={fetchOfficeBoyCount}
+              setShowOfficeBoyList={setShowOfficeBoyList}
             />
           )}
           {showGaurdForm && (
             <GaurdForm
-              onFormSubmit={() => {
-                setShowGaurdForm(false);
-                fetchGuardCount();
-              }}
+              setShowGaurdForm={setShowGaurdForm}
+              fetchGuardCount={fetchGuardCount}
+              setShowGaurdList={setShowGaurdList}
             />
           )}
           {showJanitorForm && (
             <JanitorForm
-              onFormSubmit={() => {
-                setShowJanitorForm(false);
-                fetchJanitorCount();
-              }}
+              setShowJanitorForm={setShowJanitorForm}
+              fetchJanitorCount={fetchJanitorCount}
+              setShowJanitorList={setShowJanitorList}
             />
           )}
 

@@ -2,17 +2,19 @@ import React, { useState } from "react";
 import axios from "axios";
 import { toast } from "react-toastify";
 
-function JanitorForm({ onFormSubmit }) {
+function JanitorForm({
+  setShowJanitorForm,
+  fetchJanitorCount,
+  setShowJanitorList,
+}) {
   const [formData, setFormData] = useState({
-    firstName: "",
-    lastName: "",
-    phone: "",
-    whatsapp: "",
-    address: "",
-    salary: "",
-    joiningDate: "",
-    personImage: null,
-    idCardImage: null,
+    firstName: "Janitor",
+    lastName: "school",
+    phone: "123123123",
+    whatsapp: "q12312",
+    address: "123zcxz",
+    salary: 123123123,
+    joiningDate: "2023-01-01",
   });
 
   const [loading, setLoading] = useState(false);
@@ -33,32 +35,42 @@ function JanitorForm({ onFormSubmit }) {
     setLoading(true);
     setMessage("");
 
-    const formDataToSend = new FormData();
-    Object.keys(formData).forEach((key) => {
-      formDataToSend.append(key, formData[key]);
-    });
+    const data = {
+      firstName: formData.firstName,
+      lastName: formData.lastName,
+      phone: formData.phone,
+      whatsapp: formData.whatsapp,
+      address: formData.address,
+      salary: formData.salary,
+      joiningDate: formData.joiningDate,
+    };
 
     try {
       const response = await axios.post(
-        `http://localhost:3300//janitors/add`,
-        formDataToSend,
-        { headers: { "Content-Type": "multipart/form-data" } }
+        "http://localhost:3300/employees/janitor/add",
+        data,
+        {
+          headers: {
+            "Content-Type": "application/json",
+          },
+        }
       );
-      toast.success("Office Boy Added Successfully");
-      setMessage("");
+
+      toast.success("Janitor Added Successfully");
       setFormData({
         firstName: "",
         lastName: "",
         phone: "",
         whatsapp: "",
         address: "",
-        salary: "",
+        salary: 0,
         joiningDate: "",
-        personImage: null,
-        idCardImage: null,
       });
-      onFormSubmit();
+      setShowJanitorForm(false);
+      fetchJanitorCount();
+      setShowJanitorList(true);
     } catch (error) {
+      console.error("Error adding janitor:", error);
       setMessage("Failed to add janitor.");
       toast.error("Failed to add janitor.");
     } finally {
@@ -69,11 +81,7 @@ function JanitorForm({ onFormSubmit }) {
   return (
     <div className="mt-6 rounded-lg border border-gray-300 bg-white p-6 shadow-lg">
       <h3 className="mb-4 text-xl font-semibold text-gray-800">Add Janitor</h3>
-      {message && (
-        <p className="mb-4 text-center text-lg font-medium text-red-600">
-          {message}
-        </p>
-      )}
+
       <form className="space-y-4" onSubmit={handleSubmit}>
         <div className="flex gap-4">
           <div className="w-1/3">
@@ -171,7 +179,6 @@ function JanitorForm({ onFormSubmit }) {
               name="personImage"
               onChange={handleFileChange}
               className="mt-2 w-full rounded-md border border-gray-300 p-2"
-              required
             />
           </div>
           <div className="w-1/2">
@@ -181,7 +188,6 @@ function JanitorForm({ onFormSubmit }) {
               name="idCardImage"
               onChange={handleFileChange}
               className="mt-2 w-full rounded-md border border-gray-300 p-2"
-              required
             />
           </div>
         </div>
