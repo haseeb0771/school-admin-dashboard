@@ -17,11 +17,11 @@ import {
   CalendarIcon,
   ClipboardListIcon,
   ChatAlt2Icon,
-  DocumentTextIcon,
   CogIcon,
   UserCircleIcon,
   FolderOpenIcon,
   BellIcon,
+  ClipboardCheckIcon,
   LockClosedIcon,
 } from "@heroicons/react/24/outline";
 import { Bus } from "lucide-react";
@@ -136,17 +136,27 @@ const roleBasedLinks = {
   parent: [
     { name: "Dashboard", href: "/parent/dashboard", icon: HomeIcon },
     {
-      name: "Financial Reports",
-      href: "/owner/finance",
-      icon: CurrencyDollarIcon,
+      name: "Attendance",
+      href: "/parent/attendance",
+      icon: CalendarDaysIcon,
     },
-    { name: "Branch Management", href: "/owner/branches", icon: UsersIcon },
+    { name: "Exams & Results", href: "/parent/exams", icon: AcademicCapIcon },
+    { name: "Fee & Payments", href: "/parent/fees", icon: CurrencyDollarIcon },
+    { name: "Timetable", href: "/parent/timetable", icon: CalendarIcon },
+    { name: "Announcements", href: "/parent/announcements", icon: BellIcon },
+    { name: "Meetings", href: "/parent/meetings", icon: CalendarIcon },
+
     {
-      name: "Analytics",
-      href: "/owner/analytics",
-      icon: ClipboardDocumentIcon,
+      name: "Behavior Reports",
+      href: "/parent/behavior",
+      icon: FolderOpenIcon,
     },
-    { name: "System Settings", href: "/owner/settings", icon: ShieldCheckIcon },
+    {
+      name: "School Calendar",
+      href: "/parent/calendar",
+      icon: CalendarDaysIcon,
+    },
+    { name: "Settings", href: "/parent/settings", icon: CogIcon },
   ],
 };
 

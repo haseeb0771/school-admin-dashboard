@@ -57,6 +57,11 @@ import Announcement from "./pages/TeacherPages/Announcement";
 import TimeTable from "./pages/TeacherPages/TimeTable";
 import StudenProfile from "./pages/TeacherPages/StudenProfile";
 import BehaviourReports from "./pages/TeacherPages/BehaviourReports";
+import StudentAttendance from "./pages/ParentPages/StudentAttendance";
+import StudentExamMarks from "./pages/ParentPages/StudentExamMarks";
+import StudentPayments from "./pages/ParentPages/StudentPayments";
+import StudentTimeTable from "./pages/ParentPages/StudentTimeTable";
+import StudentAnnouncements from "./pages/ParentPages/StudentAnnouncements";
 
 const PublicRoute = ({ children }) => {
   const isAuthenticated = !!localStorage.getItem("authToken");
@@ -405,7 +410,78 @@ function App() {
             </PrivateRoute>
           }
         />
-        {/* Add more parent routes as needed */}
+        <Route
+          path="/parent/attendance"
+          element={
+            <PrivateRoute allowedRoles={["PARENT"]}>
+              <StudentAttendance />
+            </PrivateRoute>
+          }
+        />
+        <Route
+          path="/parent/announcements"
+          element={
+            <PrivateRoute allowedRoles={["PARENT"]}>
+              <StudentAnnouncements />
+            </PrivateRoute>
+          }
+        />
+        <Route
+          path="/parent/exams"
+          element={
+            <PrivateRoute allowedRoles={["PARENT"]}>
+              <StudentExamMarks />
+            </PrivateRoute>
+          }
+        />
+        <Route
+          path="/parent/fees"
+          element={
+            <PrivateRoute allowedRoles={["PARENT"]}>
+              <StudentPayments />
+            </PrivateRoute>
+          }
+        />
+        <Route
+          path="/parent/timetable"
+          element={
+            <PrivateRoute allowedRoles={["PARENT"]}>
+              <StudentTimeTable />
+            </PrivateRoute>
+          }
+        />
+        <Route
+          path="/parent/meetings"
+          element={
+            <PrivateRoute allowedRoles={["PARENT"]}>
+              <ParentDashboard />
+            </PrivateRoute>
+          }
+        />
+        <Route
+          path="/parent/behavior"
+          element={
+            <PrivateRoute allowedRoles={["PARENT"]}>
+              <ParentDashboard />
+            </PrivateRoute>
+          }
+        />
+        <Route
+          path="/parent/calendar"
+          element={
+            <PrivateRoute allowedRoles={["PARENT"]}>
+              <ParentDashboard />
+            </PrivateRoute>
+          }
+        />
+        <Route
+          path="/parent/settings"
+          element={
+            <PrivateRoute allowedRoles={["PARENT"]}>
+              <ParentDashboard />
+            </PrivateRoute>
+          }
+        />
 
         {/* Teacher routes */}
         <Route
@@ -504,7 +580,6 @@ function App() {
             </PrivateRoute>
           }
         />
-        {/* Add more teacher routes as needed */}
 
         {/* Error routes */}
         <Route path="/not-authorized" element={<NotAuthorized />} />
