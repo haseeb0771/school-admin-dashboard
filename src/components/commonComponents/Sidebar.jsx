@@ -13,6 +13,16 @@ import {
   BuildingOfficeIcon,
   MegaphoneIcon,
   CalendarDaysIcon,
+  BookOpenIcon,
+  CalendarIcon,
+  ClipboardListIcon,
+  ChatAlt2Icon,
+  DocumentTextIcon,
+  CogIcon,
+  UserCircleIcon,
+  FolderOpenIcon,
+  BellIcon,
+  LockClosedIcon,
 } from "@heroicons/react/24/outline";
 import { Bus } from "lucide-react";
 import User from "../../assets/user.png";
@@ -81,34 +91,47 @@ const roleBasedLinks = {
 
   teacher: [
     { name: "Dashboard", href: "/teacher/dashboard", icon: HomeIcon },
+    { name: "My Classes", href: "/teacher/classes", icon: UsersIcon },
+    { name: "Lesson Plans", href: "/teacher/lessons", icon: BookOpenIcon },
     {
-      name: "Financial Reports",
-      href: "/owner/finance",
-      icon: CurrencyDollarIcon,
+      name: "Attendance",
+      href: "/teacher/attendance",
+      icon: UsersIcon,
     },
-    { name: "Branch Management", href: "/owner/branches", icon: UsersIcon },
     {
-      name: "Analytics",
-      href: "/owner/analytics",
-      icon: ClipboardDocumentIcon,
+      name: "Assignments",
+      href: "/teacher/assignments",
+      icon: BookOpenIcon,
     },
-    { name: "System Settings", href: "/owner/settings", icon: ShieldCheckIcon },
+    { name: "Exams & Marks", href: "/teacher/exams", icon: AcademicCapIcon },
+    { name: "Timetable", href: "/teacher/timetable", icon: CalendarIcon },
+    { name: "Announcements", href: "/teacher/announcements", icon: BellIcon },
+    { name: "Messages", href: "/teacher/messages", icon: BellIcon },
+    {
+      name: "Student Profiles",
+      href: "/teacher/students",
+      icon: UserCircleIcon,
+    },
+    {
+      name: "Behavior Reports",
+      href: "/teacher/behavior",
+      icon: FolderOpenIcon,
+    },
+    { name: "Settings", href: "/teacher/settings", icon: CogIcon },
   ],
 
   student: [
     { name: "Dashboard", href: "/student/dashboard", icon: HomeIcon },
     {
-      name: "Financial Reports",
-      href: "/owner/finance",
+      name: "Acadmic Reports",
+      href: "/student/reports",
       icon: CurrencyDollarIcon,
     },
-    { name: "Branch Management", href: "/owner/branches", icon: UsersIcon },
     {
-      name: "Analytics",
-      href: "/owner/analytics",
-      icon: ClipboardDocumentIcon,
+      name: "Academic Calendar",
+      href: "/student/academic-calendar",
+      icon: CalendarDaysIcon,
     },
-    { name: "System Settings", href: "/owner/settings", icon: ShieldCheckIcon },
   ],
   parent: [
     { name: "Dashboard", href: "/parent/dashboard", icon: HomeIcon },

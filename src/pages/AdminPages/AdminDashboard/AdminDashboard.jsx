@@ -203,7 +203,7 @@ function Dashboard() {
                     {studentData.totalStudents}
                   </p>
                 </div>
-                <div className="flex w-1/3 flex-col items-center rounded-lg bg-white p-4 shadow-md transition-shadow hover:shadow-lg">
+                {/* <div className="flex w-1/3 flex-col items-center rounded-lg bg-white p-4 shadow-md transition-shadow hover:shadow-lg">
                   <img src={Female} alt="No of Girls" className="h-12 w-12" />
                   <h2 className="text-center text-lg font-semibold text-gray-700">
                     No of Girls
@@ -220,7 +220,7 @@ function Dashboard() {
                   <p className="text-2xl font-bold text-blue-500">
                     {studentData.boysCount}
                   </p>
-                </div>
+                </div> */}
               </div>
 
               {/* Campus-wise Student Distribution and Board Result-wise School Progress Charts */}

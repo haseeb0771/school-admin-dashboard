@@ -46,6 +46,17 @@ import BranchManagement from "./pages/CommonPages/BranchManagement/BranchManagem
 import StaffManagement from "./pages/OwnerPages/StaffManagement";
 import AcademicCalendar from "./pages/OwnerPages/AcademicCalendar";
 import EventNotice from "./pages/OwnerPages/EventNotice";
+import AcademicReports from "./pages/StudentPages/AcademicReports";
+import StudentAcademicCalendar from "./pages/StudentPages/AcademicCalendar";
+// Teacher specific pages
+import MyClasses from "./pages/TeacherPages/MyClasses";
+import LessonPlans from "./pages/TeacherPages/LessonPlans";
+import MarkAttendance from "./pages/TeacherPages/MarkAttendance";
+import ExamAndMarks from "./pages/TeacherPages/ExamAndMarks";
+import Announcement from "./pages/TeacherPages/Announcement";
+import TimeTable from "./pages/TeacherPages/TimeTable";
+import StudenProfile from "./pages/TeacherPages/StudenProfile";
+import BehaviourReports from "./pages/TeacherPages/BehaviourReports";
 
 const PublicRoute = ({ children }) => {
   const isAuthenticated = !!localStorage.getItem("authToken");
@@ -368,7 +379,22 @@ function App() {
             </PrivateRoute>
           }
         />
-        {/* Add more student routes as needed */}
+        <Route
+          path="/student/academic-calendar"
+          element={
+            <PrivateRoute allowedRoles={["STUDENT"]}>
+              <StudentAcademicCalendar />
+            </PrivateRoute>
+          }
+        />
+        <Route
+          path="/student/reports"
+          element={
+            <PrivateRoute allowedRoles={["STUDENT"]}>
+              <AcademicReports />
+            </PrivateRoute>
+          }
+        />
 
         {/* Parent routes */}
         <Route
@@ -384,6 +410,94 @@ function App() {
         {/* Teacher routes */}
         <Route
           path="/teacher/dashboard"
+          element={
+            <PrivateRoute allowedRoles={["TEACHER"]}>
+              <TeacherDashboard />
+            </PrivateRoute>
+          }
+        />
+        <Route
+          path="/teacher/classes"
+          element={
+            <PrivateRoute allowedRoles={["TEACHER"]}>
+              <MyClasses />
+            </PrivateRoute>
+          }
+        />
+        <Route
+          path="/teacher/lessons"
+          element={
+            <PrivateRoute allowedRoles={["TEACHER"]}>
+              <LessonPlans />
+            </PrivateRoute>
+          }
+        />
+        <Route
+          path="/teacher/assignments"
+          element={
+            <PrivateRoute allowedRoles={["TEACHER"]}>
+              <LessonPlans />
+            </PrivateRoute>
+          }
+        />
+        <Route
+          path="/teacher/exams"
+          element={
+            <PrivateRoute allowedRoles={["TEACHER"]}>
+              <ExamAndMarks />
+            </PrivateRoute>
+          }
+        />
+        <Route
+          path="/teacher/attendance"
+          element={
+            <PrivateRoute allowedRoles={["TEACHER"]}>
+              <MarkAttendance />
+            </PrivateRoute>
+          }
+        />
+        <Route
+          path="/teacher/timetable"
+          element={
+            <PrivateRoute allowedRoles={["TEACHER"]}>
+              <TimeTable />
+            </PrivateRoute>
+          }
+        />
+        <Route
+          path="/teacher/announcements"
+          element={
+            <PrivateRoute allowedRoles={["TEACHER"]}>
+              <Announcement />
+            </PrivateRoute>
+          }
+        />
+        <Route
+          path="/teacher/messages"
+          element={
+            <PrivateRoute allowedRoles={["TEACHER"]}>
+              <TeacherDashboard />
+            </PrivateRoute>
+          }
+        />
+        <Route
+          path="/teacher/students"
+          element={
+            <PrivateRoute allowedRoles={["TEACHER"]}>
+              <StudenProfile />
+            </PrivateRoute>
+          }
+        />
+        <Route
+          path="/teacher/behavior"
+          element={
+            <PrivateRoute allowedRoles={["TEACHER"]}>
+              <BehaviourReports />
+            </PrivateRoute>
+          }
+        />
+        <Route
+          path="/teacher/settings"
           element={
             <PrivateRoute allowedRoles={["TEACHER"]}>
               <TeacherDashboard />
