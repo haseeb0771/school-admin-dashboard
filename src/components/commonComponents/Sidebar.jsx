@@ -132,6 +132,31 @@ const roleBasedLinks = {
       href: "/student/academic-calendar",
       icon: CalendarDaysIcon,
     },
+    {
+      name: "My Subjects",
+      href: "/student/my-subjects",
+      icon: BookOpenIcon,
+    },
+    {
+      name: "Timetable",
+      href: "/student/timetable",
+      icon: CalendarIcon,
+    },
+    {
+      name: "Announcements",
+      href: "/student/announcements",
+      icon: BellIcon,
+    },
+    {
+      name: "Payment History",
+      href: "/student/payment-history",
+      icon: CurrencyDollarIcon,
+    },
+     {
+      name: "Behavior Reports",
+      href: "/student/behavior",
+      icon: CurrencyDollarIcon,
+    },
   ],
   parent: [
     { name: "Dashboard", href: "/parent/dashboard", icon: HomeIcon },

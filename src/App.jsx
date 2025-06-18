@@ -44,10 +44,9 @@ import TeacherDashboard from "./pages/TeacherPages/TeacherDashboard";
 import FinancialHandling from "./pages/OwnerPages/FinancialHandling";
 import BranchManagement from "./pages/CommonPages/BranchManagement/BranchManagement";
 import StaffManagement from "./pages/OwnerPages/StaffManagement";
-import AcademicCalendar from "./pages/OwnerPages/AcademicCalendar";
+import AcademicCalendar from "./pages/CommonPages/AcademicCalendar";
 import EventNotice from "./pages/OwnerPages/EventNotice";
 import AcademicReports from "./pages/StudentPages/AcademicReports";
-import StudentAcademicCalendar from "./pages/StudentPages/AcademicCalendar";
 // Teacher specific pages
 import MyClasses from "./pages/TeacherPages/MyClasses";
 import LessonPlans from "./pages/TeacherPages/LessonPlans";
@@ -62,6 +61,7 @@ import StudentExamMarks from "./pages/ParentPages/StudentExamMarks";
 import StudentPayments from "./pages/ParentPages/StudentPayments";
 import StudentTimeTable from "./pages/ParentPages/StudentTimeTable";
 import StudentAnnouncements from "./pages/ParentPages/StudentAnnouncements";
+import StudentBehaviourReport from "./pages/ParentPages/StudentBehaviourReport";
 
 const PublicRoute = ({ children }) => {
   const isAuthenticated = !!localStorage.getItem("authToken");
@@ -388,7 +388,7 @@ function App() {
           path="/student/academic-calendar"
           element={
             <PrivateRoute allowedRoles={["STUDENT"]}>
-              <StudentAcademicCalendar />
+              <AcademicCalendar />
             </PrivateRoute>
           }
         />
@@ -397,6 +397,46 @@ function App() {
           element={
             <PrivateRoute allowedRoles={["STUDENT"]}>
               <AcademicReports />
+            </PrivateRoute>
+          }
+        />
+        <Route
+          path="/student/my-subjects"
+          element={
+            <PrivateRoute allowedRoles={["STUDENT"]}>
+              <AcademicReports />
+            </PrivateRoute>
+          }
+        />
+        <Route
+          path="/student/timetable"
+          element={
+            <PrivateRoute allowedRoles={["STUDENT"]}>
+              <AcademicReports />
+            </PrivateRoute>
+          }
+        />
+        <Route
+          path="/student/announcements"
+          element={
+            <PrivateRoute allowedRoles={["STUDENT"]}>
+              <StudentAnnouncements />
+            </PrivateRoute>
+          }
+        />
+        <Route
+          path="/student/payment-history"
+          element={
+            <PrivateRoute allowedRoles={["STUDENT"]}>
+              <StudentPayments />
+            </PrivateRoute>
+          }
+        />
+        <Route
+          path="/student/behavior"
+          element={
+            <PrivateRoute allowedRoles={["STUDENT"]}>
+              <StudentBehaviourReport />
             </PrivateRoute>
           }
         />
@@ -462,7 +502,7 @@ function App() {
           path="/parent/behavior"
           element={
             <PrivateRoute allowedRoles={["PARENT"]}>
-              <ParentDashboard />
+              <StudentBehaviourReport />
             </PrivateRoute>
           }
         />
@@ -470,7 +510,7 @@ function App() {
           path="/parent/calendar"
           element={
             <PrivateRoute allowedRoles={["PARENT"]}>
-              <ParentDashboard />
+              <AcademicCalendar />
             </PrivateRoute>
           }
         />
