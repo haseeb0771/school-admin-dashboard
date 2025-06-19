@@ -5,8 +5,8 @@ import Sidebar from "../../../components/commonComponents/Sidebar";
 import { toast } from "react-toastify";
 
 function EditStudent() {
-  const { studentId } = useParams(); // Get the student ID from the URL
-  const navigate = useNavigate(); // For navigation after updating
+  const { studentId } = useParams();
+  const navigate = useNavigate();
   const [formData, setFormData] = useState({
     studentFirstName: "",
     studentMiddleLastName: "",
@@ -23,6 +23,7 @@ function EditStudent() {
     studentFee: "",
     studentId: "",
     dateOfAdmission: "",
+    branch: "",
     classEnrolled: "",
     sectionAssigned: "",
     guardianFullName: "",
@@ -35,8 +36,9 @@ function EditStudent() {
   });
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
-  const [classes, setClasses] = useState([]); // State to store available classes
-  const [sections, setSections] = useState([]); // State to store sections for the selected class
+  const [branches, setBranches] = useState([]);
+  const [classes, setClasses] = useState([]);
+  const [sections, setSections] = useState([]);
 
   // Fetch student data by ID
   useEffect(() => {
@@ -56,8 +58,8 @@ function EditStudent() {
         );
 
         if (response.data) {
-          setFormData(response.data); // Set the fetched data to the form state
-          fetchClasses(); // Fetch available classes
+          setFormData(response.data);
+          fetchBranches();
         }
       } catch (err) {
         setError(err.message);
@@ -69,37 +71,55 @@ function EditStudent() {
     fetchStudent();
   }, [studentId]);
 
-  // Fetch available classes
-  const fetchClasses = async () => {
+  // Fetch available branches
+  const fetchBranches = async () => {
     try {
       const token = localStorage.getItem("authToken");
-      const response = await axios.get("http://localhost:3300/class/all", {
+      const response = await axios.get("http://localhost:3300/branches", {
         headers: { Authorization: `Bearer ${token}` },
       });
-      setClasses(response.data); // Set the list of classes
+      setBranches(response.data);
     } catch (err) {
-      console.error("Error fetching classes:", err);
+      console.error("Error fetching branches:", err);
     }
   };
 
-  // Handle class change
+  const handleBranchChange = (event) => {
+    const selectedBranch = branches.find(
+      (branch) => branch._id === event.target.value
+    );
+
+    if (selectedBranch && selectedBranch.classes.length > 0) {
+      setClasses(selectedBranch.classes);
+    } else {
+      setClasses([]);
+    }
+
+    setSections([]);
+    setFormData((prevData) => ({
+      ...prevData,
+      branch: event.target.value,
+      classEnrolled: "",
+      sectionAssigned: "",
+    }));
+  };
+
   const handleClassChange = (event) => {
     const selectedClass = classes.find((cls) => cls._id === event.target.value);
 
     if (selectedClass && selectedClass.sections.length > 0) {
       setSections(selectedClass.sections);
     } else {
-      setSections([]); // Clear sections if no sections are available
+      setSections([]);
     }
 
     setFormData((prevData) => ({
       ...prevData,
-      classEnrolled: event.target.value, // Store class ID instead of className
-      sectionAssigned: "", // Reset section when class changes
+      classEnrolled: event.target.value,
+      sectionAssigned: "",
     }));
   };
 
-  // Handle section change
   const handleSectionChange = (event) => {
     setFormData((prevData) => ({
       ...prevData,
@@ -107,7 +127,6 @@ function EditStudent() {
     }));
   };
 
-  // Handle input changes for text, date, and select fields
   const handleChange = (e) => {
     const { name, value } = e.target;
     setFormData((prevData) => ({
@@ -116,15 +135,13 @@ function EditStudent() {
     }));
   };
 
-  // Handle file input changes (for student image)
   const handleFileChange = (e) => {
     setFormData((prevData) => ({
       ...prevData,
-      studentImage: e.target.files[0], // Store the selected file
+      studentImage: e.target.files[0],
     }));
   };
 
-  // Handle form submission
   const handleSubmit = async (e) => {
     e.preventDefault();
 
@@ -135,37 +152,51 @@ function EditStudent() {
         return;
       }
 
-      // Create FormData for file upload
-      const formDataToSend = new FormData();
-      for (const key in formData) {
-        formDataToSend.append(key, formData[key]);
-      }
+      // Create a copy of formData without the image file
+      const { studentImage, ...dataWithoutImage } = formData;
 
+      // First update all student data except image
       const response = await axios.put(
         `http://localhost:3300/students/${studentId}`,
-        formDataToSend,
+        dataWithoutImage,
         {
           headers: {
             Authorization: `Bearer ${token}`,
-            "Content-Type": "multipart/form-data",
+            "Content-Type": "application/json",
           },
         }
       );
 
-      if (response.data) {
-        toast.success("Student updated successfully!");
-        navigate(`/students/${studentId}`); // Redirect to the student's profile page
+      // Then handle image upload separately if a new image was selected
+      if (studentImage instanceof File) {
+        const imageFormData = new FormData();
+        imageFormData.append("studentImage", studentImage);
+
+        await axios.put(
+          `http://localhost:3300/students/${studentId}/image`,
+          imageFormData,
+          {
+            headers: {
+              Authorization: `Bearer ${token}`,
+              "Content-Type": "multipart/form-data",
+            },
+          }
+        );
       }
+
+      toast.success("Student updated successfully!");
+      navigate(`/admin/single-student/${studentId}`);
     } catch (err) {
       console.error("Error updating student:", err);
-      setError("Failed to update student. Please try again.");
-      toast.error("Failed to update student. Please try again.");
+      toast.error(
+        err.response?.data?.message ||
+          "Failed to update student. Please try again."
+      );
     }
   };
 
   if (loading) return <p className="text-center text-gray-700">Loading...</p>;
   if (error) return <p className="text-center text-red-500">{error}</p>;
-
   return (
     <>
       {" "}
@@ -285,6 +316,26 @@ function EditStudent() {
                       className="mt-1 block w-full rounded-md border-gray-300 shadow-sm"
                     />
                   </div>
+                  {/* Branch Selection */}
+                  <div>
+                    <label className="block text-sm font-medium text-gray-700">
+                      Branch
+                    </label>
+                    <select
+                      value={formData.branch}
+                      onChange={handleBranchChange}
+                      className="mt-1 block w-full rounded-md border-gray-300 shadow-sm"
+                      required
+                    >
+                      <option value="">Select a branch</option>
+                      {branches.map((branch) => (
+                        <option key={branch._id} value={branch._id}>
+                          {branch.branchName}
+                        </option>
+                      ))}
+                    </select>
+                  </div>
+
                   {/* Class Selection */}
                   <div>
                     <label className="block text-sm font-medium text-gray-700">
@@ -294,6 +345,7 @@ function EditStudent() {
                       value={formData.classEnrolled}
                       onChange={handleClassChange}
                       className="mt-1 block w-full rounded-md border-gray-300 shadow-sm"
+                      disabled={classes.length === 0}
                       required
                     >
                       <option value="">Select a class</option>
@@ -314,12 +366,12 @@ function EditStudent() {
                       value={formData.sectionAssigned}
                       onChange={handleSectionChange}
                       className="mt-1 block w-full rounded-md border-gray-300 shadow-sm"
-                      disabled={sections.length === 0} // Only disable when no sections are available
+                      disabled={sections.length === 0}
                     >
                       <option value="">Select a section</option>
                       {sections.map((section, index) => (
-                        <option key={index} value={section}>
-                          {section}
+                        <option key={index} value={section._id}>
+                          {section.sectionName}
                         </option>
                       ))}
                     </select>

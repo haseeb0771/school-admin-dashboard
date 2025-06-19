@@ -34,6 +34,7 @@ import Employee from "./pages/AdminPages/EmployeeManagement/Employee";
 import Finance from "./pages/AdminPages/Finance/Finance";
 import PassedOut from "./pages/AdminPages/PassedOutStudent/PassedOut";
 import EditStudent from "./pages/CommonPages/AllStudents/EditStudent";
+import BranchDetail from "./pages/CommonPages/BranchManagement/BranchDetail";
 import UpdateTeacher from "./pages/CommonPages/Teachers/UpdateTeacher";
 
 // Other role pages
@@ -316,6 +317,14 @@ function App() {
             </PrivateRoute>
           }
         />
+        <Route
+          path="/admin/branch/details/:branchId"
+          element={
+            <PrivateRoute allowedRoles={["ADMIN"]}>
+              <BranchDetail />
+            </PrivateRoute>
+          }
+        />
 
         {/* Owner routes */}
         <Route
@@ -339,6 +348,14 @@ function App() {
           element={
             <PrivateRoute allowedRoles={["OWNER"]}>
               <BranchManagement />
+            </PrivateRoute>
+          }
+        />
+        <Route
+          path="/owner/branch/details/:branchId"
+          element={
+            <PrivateRoute allowedRoles={["OWNER"]}>
+              <BranchDetail />
             </PrivateRoute>
           }
         />
@@ -428,6 +445,7 @@ function App() {
           path="/student/payment-history"
           element={
             <PrivateRoute allowedRoles={["STUDENT"]}>
+              s
               <StudentPayments />
             </PrivateRoute>
           }

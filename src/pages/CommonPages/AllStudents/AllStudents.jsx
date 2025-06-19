@@ -199,9 +199,7 @@ const AllStudents = () => {
                     <th className="border border-gray-300 px-4 py-2">
                       Guardian's Name
                     </th>
-                    <th className="border border-gray-300 px-4 py-2">
-                      Guardian's Phone
-                    </th>
+                    <th className="border border-gray-300 px-4 py-2">Branch</th>
                     <th className="border border-gray-300 px-4 py-2">Status</th>
                     <th className="border border-gray-300 px-4 py-2">
                       Actions
@@ -222,8 +220,8 @@ const AllStudents = () => {
                         {student.studentMiddleLastName}
                       </td>
                       <td className="border border-gray-300 px-4 py-2">
-                        {student.classEnrolled?.className || "N/A"} /{" "}
-                        {student.sectionAssigned || "N/A"}
+                        {student?.className || "N/A"} /{" "}
+                        {student.sectionName || "N/A"}
                       </td>
                       <td className="border border-gray-300 px-4 py-2">
                         {DateTime.fromISO(student.createdAt).toFormat(
@@ -234,7 +232,7 @@ const AllStudents = () => {
                         {student.guardianFullName || "N/A"}
                       </td>
                       <td className="border border-gray-300 px-4 py-2">
-                        {student.guardianPhone || "N/A"}
+                        {student.branchName || "N/A"}
                       </td>
                       <td className="border border-gray-300 px-4 py-2">
                         <span
@@ -247,21 +245,23 @@ const AllStudents = () => {
                           {student.studentStatus}
                         </span>
                       </td>
-                      <td className="space-x-2 border border-gray-300 px-4 py-2">
-                        <Link
-                          to={`/admin/single-student/${student._id}`}
-                          className="inline-block rounded bg-blue-600 px-3 py-1 text-xs text-white hover:bg-blue-700"
-                        >
-                          View
-                        </Link>
-                        {userRole === "ADMIN" && (
+                      <td className="border border-gray-300 px-4 py-2">
+                        <div className="flex flex-wrap justify-start gap-2">
                           <Link
-                            to={`/admin/edit-student/${student._id}`}
-                            className="inline-block rounded bg-green-600 px-3 py-1 text-xs text-white hover:bg-green-700"
+                            to={`/admin/single-student/${student._id}`}
+                            className="rounded bg-blue-600 px-3 py-1 text-xs text-white transition duration-200 hover:bg-blue-700"
                           >
-                            Edit
+                            View
                           </Link>
-                        )}
+                          {userRole === "ADMIN" && (
+                            <Link
+                              to={`/admin/edit-student/${student._id}`}
+                              className="rounded bg-green-600 px-3 py-1 text-xs text-white transition duration-200 hover:bg-green-700"
+                            >
+                              Edit
+                            </Link>
+                          )}
+                        </div>
                       </td>
                     </tr>
                   ))}

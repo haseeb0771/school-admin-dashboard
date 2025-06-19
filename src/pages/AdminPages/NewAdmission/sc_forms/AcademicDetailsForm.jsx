@@ -1,34 +1,58 @@
 import { useEffect, useState } from "react";
 import axios from "axios";
 
-function AcademicDetailsForm({ newStudent, setNewStudent, setSections }) {
+function AcademicDetailsForm({ newStudent, setNewStudent }) {
+  const [branches, setBranches] = useState([]);
   const [classes, setClasses] = useState([]);
-  const [sections, setLocalSections] = useState([]); // Local state for sections
+  const [sections, setSections] = useState([]);
 
   useEffect(() => {
     axios
-      .get("http://localhost:3300/class/all")
+      .get("http://localhost:3300/branches")
       .then((res) => {
-        setClasses(res.data);
+        setBranches(res.data);
       })
       .catch((err) => {
-        console.error("Error fetching classes:", err);
+        console.error("Error fetching branches:", err);
       });
   }, []);
 
-  const handleClassChange = (event) => {
-    const selectedClass = classes.find((cls) => cls._id === event.target.value);
+  const handleBranchChange = (event) => {
+    const branchId = event.target.value;
+    const selectedBranch = branches.find((b) => b._id === branchId);
 
-    if (selectedClass && selectedClass.sections.length > 0) {
-      setLocalSections(selectedClass.sections);
-    } else {
-      setLocalSections([]); // Clear sections if no sections are available
-    }
     setNewStudent((prev) => ({
       ...prev,
-      classEnrolled: event.target.value, // Store class ID instead of className
-      sectionAssigned: "", // Reset section when class changes
+      branch: branchId,
+      classEnrolled: "",
+      sectionAssigned: "",
     }));
+
+    // Populate classes based on selected branch
+    if (selectedBranch) {
+      setClasses(selectedBranch.classes);
+      setSections([]); // Clear sections
+    } else {
+      setClasses([]);
+      setSections([]);
+    }
+  };
+
+  const handleClassChange = (event) => {
+    const classId = event.target.value;
+    const selectedClass = classes.find((cls) => cls._id === classId);
+
+    setNewStudent((prev) => ({
+      ...prev,
+      classEnrolled: classId,
+      sectionAssigned: "",
+    }));
+
+    if (selectedClass) {
+      setSections(selectedClass.sections);
+    } else {
+      setSections([]);
+    }
   };
 
   const handleSectionChange = (event) => {
@@ -41,40 +65,60 @@ function AcademicDetailsForm({ newStudent, setNewStudent, setSections }) {
   return (
     <div className="px-4 py-5 sm:p-6">
       <div className="grid grid-cols-6 gap-6">
+        {/* Branch Selection */}
+        <div className="col-span-6 sm:col-span-2">
+          <label className="block text-sm font-medium text-gray-600">
+            Branch
+          </label>
+          <select
+            value={newStudent.branch || ""}
+            onChange={handleBranchChange}
+            className="mt-2 block w-full rounded border-gray-300 text-gray-900"
+          >
+            <option value="">Select a branch</option>
+            {branches.map((branch) => (
+              <option key={branch._id} value={branch._id}>
+                {branch.branchName}
+              </option>
+            ))}
+          </select>
+        </div>
+
         {/* Class Selection */}
-        <div className="col-span-6 sm:col-span-3">
+        <div className="col-span-6 sm:col-span-2">
           <label className="block text-sm font-medium text-gray-600">
             Class Enrolled
           </label>
           <select
-            value={newStudent.classEnrolled}
+            value={newStudent.classEnrolled || ""}
             onChange={handleClassChange}
             className="mt-2 block w-full rounded border-gray-300 text-gray-900"
+            disabled={classes.length === 0}
           >
             <option value="">Select a class</option>
             {classes.map((cls) => (
               <option key={cls._id} value={cls._id}>
-                {cls.className} {/* Display class name */}
+                {cls.className}
               </option>
             ))}
           </select>
         </div>
 
         {/* Section Selection */}
-        <div className="col-span-6 sm:col-span-3">
+        <div className="col-span-6 sm:col-span-2">
           <label className="block text-sm font-medium text-gray-600">
             Section Assigned
           </label>
           <select
-            value={newStudent.sectionAssigned}
+            value={newStudent.sectionAssigned || ""}
             onChange={handleSectionChange}
             className="mt-2 block w-full rounded border-gray-300 text-gray-900"
-            disabled={sections.length === 0} // Only disable when no sections are available
+            disabled={sections.length === 0}
           >
             <option value="">Select a section</option>
-            {sections.map((section, index) => (
-              <option key={index} value={section}>
-                {section}
+            {sections.map((section, idx) => (
+              <option key={idx} value={section._id}>
+                {section.sectionName}
               </option>
             ))}
           </select>

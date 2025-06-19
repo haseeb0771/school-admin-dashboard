@@ -26,6 +26,7 @@ function NewAdmission() {
     studentFee: "15000",
     studentId: "STD20250609",
     dateOfAdmission: "2025-06-09",
+    branch: "",
     classEnrolled: "",
     sectionAssigned: "",
     guardianFullName: "Uncle Joe",
@@ -79,6 +80,7 @@ function NewAdmission() {
           studentFee: "",
           studentId: "",
           dateOfAdmission: "",
+          branch: "",
           classEnrolled: "",
           sectionAssigned: "",
           guardianFullName: "",
@@ -99,7 +101,7 @@ function NewAdmission() {
       console.error("Error submitting student form:", error);
       toast.error("An error occurred while admitting the student");
     } finally {
-      setSubmitting(false); // Stop loading
+      setSubmitting(false);
     }
   };
 
