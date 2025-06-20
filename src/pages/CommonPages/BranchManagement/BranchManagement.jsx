@@ -1,24 +1,28 @@
 import { useState, useEffect } from "react";
 import Sidebar from "../../../components/commonComponents/Sidebar";
 import { Link } from "react-router-dom";
+import AddBranchModal from "./AddBranchModal";
 
 function BranchManagement() {
   const [branches, setBranches] = useState([]);
+  const [isModalOpen, setIsModalOpen] = useState(false);
   const userRole = localStorage.getItem("userRole");
 
+  const fetchBranches = async () => {
+    try {
+      const response = await fetch("http://localhost:3300/branches");
+      const data = await response.json();
+      setBranches(data);
+    } catch (error) {
+      console.error("Failed to fetch branches:", error);
+    }
+  };
   useEffect(() => {
-    const fetchBranches = async () => {
-      try {
-        const response = await fetch("http://localhost:3300/branches");
-        const data = await response.json();
-        setBranches(data);
-      } catch (error) {
-        console.error("Failed to fetch branches:", error);
-      }
-    };
-
     fetchBranches();
   }, []);
+
+  const openModal = () => setIsModalOpen(true);
+  const closeModal = () => setIsModalOpen(false);
 
   return (
     <>
@@ -83,29 +87,6 @@ function BranchManagement() {
                 </svg>
               </div>
 
-              {/* City filter dropdown */}
-              <div className="relative">
-                <select className="appearance-none rounded border border-gray-300 py-2 pl-3 pr-8 text-sm focus:border-blue-500 focus:outline-none focus:ring-1 focus:ring-blue-500">
-                  <option></option>
-                </select>
-                <div className="pointer-events-none absolute inset-y-0 right-0 flex items-center px-2 text-gray-700">
-                  <svg
-                    className="h-4 w-4"
-                    fill="none"
-                    stroke="currentColor"
-                    viewBox="0 0 24 24"
-                    xmlns="http://www.w3.org/2000/svg"
-                  >
-                    <path
-                      strokeLinecap="round"
-                      strokeLinejoin="round"
-                      strokeWidth={2}
-                      d="M19 9l-7 7-7-7"
-                    />
-                  </svg>
-                </div>
-              </div>
-
               {/* General search input */}
               <div className="relative">
                 <input
@@ -129,7 +110,10 @@ function BranchManagement() {
                 </svg>
               </div>
               {userRole === "ADMIN" && (
-                <button className="rounded bg-blue-600 py-2 px-4 font-medium text-white transition-colors duration-300 hover:bg-blue-700 sm:mr-auto">
+                <button
+                  onClick={openModal}
+                  className="rounded bg-blue-600 py-2 px-4 font-medium text-white transition-colors duration-300 hover:bg-blue-700 sm:mr-auto"
+                >
                   Add New Branch +
                 </button>
               )}
@@ -137,14 +121,13 @@ function BranchManagement() {
           </div>
 
           {/* Branch cards grid */}
-          {/* Branch cards grid */}
-          <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5">
+          <div className="grid w-full grid-cols-1 gap-4 sm:grid-cols-2">
             {branches.map((branch) => (
               <div
                 key={branch._id}
-                className="overflow-hidden rounded-lg bg-white shadow-sm transition-all duration-200 hover:shadow-md"
+                className="overflow-hidden rounded-lg bg-white shadow-md transition-all duration-200 hover:shadow-md"
               >
-                <div className="flex h-32 items-center justify-center overflow-hidden bg-gray-200">
+                <div className="flex h-32 items-center justify-center overflow-hidden border border-gray-200 bg-gray-100">
                   <svg
                     xmlns="http://www.w3.org/2000/svg"
                     fill="none"
@@ -222,6 +205,11 @@ function BranchManagement() {
           </div>
         </div>
       </div>
+      <AddBranchModal
+        isOpen={isModalOpen}
+        onClose={closeModal}
+        fetchBranches={fetchBranches}
+      />
     </>
   );
 }

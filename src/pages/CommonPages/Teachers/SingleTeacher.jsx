@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { useParams } from "react-router-dom";
+import { Link, useParams } from "react-router-dom";
 import Sidebar from "../../../components/commonComponents/Sidebar";
 import { toast } from "react-toastify";
 
@@ -15,14 +15,14 @@ function SingleTeacher() {
   useEffect(() => {
     const fetchTeacher = async () => {
       try {
-        const token = localStorage.getItem("token"); // Get the token from localStorage
+        const token = localStorage.getItem("authToken");
         if (!token) {
           setError("Authentication token is missing.");
           return;
         }
 
         const headers = {
-          Authorization: `Bearer ${token}`, // Include token in the header
+          Authorization: `Bearer ${token}`,
         };
 
         // Fetch teacher data
@@ -38,20 +38,6 @@ function SingleTeacher() {
         }
         const teacherData = await response.json();
         setTeacher(teacherData);
-
-        // Fetch class name if needed
-        if (teacherData.classAssigned) {
-          const classRes = await fetch(`http://localhost:3300/class/all`, {
-            headers: headers, // Add headers to the request
-          });
-          if (classRes.ok) {
-            const classData = await classRes.json();
-            const foundClass = classData.find(
-              (cls) => cls._id === teacherData.classAssigned
-            );
-            if (foundClass) setClassName(foundClass.className);
-          }
-        }
       } catch (err) {
         setError(err.message);
       } finally {
@@ -65,9 +51,9 @@ function SingleTeacher() {
   // Function to update teacher status
   const updateTeacherStatus = async (status) => {
     try {
-      const token = localStorage.getItem("token");
+      const token = localStorage.getItem("authToken");
       const response = await fetch(
-        `http://localhost:3300/teachers/${teacherId}/status`,
+        `http://localhost:3300/teachers/status/${teacherId}`,
         {
           method: "PUT",
           headers: {
@@ -84,7 +70,9 @@ function SingleTeacher() {
 
       const updatedTeacher = await response.json();
       setTeacher(updatedTeacher.teacher); // Update the local state with the new teacher data
-      toast.success(`Teacher status updated to ${status}`);
+      toast.success(
+        `Teacher status updated to ${updatedTeacher.teacher.teacherStatus}`
+      );
     } catch (err) {
       console.error("Error updating teacher status:", err);
       toast.error("Failed to update teacher status");
@@ -114,9 +102,13 @@ function SingleTeacher() {
             <h3 className="text-xl font-semibold text-gray-900">
               {teacher.teacherId} - {teacher.firstName}
             </h3>
-            <button className="h-9 rounded border border-blue-700 bg-blue-700 px-8 text-base font-medium text-white transition-all hover:border-blue-800 hover:bg-blue-800">
-              Edit
-            </button>
+         <Link
+  to={`/admin/update-teacher/${teacher._id}`}
+  className="flex items-center justify-center h-9 rounded border border-blue-700 bg-blue-700 px-8 text-base font-medium text-white transition-all hover:border-blue-800 hover:bg-blue-800"
+>
+  Edit
+</Link>
+
           </header>
 
           {/* Action Buttons */}
@@ -124,12 +116,12 @@ function SingleTeacher() {
             <button
               onClick={handleStatusChange}
               className={`h-9 rounded px-6 text-base font-medium transition-all ${
-                teacher.teacherStatus === "Active"
+                teacher.teacherStatus === "ACTIVE"
                   ? "bg-red-600 text-white hover:bg-red-700"
                   : "bg-green-600 text-white hover:bg-green-700"
               }`}
             >
-              {teacher.teacherStatus === "Active" ? "Deactivate" : "Activate"}
+              {teacher.teacherStatus === "ACTIVE" ? "Deactivate" : "Activate"}
             </button>
           </div>
           <div className="mt-5 text-xl">

@@ -3,6 +3,13 @@ import { Link } from "react-router-dom";
 import axios from "axios";
 import { DateTime } from "luxon";
 import Sidebar from "../../../components/commonComponents/Sidebar";
+import {
+  UserGroupIcon,
+  CheckCircleIcon,
+  AcademicCapIcon,
+  XCircleIcon,
+  NoSymbolIcon,
+} from "@heroicons/react/24/outline";
 import { toast } from "react-toastify";
 import Loading from "../../../assets/loading.svg";
 import Error from "../../../assets/no-internet.png";
@@ -22,7 +29,7 @@ const AllStudents = () => {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState("");
   const userRole = localStorage.getItem("userRole");
-
+  const [activeFilter, setActiveFilter] = useState("all");
   useEffect(() => {
     fetchStudents();
   }, []);
@@ -86,7 +93,43 @@ const AllStudents = () => {
     }
   };
 
+  const filterOptions = [
+    {
+      id: "all",
+      label: "All Students",
+      icon: <UserGroupIcon className="h-5 w-5" />,
+    },
+    {
+      id: "ACTIVE",
+      label: "Active",
+      icon: <CheckCircleIcon className="h-5 w-5" />,
+    },
+    {
+      id: "PASSEDOUT",
+      label: "Passed Out",
+      icon: <AcademicCapIcon className="h-5 w-5" />,
+    },
+    {
+      id: "STUCKOFF",
+      label: "Struck Off",
+      icon: <XCircleIcon className="h-5 w-5" />,
+    },
+    {
+      id: "INACTIVE",
+      label: "Inactive",
+      icon: <NoSymbolIcon className="h-5 w-5" />,
+    },
+  ];
   const filteredStudents = students.filter((student) => {
+    // Status filter
+    if (
+      activeFilter !== "all" &&
+      student.studentStatus !== activeFilter.toUpperCase()
+    ) {
+      return false;
+    }
+
+    // Search term filter (keep your existing search logic)
     if (!searchTerm) return true;
 
     const fullName =
@@ -158,6 +201,22 @@ const AllStudents = () => {
               {studentData.boysCount}
             </p>
           </div>
+        </div>
+        <div className="mb-4 mt-5 flex flex-wrap gap-2">
+          {filterOptions.map((option) => (
+            <button
+              key={option.id}
+              onClick={() => setActiveFilter(option.id)}
+              className={`flex items-center gap-2 rounded-lg px-4 py-2 text-sm font-medium transition-colors duration-200 ${
+                activeFilter === option.id
+                  ? "border border-blue-600 bg-blue-50 text-blue-700 shadow-lg"
+                  : "border border-gray-200 bg-white text-gray-700 shadow-md hover:bg-gray-50"
+              }`}
+            >
+              {option.icon}
+              {option.label}
+            </button>
+          ))}
         </div>
         {/* Search Box and Action Button */}
         <div className="mb-4 mt-5 flex flex-wrap items-center gap-4">

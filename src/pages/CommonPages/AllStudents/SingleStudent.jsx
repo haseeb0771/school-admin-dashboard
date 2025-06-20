@@ -80,18 +80,17 @@ function SingleStudent() {
   // Handle Stuck Off / Active toggle
   const handleStuckOff = async () => {
     const newStatus =
-      student.studentStatus === "StuckOff" ? "Active" : "StuckOff";
+      student.studentStatus === "STUCKOFF" ? "ACTIVE" : "STUCKOFF";
     await updateStudentStatus(newStatus);
   };
 
   // Handle Passed Out
   const handlePassOut = async () => {
-    await updateStudentStatus("PassedOut");
+    await updateStudentStatus("PASSEDOUT");
   };
 
-  // Handle Activate (if student is PassedOut or StuckOff)
   const handleActivate = async () => {
-    await updateStudentStatus("Active");
+    await updateStudentStatus("ACTIVE");
   };
 
   if (loading) return <p className="text-center text-gray-700">Loading...</p>;
@@ -112,7 +111,7 @@ function SingleStudent() {
             </h3>
             <Link
               to={`/admin/edit-student/${student._id}`}
-              className="h-9 rounded border border-blue-700 bg-blue-700 px-8 text-center font-medium text-white transition-all hover:border-blue-800 hover:bg-blue-800"
+              className="flex h-9 items-center justify-center rounded border border-blue-700 bg-blue-700 px-8 text-base font-medium text-white transition-all hover:border-blue-800 hover:bg-blue-800"
             >
               Edit
             </Link>
@@ -123,12 +122,12 @@ function SingleStudent() {
             <button
               onClick={handleStuckOff}
               className={`h-9 rounded px-6 text-base font-medium transition-all ${
-                student.studentStatus === "StuckOff"
+                student.studentStatus === "STUCKOFF"
                   ? "bg-green-600 text-white hover:bg-green-700"
                   : "bg-red-600 text-white hover:bg-red-700"
               }`}
             >
-              {student.studentStatus === "StuckOff"
+              {student.studentStatus === "STUCKOFF"
                 ? "Struck In"
                 : "Struck Off"}
             </button>
@@ -138,7 +137,7 @@ function SingleStudent() {
             >
               Pass Out
             </button>
-            {student.studentStatus !== "Active" && (
+            {student.studentStatus !== "ACTIVE" && (
               <button
                 onClick={handleActivate}
                 className="h-9 rounded bg-blue-600 px-6 text-base font-medium text-white transition-all hover:bg-blue-700"

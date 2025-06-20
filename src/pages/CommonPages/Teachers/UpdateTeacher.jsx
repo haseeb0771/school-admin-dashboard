@@ -6,7 +6,7 @@ import { toast } from "react-toastify";
 import Sidebar from "../../../components/commonComponents/Sidebar";
 
 function UpdateTeacher() {
-  const { id } = useParams(); // Get the teacher ID from the URL
+  const { teacherId } = useParams();
   const navigate = useNavigate(); // For navigation after updating
   const [teacher, setTeacher] = useState({
     firstName: "",
@@ -23,9 +23,6 @@ function UpdateTeacher() {
     education: "",
     joiningDate: "",
     salary: "",
-    teacherImage: null,
-    teacherDegreeImage: null,
-    teacherIdCardImage: null,
   });
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
@@ -34,14 +31,14 @@ function UpdateTeacher() {
   useEffect(() => {
     const fetchTeacher = async () => {
       try {
-        const token = localStorage.getItem("token");
+        const token = localStorage.getItem("authToken");
         if (!token) {
           setError("Authentication token is missing.");
           return;
         }
 
         const response = await axios.get(
-          `http://localhost:3300/teachers/${id}`,
+          `http://localhost:3300/teachers/${teacherId}`,
           {
             headers: { Authorization: `Bearer ${token}` },
           }
@@ -58,7 +55,7 @@ function UpdateTeacher() {
     };
 
     fetchTeacher();
-  }, [id]);
+  }, [teacherId]);
 
   // Handle input changes for text, date, and select fields
   const handleChange = (e) => {
@@ -82,32 +79,27 @@ function UpdateTeacher() {
     e.preventDefault();
 
     try {
-      const token = localStorage.getItem("token");
+      const token = localStorage.getItem("authToken");
       if (!token) {
         setError("Authentication token is missing.");
         return;
       }
 
-      // Create FormData for file upload
-      const formDataToSend = new FormData();
-      for (const key in teacher) {
-        formDataToSend.append(key, teacher[key]);
-      }
-
+      // Send as raw JSON instead of FormData
       const response = await axios.put(
-        `http://localhost:3300/teachers/${id}`,
-        formDataToSend,
+        `http://localhost:3300/teachers/${teacherId}`,
+        teacher, // Send the teacher object directly as JSON
         {
           headers: {
             Authorization: `Bearer ${token}`,
-            "Content-Type": "multipart/form-data",
+            "Content-Type": "application/json", // Change content type to JSON
           },
         }
       );
 
       if (response.data) {
         toast.success("Teacher updated successfully!");
-        navigate(`/teachers/${id}`); // Redirect to the teacher's profile page
+        navigate(`/admin/single-teacher/${teacherId}`);
       }
     } catch (err) {
       console.error("Error updating teacher:", err);

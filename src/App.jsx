@@ -32,7 +32,6 @@ import SingleTeacher from "./pages/CommonPages/Teachers/SingleTeacher";
 import ViewLecture from "./pages/AdminPages/Lectures/ViewLecture";
 import Employee from "./pages/AdminPages/EmployeeManagement/Employee";
 import Finance from "./pages/AdminPages/Finance/Finance";
-import PassedOut from "./pages/AdminPages/PassedOutStudent/PassedOut";
 import EditStudent from "./pages/CommonPages/AllStudents/EditStudent";
 import BranchDetail from "./pages/CommonPages/BranchManagement/BranchDetail";
 import UpdateTeacher from "./pages/CommonPages/Teachers/UpdateTeacher";
@@ -262,7 +261,7 @@ function App() {
           }
         />
         <Route
-          path="/admin/single-teacher/:id"
+          path="/admin/single-teacher/:teacherId"
           element={
             <PrivateRoute allowedRoles={["ADMIN"]}>
               <SingleTeacher />
@@ -270,7 +269,7 @@ function App() {
           }
         />
         <Route
-          path="/admin/update-teacher/:id"
+          path="/admin/update-teacher/:teacherId"
           element={
             <PrivateRoute allowedRoles={["ADMIN"]}>
               <UpdateTeacher />
@@ -290,14 +289,6 @@ function App() {
           element={
             <PrivateRoute allowedRoles={["ADMIN"]}>
               <Finance />
-            </PrivateRoute>
-          }
-        />
-        <Route
-          path="/admin/passed-out"
-          element={
-            <PrivateRoute allowedRoles={["ADMIN"]}>
-              <PassedOut />
             </PrivateRoute>
           }
         />

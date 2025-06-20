@@ -38,13 +38,8 @@ const roleBasedLinks = {
     { name: "All Students", href: "/admin/all-students", icon: UsersIcon },
     { name: "Teachers", href: "/admin/teachers", icon: UserIcon },
     { name: "Attendance", href: "/admin/attendance", icon: ShieldCheckIcon },
-    { name: "Lectures", href: "/admin/lectures", icon: VideoCameraIcon },
-    { name: "Notes", href: "/admin/notes", icon: ClipboardDocumentIcon },
-    {
-      name: "PassedOut Students",
-      href: "/admin/passed-out",
-      icon: AcademicCapIcon,
-    },
+    // { name: "Lectures", href: "/admin/lectures", icon: VideoCameraIcon },
+    // { name: "Notes", href: "/admin/notes", icon: ClipboardDocumentIcon },
     { name: "Transportation", href: "/admin/transport", icon: Bus },
     { name: "Employee Management", href: "/admin/employee", icon: UserIcon },
     { name: "Finance", href: "/admin/finance", icon: CurrencyDollarIcon },
@@ -152,7 +147,7 @@ const roleBasedLinks = {
       href: "/student/payment-history",
       icon: CurrencyDollarIcon,
     },
-     {
+    {
       name: "Behavior Reports",
       href: "/student/behavior",
       icon: CurrencyDollarIcon,

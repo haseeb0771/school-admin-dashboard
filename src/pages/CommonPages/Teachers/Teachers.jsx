@@ -7,6 +7,11 @@ import { toast } from "react-toastify";
 import Loading from "../../../assets/loading.svg";
 import Error from "../../../assets/no-internet.png";
 import NoData from "../../../assets/no-data.png";
+import {
+  UserGroupIcon, // All teachers
+  CheckCircleIcon, // Active
+  NoSymbolIcon, // Inactive
+} from "@heroicons/react/24/outline";
 
 import Sidebar from "../../../components/commonComponents/Sidebar";
 import { Link } from "react-router-dom";
@@ -23,8 +28,54 @@ function Teachers() {
     maleTeachers: 0,
     femaleTeachers: 0,
   });
+  const [activeFilter, setActiveFilter] = useState("all");
 
-  const token = localStorage.getItem("token");
+  // Add these filter options
+  const filterOptions = [
+    {
+      id: "all",
+      label: "All Teachers",
+      icon: <UserGroupIcon className="h-5 w-5" />,
+    },
+    {
+      id: "active",
+      label: "Active",
+      icon: <CheckCircleIcon className="h-5 w-5" />,
+    },
+    {
+      id: "inactive",
+      label: "Inactive",
+      icon: <NoSymbolIcon className="h-5 w-5" />,
+    },
+  ];
+
+  // Update your filteredTeachers function to include status filter
+  const filteredTeachers = teachers.filter((teacher) => {
+    // Status filter
+    if (
+      activeFilter !== "all" &&
+      teacher.teacherStatus !== activeFilter.toUpperCase()
+    ) {
+      return false;
+    }
+
+    // Search term filter (keep your existing search logic)
+    if (!searchTerm) return true;
+
+    const fullName = `${teacher.firstName} ${teacher.lastName}`.toLowerCase();
+    const teacherId = teacher.teacherId?.toLowerCase() || "";
+    const subject = teacher.subjectSpecialization?.toLowerCase() || "";
+    const phone = teacher.phoneNumber?.toLowerCase() || "";
+
+    return (
+      fullName.includes(searchTerm.toLowerCase()) ||
+      teacherId.includes(searchTerm.toLowerCase()) ||
+      subject.includes(searchTerm.toLowerCase()) ||
+      phone.includes(searchTerm.toLowerCase())
+    );
+  });
+
+  const token = localStorage.getItem("authToken");
 
   useEffect(() => {
     const fetchTeachers = async () => {
@@ -78,45 +129,6 @@ function Teachers() {
       ? true
       : isIdMatch || isNameMatch;
   };
-
-  // ✅ Delete Teacher API
-  const handleDelete = async (teacherId) => {
-    if (!window.confirm("Are you sure you want to delete this teacher?")) {
-      return;
-    }
-
-    try {
-      await axios.delete(`http://localhost:3300/teachers/${teacherId}`, {
-        headers: { Authorization: `Bearer ${token}` },
-      });
-
-      // Remove deleted teacher from UI
-      setTeachers((prevTeachers) =>
-        prevTeachers.filter((teacher) => teacher._id !== teacherId)
-      );
-
-      toast.success("Teacher deleted successfully!");
-    } catch (error) {
-      console.error("Error deleting teacher:", error);
-      toast.error("Failed to delete teacher.");
-    }
-  };
-
-  const filteredTeachers = teachers.filter((teacher) => {
-    if (!searchTerm) return true;
-
-    const fullName = `${teacher.firstName} ${teacher.lastName}`.toLowerCase();
-    const teacherId = teacher.teacherId?.toLowerCase() || "";
-    const subject = teacher.subjectSpecialization?.toLowerCase() || "";
-    const phone = teacher.phoneNumber?.toLowerCase() || "";
-
-    return (
-      fullName.includes(searchTerm.toLowerCase()) ||
-      teacherId.includes(searchTerm.toLowerCase()) ||
-      subject.includes(searchTerm.toLowerCase()) ||
-      phone.includes(searchTerm.toLowerCase())
-    );
-  });
 
   return (
     <>
@@ -183,6 +195,22 @@ function Teachers() {
                 {teacherStats.femaleTeachers}
               </p>
             </div>
+          </div>
+          <div className="mb-4 mt-5 flex flex-wrap gap-2">
+            {filterOptions.map((option) => (
+              <button
+                key={option.id}
+                onClick={() => setActiveFilter(option.id)}
+                className={`flex items-center gap-2 rounded-lg px-4 py-2 text-sm font-medium transition-colors duration-200 ${
+                  activeFilter === option.id
+                    ? "border border-blue-600 bg-blue-50 text-blue-700 shadow-lg"
+                    : "border border-gray-200 bg-white text-gray-700 shadow-md hover:bg-gray-50"
+                }`}
+              >
+                {option.icon}
+                {option.label}
+              </button>
+            ))}
           </div>
 
           <div className="mt-5">
@@ -265,22 +293,32 @@ function Teachers() {
                             {teacher.teacherStatus}
                           </span>
                         </td>
-                        <td className="space-x-2 border border-gray-300 px-4 py-2">
-                          <Link
-                            to={`/teachers/${teacher._id}`}
-                            className="inline-block rounded bg-blue-600 px-3 py-1 text-xs text-white hover:bg-blue-700"
-                          >
-                            View
-                          </Link>
-                          {userRole === "ADMIN" && (
+                        {userRole === "OWNER" && (
+                          <td className="space-x-2 border border-gray-300 px-4 py-2">
                             <Link
-                              to={`/teachers/edit/${teacher._id}`}
+                              to={`/owner/single-teacher/${teacher._id}`}
+                              className="inline-block rounded bg-blue-600 px-3 py-1 text-xs text-white hover:bg-blue-700"
+                            >
+                              View
+                            </Link>
+                          </td>
+                        )}
+                        {userRole === "ADMIN" && (
+                          <td className="space-x-2 border border-gray-300 px-4 py-2">
+                            <Link
+                              to={`/admin/single-teacher/${teacher._id}`}
+                              className="inline-block rounded bg-blue-600 px-3 py-1 text-xs text-white hover:bg-blue-700"
+                            >
+                              View
+                            </Link>
+                            <Link
+                              to={`/admin/update-teacher/${teacher._id}`}
                               className="inline-block rounded bg-green-600 px-3 py-1 text-xs text-white hover:bg-green-700"
                             >
                               Edit
                             </Link>
-                          )}
-                        </td>
+                          </td>
+                        )}
                       </tr>
                     ))}
                   </tbody>
