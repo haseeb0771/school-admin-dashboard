@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import Sidebar from "../../components/commonComponents/Sidebar";
 import {
   AreaChart,
@@ -15,12 +15,34 @@ import {
   Legend,
   ResponsiveContainer,
 } from "recharts";
+import axios from "axios";
 
 function FinancialHandling() {
   // Time period state
   const [timePeriod, setTimePeriod] = useState("monthly");
+  const [financialData, setFinancialData] = useState(null);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(null);
 
-  // Sample financial data
+  useEffect(() => {
+    const fetchFinancialSummary = async () => {
+      try {
+        const response = await axios.get(
+          "http://localhost:3300/finance/summary"
+        );
+        setFinancialData(response.data.data);
+        setLoading(false);
+      } catch (err) {
+        setError(err.message);
+        setLoading(false);
+        console.error("Error fetching financial summary:", err);
+      }
+    };
+
+    fetchFinancialSummary();
+  }, []);
+
+  // Transform API data for charts
   const revenueData = [
     { name: "Jan", revenue: 4000, expenses: 2400 },
     { name: "Feb", revenue: 3000, expenses: 1398 },
@@ -31,36 +53,129 @@ function FinancialHandling() {
     { name: "Jul", revenue: 3490, expenses: 4300 },
   ];
 
-  const branchPerformance = [
-    { name: "Downtown", revenue: 12000 },
-    { name: "Westside", revenue: 9000 },
-    { name: "East End", revenue: 7500 },
-    { name: "Northside", revenue: 8500 },
-    { name: "Southside", revenue: 6000 },
-  ];
+  const branchPerformance = financialData?.branchRevenue
+    ? financialData.branchRevenue.map((branch) => ({
+        name: branch.branchName,
+        revenue: branch.revenue,
+      }))
+    : [
+        { name: "Downtown", revenue: 0 },
+        { name: "Westside", revenue: 0 },
+        { name: "East End", revenue: 0 },
+        { name: "Northside", revenue: 0 },
+        { name: "Southside", revenue: 0 },
+      ];
 
-  const expenseDistribution = [
-    { name: "Salaries", value: 45 },
-    { name: "Rent", value: 25 },
-    { name: "Utilities", value: 15 },
-    { name: "Supplies", value: 10 },
-    { name: "Other", value: 5 },
-  ];
+  // Use actual expense distribution from API if available
+  const expenseDistribution = financialData
+    ? [
+        {
+          name: "Teachers",
+          value: financialData.breakdown.expenses.teacherSalaries,
+        },
+        {
+          name: "Admin Staff",
+          value: financialData.breakdown.expenses.adminStaffSalaries,
+        },
+        {
+          name: "Guards",
+          value: financialData.breakdown.expenses.gaurdsSalaries,
+        },
+        {
+          name: "Janitors",
+          value: financialData.breakdown.expenses.janitorsSalaries,
+        },
+        {
+          name: "Office Boys",
+          value: financialData.breakdown.expenses.officeBoysSalaries,
+        },
+      ]
+    : [
+        { name: "Salaries", value: 45 },
+        { name: "Rent", value: 25 },
+        { name: "Utilities", value: 15 },
+        { name: "Supplies", value: 10 },
+        { name: "Other", value: 5 },
+      ];
 
   const COLORS = ["#0088FE", "#00C49F", "#FFBB28", "#FF8042", "#8884D8"];
 
-  // Key metrics
+  // Key metrics using API data
   const metrics = [
-    { name: "Total Revenue", value: "$58,240", change: "+12%", trend: "up" },
-    { name: "Total Expenses", value: "$32,890", change: "+5%", trend: "up" },
-    { name: "Net Profit", value: "$25,350", change: "+22%", trend: "up" },
     {
-      name: "Avg. Profit Margin",
-      value: "43.5%",
-      change: "+3.2%",
+      name: "Total Revenue",
+      value: financialData
+        ? `$${financialData.totalIncome.toLocaleString()}`
+        : "$0",
+      change: "+12%",
       trend: "up",
     },
+    {
+      name: "Total Expenses",
+      value: financialData
+        ? `$${financialData.totalExpenses.toLocaleString()}`
+        : "$0",
+      change: "+5%",
+      trend: "up",
+    },
+    {
+      name: "Net Profit",
+      value: financialData
+        ? `$${financialData.totalProfit.toLocaleString()}`
+        : "$0",
+      change: financialData
+        ? financialData.totalProfit > 0
+          ? "+22%"
+          : "-22%"
+        : "+0%",
+      trend: financialData
+        ? financialData.totalProfit > 0
+          ? "up"
+          : "down"
+        : "up",
+    },
+    {
+      name: "Profit Margin",
+      value: financialData
+        ? `${(
+            (financialData.totalProfit / financialData.totalIncome) *
+            100
+          ).toFixed(1)}%`
+        : "0%",
+      change: financialData
+        ? financialData.totalProfit > 0
+          ? "+3.2%"
+          : "-3.2%"
+        : "+0%",
+      trend: financialData
+        ? financialData.totalProfit > 0
+          ? "up"
+          : "down"
+        : "up",
+    },
   ];
+
+  if (loading) {
+    return (
+      <div className="flex h-screen">
+        <Sidebar />
+        <div className="flex flex-1 items-center justify-center overflow-y-auto bg-gray-50 px-3 py-5 xl:px-20 xl:py-12">
+          <p>Loading financial data...</p>
+        </div>
+      </div>
+    );
+  }
+
+  if (error) {
+    return (
+      <div className="flex h-screen">
+        <Sidebar />
+        <div className="flex flex-1 items-center justify-center overflow-y-auto bg-gray-50 px-3 py-5 xl:px-20 xl:py-12">
+          <p className="text-red-500">Error: {error}</p>
+        </div>
+      </div>
+    );
+  }
 
   return (
     <>
@@ -237,18 +352,24 @@ function FinancialHandling() {
                       axisLine={false}
                       tickLine={false}
                     />
-                    <Tooltip />
+                    <Tooltip
+                      formatter={(value) => [
+                        `$${value.toLocaleString()}`,
+                        "Revenue",
+                      ]}
+                    />
                     <Bar
                       dataKey="revenue"
                       fill="#8884d8"
                       radius={[0, 4, 4, 0]}
+                      name="Revenue"
                     />
                   </BarChart>
                 </ResponsiveContainer>
               </div>
             </div>
 
-            {/* Expense Distribution */}
+            {/* Expense Distribution - Now using actual data from API */}
             <div className="rounded-lg border-gray-100 bg-white p-6 shadow-md">
               <h2 className="mb-4 text-lg font-medium text-gray-900">
                 Expense Distribution
@@ -277,7 +398,10 @@ function FinancialHandling() {
                       ))}
                     </Pie>
                     <Tooltip
-                      formatter={(value) => [`${value}%`, "Percentage"]}
+                      formatter={(value) => [
+                        `$${value.toLocaleString()}`,
+                        "Amount",
+                      ]}
                     />
                     <Legend />
                   </PieChart>
